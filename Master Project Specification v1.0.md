@@ -1,6 +1,6 @@
 # Digital / Web Utilities Platform — Master Project Specification
 
-**Document version:** 2.0
+**Document version:** 1.0
 **Platform:** Blogger.com (free tier)
 **Status:** Approved for build
 
