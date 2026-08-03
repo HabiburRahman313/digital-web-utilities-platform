@@ -69,6 +69,23 @@ Each of the above (except `--bn-accent`) also has a `-subtle` background variant
 | `--bn-text-tertiary` | `hsl(220, 9%, 60%)` | `hsl(215, 16%, 55%)` | Metadata, timestamps, placeholders |
 | `--bn-text-on-primary` | `hsl(0, 0%, 100%)` | (same) | Text placed on top of `--bn-primary` |
 
+### 2.4 Gradient & Glass Tokens (v1.1 addition)
+
+Added to support premium, SaaS-grade surface treatments (sticky glass header, hero accents) without introducing hard-coded values. Used sparingly — see usage rules below.
+
+| Token | Light | Dark |
+|---|---|---|
+| `--bn-gradient-primary` | `linear-gradient(135deg, hsl(220,90%,56%), hsl(262,83%,58%))` | (same — works on both) |
+| `--bn-gradient-subtle` | `linear-gradient(135deg, hsl(220,90%,97%), hsl(262,83%,97%))` | `linear-gradient(135deg, hsla(220,90%,56%,0.12), hsla(262,83%,58%,0.12))` |
+| `--bn-glass-bg` | `hsla(0,0%,100%,0.72)` | `hsla(217,33%,17%,0.72)` |
+| `--bn-blur-md` | `12px` | (same) |
+
+**Usage rules:**
+- `--bn-gradient-primary` is reserved for **one deliberate accent per page at most** — e.g. a hero headline highlight or a single CTA glow. It is never used as a general background or repeated across multiple elements; overuse defeats the "quiet by default" principle (Section 1).
+- `--bn-glass-bg` + `backdrop-filter: blur(var(--bn-blur-md))` is reserved for the sticky header only, so the effect stays a distinctive, recognizable signature rather than a generic texture applied everywhere.
+
+---
+
 ### 2.3 Usage rules
 
 - **Primary** is reserved for the single main action on a page (e.g. "Open tool," "Browse all tools"). Never use it decoratively.
@@ -231,15 +248,26 @@ Three card types exist. **No new card variant may be created without adding it t
 |---|---|---|---|
 | **Tool Card** | `.bn-tool-card` | Icon chip (`--bn-primary-subtle` bg), category label, name, description, "Open tool →" link | Homepage `#bn-popular-grid` |
 | **Category Card** | `.bn-cat-card` | Icon chip (`--bn-accent` solid bg), name, tool count | Homepage `#bn-featured-categories` / `#bn-all-categories` |
-| **Tutorial Card** | `.bn-tut-card` | Category tag, title, description, meta (read time) | Homepage `#bn-tutorials-grid` |
+| **Tutorial Card** | `.bn-tut-card` | Image (16:9, `--bn-radius-md`), category tag, title, description, meta row (read time + published date) | Homepage `#bn-tutorials-grid` |
 
 Shared card rules: `--bn-radius-lg`, `--bn-surface` background, `--bn-border` default border, hover state = border color shift + `translateY(-2px)` + (Tool Card only) `--bn-shadow-2`. All transitions use `--bn-transition-fast`.
+
+### 11a. Stat Block & Newsletter (v1.1 additions)
+
+| Component | Class | Contains | Rule |
+|---|---|---|---|
+| **Stat Block** | `.bn-stat` | Large number/value, label | Values must be verifiable/honest counts (e.g. "100+ Planned Tools," "7 Categories") — never a fabricated or vague metric (Master Spec Section 25, Brand Voice "never fabricate statistics"). Uses `--bn-fs-4xl`/`--bn-fw-bold` for the number, `--bn-text-secondary` for the label. |
+| **Newsletter** | `.bn-newsletter` | Heading, one-line benefit copy, email input + submit button (reuses `.bn-search-input` and `.bn-btn--primary` styles — no new input/button style) | No fabricated subscriber counts. Copy must match Brand Voice Guide's Newsletter CTA exactly. |
 
 ---
 
 ## 12. Navigation
 
-**Header** (`.bn-header`): sticky top, `--bn-surface` background, bottom border. Contains logo (left), primary nav links (center/right, hidden below 860px — mobile menu pattern is an open item, see Section 21), and header actions (theme toggle, future: search icon trigger) on the far right.
+**Header** (`.bn-header`): sticky top. At rest, `--bn-surface` background; once scrolled, switches to `--bn-glass-bg` + `backdrop-filter: blur(var(--bn-blur-md))` (the one approved use of the glass token, per Section 2.4). Bottom border throughout. Contains logo (left), primary nav links (center/right, visible from 860px up), and header actions (search-icon trigger, theme toggle) on the far right.
+
+**Mobile navigation** (below 860px): nav links collapse behind a hamburger button in the header-actions group, opening a full-width slide-down panel (`--bn-surface` background, `--bn-shadow-3`) containing the same links stacked vertically. This resolves the open item from Section 21 v1.0.
+
+**Search trigger:** on the homepage the search box is inline (Section 3 pattern below); on all other pages, the header's search icon opens the same search UI in an overlay/modal anchored under the header, reusing `.bn-search-box`/`.bn-search-results` unchanged — never a second, different search implementation.
 
 **Footer** (`.bn-footer`): four-column grid (brand+tagline, Categories, Company, Legal) collapsing to two columns under 760px, with a bottom bar (copyright + privacy trust line) separated by a top border.
 
@@ -353,10 +381,11 @@ Note: the homepage was built (previous session) before this Design System docume
 
 *(Tracked honestly rather than glossed over — resolve before the relevant build step.)*
 
-- Mobile navigation pattern (hamburger menu / off-canvas) not yet designed — needed before Step 2.
+- ~~Mobile navigation pattern~~ — resolved in v1.1, see Section 12 (hamburger + slide-down panel).
 - Breadcrumb component not yet built — required before Step 4 (Universal Tool Template), per Master Spec Section 8.
 - Dark mode persistence (`localStorage`) intentionally omitted from the homepage demo file — must be added when deployed live on Blogger.
 - Alert/Toast/Modal/Tabs components (listed in Master Spec Section 9's original component list) not yet designed — add here when first needed, likely during Step 4 or 6.
+- **Stat Block** component (Platform Statistics section) and **Newsletter** component newly introduced in the v1.1 homepage refresh — documented in Section 11a below; flagged here so their addition is visible in this log.
 
 ---
 
@@ -365,3 +394,4 @@ Note: the homepage was built (previous session) before this Design System docume
 | Version | Date | Change |
 |---|---|---|
 | 1.0 | {{fill in date}} | Initial Design System formalized from the homepage reference build and supplied design tokens |
+| 1.1 | {{fill in date}} | Added Section 2.4 (Gradient & Glass tokens) to support the premium homepage refresh — sticky glass header, single-accent gradient use. Added Tutorial Card optional `image` + `publishedDate` fields (Section 11) and Header mobile-nav + search-trigger pattern (Section 12). |
