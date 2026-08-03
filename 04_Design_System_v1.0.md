@@ -339,6 +339,20 @@ Component-level responsive overrides (e.g. a card grid's `minmax()` at different
 
 ---
 
+## 17a. XML Compliance (Blogger Publishing)
+
+Blogger's theme/template editor parses all pasted markup as **strict XML**, not lenient HTML. Every page built for this platform must satisfy the following before it's considered done — these are hard requirements, not style preferences, because a violation blocks publishing entirely rather than just looking wrong:
+
+1. **One root element only.** A pasted snippet may have exactly one top-level element. Comments may sit outside it, but if a page needs multiple sibling blocks (JSON-LD `<script>` tags, `<style>`, content `<div>`, logic `<script>`), wrap all of them in a single containing element.
+2. **No `--` inside comments.** XML comments (`<!-- -->`) forbid the two-character sequence `--` anywhere in their body — including CSS token names like `--bn-primary` written in prose. Refer to tokens without the leading double-dash inside comments (e.g. "the bn-primary token").
+3. **Self-close every void element.** `<input>`, `<br>`, `<img>`, `<meta>`, `<link>`, `<hr>` must be written as `<input .../>`, `<br/>`, etc. — HTML's "unclosed void element" convention is not valid XML.
+4. **No bare boolean attributes.** `hidden`, `required`, `disabled`, `checked`, `readonly`, `open`, `selected` must be written with an explicit value: `hidden="hidden"`, `required="required"`.
+5. **Escape every raw `&`.** In ordinary markup/text content, `&` must be written `&amp;`. **Exception — inline `<script>` blocks:** escaping `&`/`&&` there would corrupt real JavaScript (`&&` the logical operator), so instead wrap the entire script body in a CDATA section: `<script>//<![CDATA[ ... real, unescaped JS ... //]]></script>`. The `//` comment markers keep the CDATA delimiters harmless to the JS engine while the CDATA itself keeps the XML parser from trying to interpret the script's content as markup.
+
+**Verification before shipping any page:** parse the final snippet as XML (e.g. `xml.dom.minidom.parseString`) and syntax-check any extracted script content — both checks are cheap and catch 100% of what's listed above before it ever reaches Blogger's editor.
+
+---
+
 ## 18. Naming Convention
 
 - **CSS custom properties:** `--bn-{category}-{variant?}-{state?}`, e.g. `--bn-primary-hover`, `--bn-fs-2xl`, `--bn-space-6`. Always prefixed `bn-` to avoid collision with Blogger's own theme variables.
@@ -395,3 +409,4 @@ Note: the homepage was built (previous session) before this Design System docume
 |---|---|---|
 | 1.0 | {{fill in date}} | Initial Design System formalized from the homepage reference build and supplied design tokens |
 | 1.1 | {{fill in date}} | Added Section 2.4 (Gradient & Glass tokens) to support the premium homepage refresh — sticky glass header, single-accent gradient use. Added Tutorial Card optional `image` + `publishedDate` fields (Section 11) and Header mobile-nav + search-trigger pattern (Section 12). |
+| 1.2 | {{fill in date}} | Added Section 17a (XML Compliance) after two real Blogger publish failures on the homepage — single-root-element rule, comment `--` restriction, void-element self-closing, boolean attribute values, and the CDATA pattern for inline scripts. |
