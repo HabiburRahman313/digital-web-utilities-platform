@@ -57,7 +57,7 @@
 <link expr:href='data:blog.canonicalUrl' rel='canonical'/>
 </b:if>
 
-<!-- ======================= OPEN GRAPH & TWITTER CARDS ======================= -->
+<!-- ======================= OPEN GRAPH & TWITTER CARDS (Correction #2) ======================= -->
 <meta content='website' property='og:type'/>
 <meta expr:content='data:blog.title' property='og:site_name'/>
 <meta expr:content='data:blog.pageName' property='og:title'/>
@@ -74,7 +74,7 @@
 </b:if>
 <meta content='https://banynova.blogspot.com/og-image.png' name='twitter:image'/>
 
-<!-- ======================= JSON-LD STRUCTURED DATA ======================= -->
+<!-- ======================= JSON-LD STRUCTURED DATA (Correction #1) ======================= -->
 <b:if cond='data:blog.url == data:blog.homepageUrl'>
 <script type='application/ld+json'>
 {
@@ -233,6 +233,8 @@
 
   --bn-container-max: 1280px;
   --bn-content-max: 800px;
+
+  /* Additional CSS Tokens (Correction #9) */
   --bn-header-height: 65px;
   --bn-sidebar-width: 320px;
   --bn-z-dropdown: 100;
@@ -270,10 +272,10 @@
   --bn-shadow-4: 0 20px 25px -5px rgba(0,0,0,.7), 0 10px 10px -5px rgba(0,0,0,.5);
 }
 
-/* Selection Styling */
+/* Selection Styling (Correction #7) */
 ::selection {
   background: var(--bn-primary);
-  color: white;
+  color: #fff;
 }
 
 /* ==========================================================================
@@ -285,6 +287,7 @@ ul[class], ol[class] { list-style: none; padding: 0; }
 html:focus-within { scroll-behavior: smooth; }
 body { min-height: 100vh; text-rendering: optimizeSpeed; }
 img, picture, svg { display: block; max-width: 100%; }
+/* Image Default Height Auto (Correction #8) */
 img { height: auto; }
 input, button, textarea, select { font: inherit; color: inherit; }
 a { color: inherit; }
@@ -304,6 +307,7 @@ body {
   color: var(--bn-text-primary);
   background: var(--bn-bg);
   -webkit-font-smoothing: antialiased;
+  /* Optimized Body Transition (Correction #6) */
   transition: background-color var(--bn-transition-base), color var(--bn-transition-base);
 }
 h1, h2, h3, h4 { line-height: var(--bn-lh-tight); font-weight: var(--bn-fw-bold); color: var(--bn-text-primary); }
@@ -316,7 +320,7 @@ a { text-decoration: none; }
 code, pre, kbd { font-family: var(--bn-font-mono); }
 :focus-visible { outline: none; box-shadow: var(--bn-focus-ring); border-radius: var(--bn-radius-sm); }
 
-/* Skip link (accessibility helper) */
+/* Skip link (accessibility helper - Target Correction #4) */
 .bn-skip-link {
   position: absolute; top: -48px; left: var(--bn-space-4); z-index: 100;
   background: var(--bn-primary); color: var(--bn-text-on-primary);
@@ -420,6 +424,7 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
 ]]></b:skin>
 </head>
 <body>
+<!-- Skip link Target Updated to #main-content (Correction #4) -->
 <a class='bn-skip-link' href='#main-content'>Skip to content</a>
 
 <!-- Global live region for screen-reader announcements -->
@@ -435,6 +440,7 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
       <svg class='bn-logo-mark' height='26' viewBox='0 0 24 24' width='26'><rect height='18' rx='5' stroke='currentColor' stroke-width='2' width='18' x='3' y='3'/><path d='M8 12h5m0 0-2-2m2 2-2 2' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>
       <data:blog.title/>
     </a>
+    <!-- Navigation Links Updated to prevent 404s (Correction #5) -->
     <nav aria-label='Primary' class='bn-nav'>
       <a expr:href='data:blog.homepageUrl + &quot;#tools&quot;'>Tools</a>
       <a expr:href='data:blog.homepageUrl + &quot;#categories&quot;'>Categories</a>
@@ -465,6 +471,7 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
 </b:section>
 
 <!-- ============================== MAIN ============================== -->
+<!-- ID changed from bn-main to main-content (Correction #4) -->
 <main class='bn-main' id='main-content'>
 <b:section id='bn-main-section' name='Main' showaddelement='yes'>
 <b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog' version='2'>
@@ -679,6 +686,7 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
     initHeaderScroll: function () {
       var header = document.getElementById('bn-header');
       if (!header) { return; }
+      /* Scroll Handler Throttled (Correction #3) */
       var handleScroll = Banynova.utils.throttle(function () {
         if (window.scrollY > 10) {
           header.classList.add('is-scrolled');
