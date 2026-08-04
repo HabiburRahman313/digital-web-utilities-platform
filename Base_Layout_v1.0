@@ -1373,15 +1373,10 @@ Avoid commenting every individual selector.
 ---
 # 28. Maintainability
 Before adding new CSS ask:
-
 Can this reuse an existing component?
-
 Can this use a design token?
-
 Can this become a utility?
-
 Does it introduce duplication?
-
 Prefer extending existing systems over creating new ones.
 ---
 # 29. Validation Checklist
@@ -1438,15 +1433,10 @@ The goal is to ensure JavaScript remains:
 • Accessible
 • Performance-first
 JavaScript should enhance the user experience without becoming a dependency for core content.
-
 ---
-
 # 2. JavaScript Philosophy
-
 JavaScript controls behavior, not structure or presentation.
-
 Responsibilities include:
-
 • User interaction
 • State management
 • Theme switching
@@ -1460,493 +1450,249 @@ The website should remain functional even when JavaScript is unavailable.
 Core content must remain accessible.
 JavaScript should enhance functionality rather than replace it.
 Examples:
-
 ✓ Theme switching
-
 ✓ Search suggestions
-
 ✓ Lazy loading
-
 ✓ Animations
-
 These should improve the experience without preventing access to essential content.
-
 ---
-
 # 4. Module Architecture
-
 Organize JavaScript into small, focused modules.
-
 Recommended modules:
-
 • Theme
-
 • Storage
-
 • Navigation
-
 • Search
-
 • Accessibility
-
 • Performance
-
 • Utilities
-
 • Lazy Loader
-
 • Dialog
-
 • Analytics (future)
-
 Each module should have a single responsibility.
-
 Avoid monolithic scripts.
-
 ---
-
 # 5. Global Namespace
-
 Expose only one global namespace.
-
 Example:
-
 Banynova
-
 All modules should live under this namespace.
-
 Example:
-
 Banynova.theme
-
 Banynova.search
-
 Banynova.storage
-
 Banynova.utils
-
 Avoid polluting the global scope.
-
 ---
-
 # 6. Coding Style
-
 Use modern ES6+ syntax.
-
 Prefer:
-
 const
-
 let
-
 Arrow Functions
-
 Template Literals
-
 Optional Chaining
-
 Nullish Coalescing
-
 Avoid:
-
 var
-
 Implicit globals
-
 Legacy JavaScript patterns
-
 ---
-
 # 7. Event Handling
-
 Use event delegation whenever practical.
-
 Attach listeners to stable parent elements rather than individual children.
-
 Benefits:
-
 • Better performance
-
 • Reduced memory usage
-
 • Easier maintenance
-
 Always remove listeners when no longer needed.
-
 ---
-
 # 8. Event Listener Guidelines
-
 Prefer:
-
 addEventListener()
-
 Avoid:
-
 onclick
-
 onchange
-
 Inline event handlers
-
 Always use passive listeners for scrolling and touch interactions when appropriate.
-
 Example:
-
 { passive: true }
-
 ---
-
 # 9. Performance Principles
-
 JavaScript should minimize:
-
 • Layout recalculations
-
 • Forced synchronous reflows
-
 • Unnecessary DOM updates
-
 • Repeated queries
-
 Prefer caching DOM references.
-
 Batch updates whenever possible.
-
 ---
-
 # 10. DOM Manipulation
-
 Query the DOM once whenever practical.
-
 Avoid repeated:
-
 document.querySelector()
-
 inside loops.
-
 Cache frequently used elements.
-
 Minimize DOM mutations.
-
 ---
-
 # 11. Debounce
-
 Use debounce for user input events.
-
 Examples:
-
 • Search input
-
 • Window resize
-
 • Live validation
-
 Recommended delay:
-
 200–300 ms
-
 Debounce prevents unnecessary repeated execution.
-
 ---
-
 # 12. Throttle
-
 Use throttle for continuous events.
-
 Examples:
-
 • Scroll
-
 • Mouse move
-
 • Resize (when continuous updates are needed)
-
 Recommended interval:
-
 100 ms
-
 Never attach unthrottled scroll handlers.
-
 ---
-
 # 13. requestAnimationFrame
-
 Use requestAnimationFrame()
-
 for visual updates.
-
 Examples:
-
 • Animations
-
 • Scroll effects
-
 • Progress indicators
-
 Avoid using timers for rendering work.
-
 ---
-
 # 14. Lazy Loading
-
 Use native browser capabilities whenever possible.
-
 Preferred:
-
 loading="lazy"
-
 IntersectionObserver
-
 Avoid scroll-based lazy loading.
-
 Never lazy-load:
-
 • Hero images
-
 • LCP images
-
 • Above-the-fold content
-
 ---
-
 # 15. Theme Management
-
 Theme switching should:
-
 • Be instantaneous
-
 • Persist across sessions
-
 • Avoid layout shifts
-
 • Prevent FOUC
-
 Store only the selected theme.
-
 Avoid duplicating component styles.
-
 Prefer CSS variables over JavaScript styling.
-
 ---
-
 # 16. Storage
-
 Use localStorage only for lightweight preferences.
-
 Examples:
-
 • Theme
-
 • User settings
-
 • UI preferences
-
 Do not store:
-
 • Sensitive information
-
 • Large datasets
-
 • Temporary DOM state
-
 Always validate stored values before use.
-
 ---
-
 # 17. Search Architecture
-
 Search should be modular and reusable.
-
 Recommended flow:
-
 Input
-
 ↓
-
 Normalize Query
-
 ↓
-
 Search Index
-
 ↓
-
 Rank Results
-
 ↓
-
 Render Results
-
 ↓
-
 Keyboard Navigation
-
 ↓
-
 Selection
-
 Search logic should remain independent of UI rendering.
-
 ---
-
 # 18. Search Performance
-
 Avoid searching the DOM directly.
-
 Instead:
-
 • Build an in-memory index
-
 • Normalize strings once
-
 • Cache searchable data
-
 Use debounce to reduce unnecessary searches.
-
 ---
-
 # 19. Accessibility
-
 Every JavaScript feature should support:
-
 • Keyboard navigation
-
 • Screen readers
-
 • Visible focus
-
 • Reduced motion
-
 • ARIA updates where appropriate
-
 JavaScript should never reduce accessibility.
-
 ---
-
 # 20. Error Handling
-
 Handle unexpected situations gracefully.
-
 Avoid uncaught exceptions.
-
 Log useful debugging information during development.
-
 Fail gracefully in production.
-
 ---
-
 # 21. Async Operations
-
 Use:
-
 async / await
-
 instead of nested callbacks.
-
 Always handle:
-
 try
-
 catch
-
 finally
-
 Avoid callback pyramids.
-
 ---
-
 # 22. Network Requests
-
 Minimize network requests.
-
 Cache reusable data.
-
 Avoid duplicate requests.
-
 Cancel obsolete requests when appropriate.
-
 Future APIs should support graceful failure.
-
 ---
-
 # 23. Security
-
 Never trust client-side input.
-
 Always sanitize:
-
 • Search queries
-
 • URL parameters
-
 • Dynamic HTML
-
 Avoid:
-
 eval()
-
 new Function()
-
 Unsafe HTML injection
-
 Prefer:
-
 textContent
-
 instead of
-
 innerHTML
-
 unless sanitization is guaranteed.
-
 ---
-
 # 24. Motion Performance
-
 JavaScript should never animate layout-triggering properties.
-
 Prefer:
-
 transform
-
 opacity
-
 Let CSS handle animations whenever possible.
-
 JavaScript should trigger state changes—not frame-by-frame animations.
-
 ---
-
 # 25. Memory Management
-
 Prevent memory leaks.
-
 Remove:
-
 • Event listeners
-
 • Timers
-
 • Observers
-
 • References to removed elements
-
 Unused objects should become eligible for garbage collection.
-
 ---
-
 # 26. Utilities
-
 Shared logic belongs inside:
-
 Banynova.utils
-
 Examples:
-
 • debounce()
-
 • throttle()
 
 • clamp()
@@ -4840,208 +4586,109 @@ Users should be able to understand the tool, complete their task, and discover r
 Every tool page should follow a consistent architecture that supports accessibility, performance, SEO, scalability, and long-term maintainability, ensuring the platform can grow without requiring fundamental structural changes.
 # End of Part 10
 # ==========================================================================
-# ==========================================================================
 # BANYNOVA ENGINEERING STANDARDS
 # Part 11 — Homepage Standards
 # Version: 1.0
-# ==========================================================================
-
 # 1. Purpose
 
 This document defines the engineering and design standards for the Banynova Homepage.
 
 The Homepage is the primary entry point to the platform and should clearly communicate the product, guide users to relevant tools, and support long-term scalability.
-
 Every homepage should be:
-
 • Fast
-
 • Accessible
-
 • SEO-friendly
-
 • Responsive
-
 • Discoverable
-
 • Conversion-focused
-
 ---
-
 # 2. Homepage Philosophy
-
 The homepage should answer three questions within the first few seconds:
-
 • What is Banynova?
-
 • What can users do here?
-
 • Where should users go next?
-
 The homepage should prioritize clarity over decoration and functionality over complexity.
-
 ---
-
 # 3. Homepage Objectives
-
 Primary objectives:
-
 • Introduce Banynova
-
 • Encourage tool discovery
-
 • Support search
-
 • Highlight popular categories
-
 • Increase user engagement
-
 • Improve SEO
-
 • Drive internal navigation
-
 Every section should support one or more of these objectives.
-
 ---
-
 # 4. Recommended Homepage Layout
-
 Recommended page order:
-
 1. Header
-
 2. Hero
-
 3. Search
-
 4. Featured Categories
-
 5. Popular Tools
-
 6. Featured Tutorials
-
 7. Platform Statistics
-
 8. Why Choose Banynova
-
 9. Call-to-Action (CTA)
-
 10. Footer
-
 Keep the layout consistent and easy to scan.
-
 ---
-
 # 5. Header
-
 The homepage header should include:
-
 • Logo
-
 • Primary Navigation
-
 • Search Shortcut (optional)
-
 • Theme Toggle
-
 • Mobile Menu
-
 Header behavior:
-
 ✓ Responsive
-
 ✓ Keyboard accessible
-
 ✓ Sticky (optional)
-
 ✓ Lightweight
-
 Avoid overcrowding the header with secondary links.
-
 ---
-
 # 6. Hero Section
-
 The Hero should immediately communicate Banynova's value.
-
 Recommended content:
-
 • H1 headline
-
 • Short description
-
 • Primary CTA
-
 • Secondary CTA
-
 • Hero illustration or mockup
-
 The Hero should remain visually clean and concise.
-
 ---
-
 # 7. Search
-
 Homepage search is a primary navigation feature.
-
 Requirements:
-
 ✓ Prominently placed
-
 ✓ Keyboard accessible
-
 ✓ Instant suggestions
-
 ✓ Debounced input
-
 ✓ Mobile-friendly
-
 Search should help users quickly find tools, categories, tutorials, and documentation.
-
 ---
-
 # 8. Featured Categories
-
 Display major tool categories.
-
 Recommended:
-
 6–12 categories
-
 Each category card should include:
-
 • Icon
-
 • Category name
-
 • Short description
-
 • Tool count (optional)
-
 Categories should be visually consistent and reusable.
-
 ---
-
 # 9. Popular Tools
-
 Highlight frequently used tools.
-
 Recommended:
-
 8–12 tool cards
-
 Each card should display:
-
 • Icon
-
 • Tool name
-
 • Short description
-
 • Category
-
 • Optional badges (New, Popular, Updated)
-
 Use reusable card components.
 ---
 # 10. Featured Tutorials
@@ -5667,235 +5314,120 @@ Verify:
 • Theme switching
 
 Avoid browser-specific implementations whenever possible.
-
 ---
-
 # 11. Mobile Testing
-
 Test on multiple viewport sizes.
-
 Verify:
-
 ✓ Responsive layout.
-
 ✓ Touch-friendly controls.
-
 ✓ Navigation.
-
 ✓ Search.
-
 ✓ Forms.
-
 ✓ Dialogs.
-
 ✓ Images.
-
 ✓ Typography.
-
 ✓ No horizontal scrolling.
-
 ✓ Comfortable touch targets.
-
 Mobile performance should receive the same priority as desktop.
-
 ---
-
 # 12. Theme Verification
-
 Verify:
-
 ✓ Light Theme.
-
 ✓ Dark Theme.
-
 ✓ Theme persistence.
-
 ✓ No flash of incorrect theme.
-
 ✓ Accessible contrast in both themes.
-
 ✓ Components render consistently.
-
 ---
-
 # 13. Motion Verification
-
 Verify:
-
 ✓ GPU-friendly animations.
-
 ✓ No layout-triggering animations.
-
 ✓ Hover effects remain subtle.
-
 ✓ Motion never delays interaction.
-
 ✓ prefers-reduced-motion is respected.
-
 ✓ Continuous animations can be disabled.
-
 Animations should enhance usability rather than distract from it.
-
 ---
-
 # 14. Security Review
-
 Verify:
-
 ✓ User input is sanitized.
-
 ✓ No unsafe HTML injection.
-
 ✓ No use of eval().
-
 ✓ Sensitive information is never stored in localStorage.
-
 ✓ External links use appropriate security attributes when opening new tabs.
-
 ✓ Dependencies are reviewed.
-
 Platform limitations (such as Blogger-managed security headers) should be documented where applicable.
-
 ---
-
 # 15. Content Review
-
 Verify:
-
 ✓ Grammar reviewed.
-
 ✓ Spelling reviewed.
-
 ✓ Consistent terminology.
-
 ✓ Helpful instructions.
-
 ✓ Accurate documentation.
-
 ✓ Updated screenshots (when applicable).
-
 ✓ No placeholder text.
-
 ✓ No Lorem Ipsum.
-
 ---
-
 # 16. Future Scalability Review
-
 Verify:
-
 ✓ Components remain reusable.
-
 ✓ Modules remain independent.
-
 ✓ Architecture supports future growth.
-
 ✓ New pages follow existing standards.
-
 ✓ No page-specific hacks.
-
 ✓ Core layouts remain backward-compatible.
-
 ✓ Future integrations will not require structural redesign.
-
 The component-first architecture should support incremental platform growth.
-
 ---
-
 # 17. Deployment Checklist
-
 Before deployment:
-
 ✓ Final code review completed.
-
 ✓ Performance audit passed.
-
 ✓ Accessibility audit passed.
-
 ✓ SEO audit passed.
-
 ✓ Browser testing completed.
-
 ✓ Mobile testing completed.
-
 ✓ Structured data validated.
-
 ✓ Sitemap regenerated or verified.
-
 ✓ Robots.txt reviewed.
-
 ✓ Version number updated (if applicable).
-
 ✓ Backup created.
-
 ✓ Deployment approved.
-
 ✓ Production environment verified.
-
 ---
-
 # 18. Post-Deployment Verification
-
 Immediately after deployment:
-
 ✓ Homepage loads correctly.
-
 ✓ Navigation works.
-
 ✓ Search functions correctly.
-
 ✓ Tool pages load.
-
 ✓ Theme switching works.
-
 ✓ Images load properly.
-
 ✓ No JavaScript errors.
-
 ✓ No broken internal links.
-
 ✓ Structured data remains valid.
-
 ✓ Analytics (if enabled) is receiving data.
-
 ---
-
 # 19. Continuous Improvement
-
 After each release:
-
 • Review performance metrics.
-
 • Monitor accessibility issues.
-
 • Analyze user feedback.
-
 • Fix regressions promptly.
-
 • Update engineering documentation.
-
 • Refactor when justified.
-
 Engineering standards should evolve alongside the platform without sacrificing backward compatibility.
-
 ---
-
 # 20. Release Approval Criteria
-
 A release is considered production-ready only when:
-
 ✓ Engineering Standards are satisfied.
-
 ✓ Quality Assurance is completed.
-
 ✓ Accessibility meets WCAG 2.2 AA.
-
 ✓ Performance targets are achieved.
-
 ✓ SEO requirements are validated.
-
 ✓ No critical or high-severity issues remain.
-
 If any critical requirement fails, deployment should be postponed until the issue is resolved.
 ---
 # 21. Overall Production Principle
