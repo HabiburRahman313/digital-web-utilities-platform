@@ -1,766 +1,5905 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!--
-  ============================================================================
-  BANYNOVA — BASE LAYOUT (Blogger Theme Foundation)
-  ============================================================================
-  Governed by Documentation_Governance_v1.0.md and Design_System_v1.0.md.
+BASE LAYOUT
+# BANYNOVA ENGINEERING STANDARDS
+# Part 1 — Core Engineering Principles
+# Version: 1.0
+# 1. Purpose
+This document defines the core engineering principles for Banynova.
+Its purpose is to establish a consistent foundation for designing, developing, maintaining, and scaling the entire platform while ensuring high standards of performance, accessibility, security, maintainability, and user experience.
+Every future module—including the Homepage, Tool Pages, Category Pages, Blog, Search, Tutorials, and shared components—must follow these engineering standards.
+---
+# 2. Project Vision
+Banynova aims to become a modern browser-based platform offering high-quality online tools that are:
+• Fast
+• Reliable
+• Accessible
+• Privacy-focused
+• Mobile-friendly
+• Free to use
+Every engineering decision should reinforce these values.
+---
+# 3. Engineering Philosophy
+The engineering philosophy of Banynova is built on six core principles.
+## 3.1 Performance First
+Performance is considered a feature rather than an optimization.
+Every page should load quickly, remain responsive during interaction, and minimize unnecessary CPU, memory, and network usage.
+Engineering decisions should always prioritize rendering efficiency and Core Web Vitals.
+---
+## 3.2 Privacy by Design
+User privacy is a core product principle.
+Whenever technically possible:
+• Process data locally within the browser.
+• Avoid unnecessary network requests.
+• Do not collect personal information without a legitimate purpose.
+• Minimize third-party dependencies.
+Privacy should be considered during architecture, implementation, and future feature development.
+---
+## 3.3 Simplicity Over Complexity
+Prefer simple, readable, and maintainable solutions over unnecessary abstraction.
+Avoid introducing additional complexity unless it provides measurable long-term benefits.
+Simple code is easier to understand, debug, maintain, and extend.
+---
+## 3.4 Component-First Architecture
 
-  WHAT THIS FILE IS
-  This is a COMPLETE, standalone Blogger theme file — not a fragment to
-  paste inside an existing theme. It contains exactly one b:skin block plus
-  a correct html/head/body skeleton, one Header section and one Main section
-  using Blogger's own Blog widget, and a Footer section.
+All user interface elements should be designed as reusable components.
+Avoid creating one-off layouts or page-specific implementations whenever a reusable component can be used instead.
+Examples include:
+• Buttons
+• Cards
+• Badges
+• Forms
+• Navigation
+• Search Components
+• Dialogs
+• Alerts
+• Footers
 
-  BEFORE YOU TOUCH ANYTHING IN BLOGGER
-  1. Theme -> Backup/Restore -> Download theme. Save that file somewhere
-     safe. This is the single most important step — it is the undo button.
-  2. Theme -> Edit HTML -> select all existing content -> delete it ->
-     paste this entire file in its place.
-  3. Use the Preview button BEFORE clicking Save, and check the homepage,
-     a normal post, and mobile width all look right.
-  4. Only click Save once preview looks correct.
-  If anything goes wrong after saving, restore the backup from step 1 via
-  Theme -> Backup/Restore -> Upload the downloaded file.
+Consistency improves maintainability and scalability.
+---
+## 3.5 Progressive Enhancement
+The website should remain functional even if advanced browser features are unavailable.
+Core functionality must not depend entirely on JavaScript, animations, or optional APIs.
+Enhancements should improve the experience without preventing users from accessing essential functionality.
+---
+## 3.6 Accessibility by Default
+Accessibility is not an optional enhancement.
+Every feature should be designed to support:
+• Keyboard navigation
+• Screen readers
+• High contrast
+• Reduced motion preferences
+• Responsive layouts
+• Semantic HTML
 
-  WHAT STILL NEEDS TO BE FILLED IN
-  - The post template ("post" includable) is intentionally minimal — the
-    Universal Tool Template (Roadmap Step 4) will extend it once tool pages
-    are being built; for now it renders a plain, readable article.
-  ============================================================================
--->
-<html b:css='false' b:defaultwidgetversion='2' b:layoutsVersion='3' b:responsive='true' expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+Accessibility requirements should be considered during design rather than added afterwards.
+---
+# 4. Technology Stack
+The primary technology stack consists of:
+• Blogger XML
+• HTML5
+• CSS3
+• Vanilla JavaScript (ES6+)
+Avoid introducing external frameworks unless a clear technical justification exists.
+---
+# 5. Framework Policy
+The platform should remain lightweight.
+Avoid using:
+• Bootstrap
+• Tailwind CSS
+• jQuery
+• React
+• Vue
+• Angular
+Reusable internal components should replace framework dependencies whenever practical.
+---
+# 6. Browser Support
+Target support for:
+• Latest Chrome
+• Latest Edge
+• Latest Firefox
+• Latest Safari
+Older browsers should receive functional content through graceful degradation where feasible.
+---
+# 7. Design Principles
+Every interface should follow these principles:
+• Clear visual hierarchy
+• Consistent spacing
+• Readable typography
+• Predictable interactions
+• Responsive layouts
+• Minimal visual clutter
+Interfaces should emphasize clarity over decoration.
+---
+# 8. Performance Principles
+Performance should be considered during every stage of development.
+General guidelines:
+• Minimize render-blocking resources.
+• Reduce unnecessary DOM complexity.
+• Prefer CSS over JavaScript where practical.
+• Optimize images and SVGs.
+• Reuse components instead of duplicating markup.
+• Use lazy loading appropriately.
+• Avoid expensive layout calculations.
+Performance should be measured continuously rather than treated as a final optimization step.
+# 9. Accessibility Principles
+Target compliance with WCAG 2.2 Level AA.
+General rules:
+• Use semantic HTML.
+• Preserve logical heading hierarchy.
+• Provide descriptive alternative text.
+• Ensure keyboard accessibility.
+• Maintain visible focus indicators.
+• Respect user motion preferences.
+• Avoid relying solely on color to communicate information.
+Accessibility should remain compatible with future components and layouts.
+---
+# 10. Security Principles
+Security should be considered throughout development.
+General guidelines:
+• Validate all user input.
+• Escape dynamic content appropriately.
+• Avoid unnecessary inline scripts.
+• Minimize third-party scripts.
+• Prefer HTTPS resources.
+• Respect Blogger platform security limitations.
+
+Security improvements should never compromise usability.
+# 11. SEO Principles
+Every page should support search engine optimization by default.
+Include:
+• Meaningful page titles
+• Meta descriptions
+• Canonical URLs
+• Open Graph metadata
+• Twitter Card metadata
+• Structured Data (JSON-LD)
+SEO should be integrated into the development process rather than added after implementation.
+---
+# 12. Scalability Principles
+
+The platform should scale without requiring architectural redesign.
+Design for future support of:
+• Hundreds of tools
+• Multiple categories
+• Tutorials
+• Blog posts
+• Search
+• Documentation
+• Shared UI components
+Core architecture should remain stable as new modules are introduced.
+---
+# 13. Code Quality Standards
+All code should be:
+• Readable
+• Consistent
+• Reusable
+• Maintainable
+• Well documented
+
+Avoid:
+• Duplicate code
+• Unused code
+• Magic numbers
+• Deep nesting
+• Inconsistent naming
+
+Code reviews should prioritize clarity over cleverness.
+---
+# 14. Maintainability Principles
+Every implementation should be easy to modify in the future.
+Before adding new code, consider:
+• Can this be reused?
+• Will this scale?
+• Does it follow existing patterns?
+• Is it easy to understand?
+• Will future developers recognize its purpose?
+
+Maintainability is a long-term investment.
+---
+# 15. Engineering Checklist
+Before implementing any feature, verify:
+✓ Performance impact has been considered.
+✓ Accessibility requirements are satisfied.
+
+✓ Responsive behavior has been tested.
+✓ Reusable components are preferred.
+✓ Naming conventions are followed.
+✓ SEO requirements are implemented.
+✓ Security considerations have been reviewed.
+✓ Code remains readable and maintainable.
+✓ Future scalability has been considered.
+
+---
+# 16. Overall Engineering Principle
+Every engineering decision should contribute to a platform that is:
+• Fast by Design
+• Private by Default
+• Free for Everyone
+The foundation should follow a component-first architecture that supports incremental growth without requiring structural redesign.
+Long-term maintainability, consistency, accessibility, performance, and scalability should always take precedence over short-term convenience.
+# End of Part 1
+# BANYNOVA ENGINEERING STANDARDS
+# Part 2 — Blogger XML Standards
+# Version: 1.0
+# ==========================================================================
+
+# 1. Purpose
+This document defines the XML development standards for all Blogger templates used by Banynova.
+Its purpose is to ensure every template remains:
+• Consistent
+• Maintainable
+• Scalable
+• Accessible
+• Performance-focused
+All future XML templates must follow these standards.
+---
+# 2. Base Template Philosophy
+The Base_Layout.xml is the permanent foundation of the Banynova platform.
+It should remain stable while future modules integrate into it.
+Examples:
+• Homepage
+• Tool Pages
+• Category Pages
+• Blog
+• Search
+• Tutorials
+• Static Pages
+• Legal Pages
+Future templates should extend the foundation rather than replace or duplicate it.
+---
+# 3. XML Organization
+Maintain a predictable structure throughout the document.
+Recommended order:
+1. XML Declaration
+2. Blogger Namespace
+3. Head
+4. SEO Metadata
+5. CSS Variables
+6. Base Styles
+7. Layout Styles
+8. Components
+9. Utility Classes
+10. Body
+11. Header
+12. Navigation
+13. Main Content
+14. Footer
+15. JavaScript Modules
+16. Initialization Scripts
+Do not mix unrelated sections.
+---
+# 4. Naming Convention
+Use a consistent naming convention.
+Recommended prefix:
+bn-
+Examples:
+bn-header
+bn-nav
+bn-main
+bn-footer
+bn-card
+bn-btn
+bn-grid
+bn-search
+bn-modal
+
+Avoid generic names such as:
+container
+item
+wrapper
+box
+content
+
+Names should describe purpose rather than appearance.
+---
+# 5. Template Sections
+Separate major template sections with clear comments.
+Example:
+==================================================================
+HEADER
+==================================================================
+
+==================================================================
+NAVIGATION
+==================================================================
+
+==================================================================
+MAIN CONTENT
+==================================================================
+
+==================================================================
+FOOTER
+==================================================================
+
+Large templates should remain easy to navigate.
+---
+# 6. XML Formatting
+Use consistent formatting.
+Rules:
+
+• Two-space indentation
+• Consistent line spacing
+• One attribute per line when elements become long
+• Closing tags aligned correctly
+• No unnecessary whitespace
+
+Readable XML is easier to maintain.
+---
+# 7. Head Section
+The <head> should contain only essential resources.
+
+Recommended order:
+• Charset
+• Viewport
+• Theme Color
+• Color Scheme
+• Canonical
+• Title
+• Meta Description
+• Open Graph
+• Twitter Cards
+• Icons
+• Structured Data
+• CSS
+• Critical JavaScript
+Avoid unnecessary external resources.
+---
+# 8. Metadata Standards
+Every page should include:
+• Title
+• Description
+• Canonical URL
+• Robots
+• Open Graph
+• Twitter Cards
+
+Homepage should additionally include:
+• Organization Schema
+• WebSite Schema
+• SearchAction
+• WebPage Schema
+
+Tool pages should include:
+• SoftwareApplication
+• FAQPage
+• BreadcrumbList
+Blog posts should include:
+• Article
+
+---
+# 9. CSS Placement
+Global CSS belongs inside the Base Layout.
+Avoid placing CSS inside individual widgets whenever possible.
+Organize CSS into:
+• Design Tokens
+• Reset
+• Typography
+• Layout
+• Components
+• Utilities
+• Responsive Rules
+Avoid duplicate declarations.
+# 10. JavaScript Placement
+Keep JavaScript modular.
+Recommended modules:
+• Theme
+• Storage
+• Utilities
+• Accessibility
+• Performance
+• Search
+• Navigation
+
+Avoid large monolithic scripts.
+Each module should have a single responsibility.
+---# 11. Blogger Expressions
+Use Blogger expressions consistently.
+
+Prefer:
+<data:view.title/>
+instead of duplicated literal values.
+Use Blogger variables whenever available.
+Avoid repeating the same expression multiple times.
+---
+# 12. Conditional Rendering
+Use Blogger conditions only when necessary.
+Example:
+Homepage
+Post Page
+Static Page
+Search Page
+Archive Page
+Keep nested conditions shallow.
+Deep conditional nesting reduces readability.
+---
+# 13. Includes
+Extract reusable sections into includes whenever practical.
+Examples:
+Header
+Footer
+Navigation
+Search
+Sidebar
+Pagination
+This improves reuse and simplifies maintenance.
+---
+# 14. Widget Strategy
+Widgets should have a single responsibility.
+Examples:
+Navigation Widget
+Search Widget
+Footer Widget
+Announcement Widget
+Avoid combining unrelated functionality into one widget.
+# 15. Image Standards
+Always include:
+loading="lazy"
+decoding="async"
+for below-the-fold images.
+Do not lazy-load:
+• Hero Images
+• LCP Images
+• Above-the-fold visuals
+
+Prefer responsive image sizes where supported.
+---
+# 16. SVG Standards
+Inline SVG should be used for:
+• Logo
+• Icons
+• UI Graphics
+
+If the same SVG is reused frequently, consider defining it once with:
+<symbol>
+and referencing it using:
+<use>
+When the SVG appears only a few times, reuse is optional and primarily improves maintainability rather than performance.
+---
+# 17. Theme Initialization
+Initialize the saved theme before CSS is parsed.
+Apply the data-theme attribute as early as possible.
+Goals:
+• Prevent FOUC
+• Prevent layout shifts
+• Preserve user preference
+---
+# 18. Performance Rules
+Avoid unnecessary work.
+Recommended practices:
+• Minimize DOM depth
+• Reduce duplicate markup
+• Reuse components
+• Use throttled scroll handlers
+• Use passive event listeners
+• Defer non-critical JavaScript
+
+Performance should be considered throughout development.
+# 19. Accessibility Rules
+Every template should support:
+• Semantic HTML
+• Keyboard navigation
+• Screen readers
+• Visible focus indicators
+• Proper heading hierarchy
+• Reduced motion preferences
+
+Accessibility is a default requirement.
+---
+# 20. XML Comments
+Use comments to explain architecture rather than obvious code.
+Good:
+"Initialize theme before rendering to avoid FOUC."
+Avoid:
+"Button starts here."
+Comments should explain intent, not implementation.
+---
+# 21. Error Prevention
+Avoid:
+• Duplicate IDs
+• Inline styles
+• Inline event handlers
+• Hardcoded URLs
+• Hardcoded colors
+• Magic values
+
+Prefer reusable variables and configuration.
+---
+# 22. Future Compatibility
+Design XML templates so future modules can integrate without modifying the foundation.
+Examples:
+
+Homepage
+Tool Directory
+Categories
+Search
+Documentation
+Blog
+Legal Pages
+The Base Layout should remain backward-compatible as the platform grows.
+---
+# 23. Code Review Checklist
+Before publishing any XML template, verify:
+✓ XML validates correctly.
+✓ No duplicate IDs exist.
+✓ Semantic HTML is preserved.
+✓ Accessibility requirements are met.
+✓ Metadata is complete.
+✓ Structured data is valid.
+✓ CSS remains modular.
+✓ JavaScript is modular.
+✓ Performance best practices are followed.
+✓ Naming conventions are consistent.
+✓ The template integrates cleanly with the Base_Layout.xml architecture.
+---
+# 24. Overall XML Principle
+Every Blogger XML template should prioritize:
+• Clarity
+• Consistency
+• Reusability
+• Accessibility
+• Performance
+• Maintainability
+
+The Base_Layout.xml should remain the single source of truth for shared architecture, while individual templates extend it through reusable components rather than duplicating functionality.
+# End of Part 2
+# BANYNOVA ENGINEERING STANDARDS	
+####
+Part 3 — HTML Standards
+# Version: 1.0
+# ==========================================================================
+# 1. Purpose
+This document defines the HTML development standards for Banynova.
+The goal is to ensure every page is:
+• Semantic
+• Accessible
+• Maintainable
+• Responsive
+• SEO-friendly
+• Performance-optimized
+
+These standards apply to every page across the platform, including the Homepage, Tool Pages, Category Pages, Blog, Search, Documentation, and Static Pages.
+# 2. HTML Philosophy
+HTML defines the structure and meaning of content.
+Never use HTML solely for visual presentation.
+CSS controls appearance.
+JavaScript controls behavior.
+Maintain a clear separation of concerns.
+---
+# 3. HTML Version
+Always use HTML5.
+Start every page with:
+<!DOCTYPE html>
+Use:
+<html lang="en">
+Replace the language code when creating localized versions.
+---
+# 4. Semantic HTML
+Always prefer semantic elements over generic containers.
+
+Preferred elements:
+<header>
+<nav>
+<main>
+<section>
+<article>
+<aside>
+<footer>
+<form>
+<figure>
+<figcaption>
+Avoid replacing semantic elements with unnecessary <div> tags.
+Semantic HTML improves accessibility, SEO, and maintainability.
+---
+# 5. Document Structure
+Recommended order:
+<html>
 <head>
-<meta charset='UTF-8'/>
-<meta content='width=device-width, initial-scale=1' name='viewport'/>
-<title><data:blog.pageTitle/></title>
-
-<!-- ======================= SEO META ======================= -->
-<b:if cond='data:blog.metaDescription'>
-<meta expr:content='data:blog.metaDescription' name='description'/>
-</b:if>
-
-<!-- theme-color: matches the bn-primary brand blue token -->
-<meta content='#2a6df4' name='theme-color'/>
-
-<!-- robots: keep homepage/posts/pages indexed; noindex only label/search
-     result pages, which are thin/duplicate content by nature -->
-<b:if cond='data:blog.searchLabel OR data:blog.searchQuery'>
-<meta content='noindex, follow' name='robots'/>
-<b:else/>
-<meta content='index, follow' name='robots'/>
-</b:if>
-
-<meta content='Banynova' name='author'/>
-<b:if cond='data:blog.url == data:blog.homepageUrl'>
-<link expr:href='data:blog.homepageUrl' rel='canonical'/>
-<b:else/>
-<link expr:href='data:blog.canonicalUrl' rel='canonical'/>
-</b:if>
-
-<!-- ======================= OPEN GRAPH & TWITTER CARDS (Correction #2) ======================= -->
-<meta content='website' property='og:type'/>
-<meta expr:content='data:blog.title' property='og:site_name'/>
-<meta expr:content='data:blog.pageName' property='og:title'/>
-<meta expr:content='data:blog.canonicalUrl' property='og:url'/>
-<b:if cond='data:blog.metaDescription'>
-<meta expr:content='data:blog.metaDescription' property='og:description'/>
-</b:if>
-<meta content='https://banynova.blogspot.com/og-image.png' property='og:image'/>
-
-<meta content='summary_large_image' name='twitter:card'/>
-<meta expr:content='data:blog.pageName' name='twitter:title'/>
-<b:if cond='data:blog.metaDescription'>
-<meta expr:content='data:blog.metaDescription' name='twitter:description'/>
-</b:if>
-<meta content='https://banynova.blogspot.com/og-image.png' name='twitter:image'/>
-
-<!-- ======================= JSON-LD STRUCTURED DATA (Correction #1) ======================= -->
-<b:if cond='data:blog.url == data:blog.homepageUrl'>
-<script type='application/ld+json'>
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "<data:blog.homepageUrl/>#organization",
-      "name": "<data:blog.title/>",
-      "url": "<data:blog.homepageUrl/>"
-    },
-    {
-      "@type": "WebSite",
-      "@id": "<data:blog.homepageUrl/>#website",
-      "url": "<data:blog.homepageUrl/>",
-      "name": "<data:blog.title/>",
-      "publisher": { "@id": "<data:blog.homepageUrl/>#organization" },
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "<data:blog.homepageUrl/>search?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    },
-    {
-      "@type": "WebPage",
-      "@id": "<data:blog.homepageUrl/>#webpage",
-      "url": "<data:blog.homepageUrl/>",
-      "name": "<data:blog.title/>",
-      "isPartOf": { "@id": "<data:blog.homepageUrl/>#website" }
-    }
-  ]
-}
-</script>
-<b:else/>
-<b:if cond='data:blog.pageType in ["article", "item"]'>
-<script type='application/ld+json'>
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "SoftwareApplication",
-      "name": "<data:blog.pageName/>",
-      "operatingSystem": "Any",
-      "applicationCategory": "DeveloperApplication",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "<data:blog.homepageUrl/>"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "<data:blog.pageName/>",
-          "item": "<data:blog.canonicalUrl/>"
-        }
-      ]
-    }
-  ]
-}
-</script>
-</b:if>
-</b:if>
-
-<!-- ======================= FAVICON ======================= -->
-<link href='https://banynova.blogspot.com/favicon.ico' rel='icon' type='image/x-icon'/>
-
-<!-- ======================= NO-FLASH THEME INIT ======================= -->
-<script>//<![CDATA[
-(function () {
-  try {
-    var saved = window.localStorage.getItem('bn-theme');
-    var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    var mode = saved || (prefersDark ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', mode);
-  } catch (e) {
-    document.documentElement.setAttribute('data-theme', 'light');
-  }
-})();
-//]]></script>
-
-<b:include data='blog' name='all-head-content'/>
-
-<!-- ======================= THE ONE AND ONLY SKIN ======================= -->
-<b:skin><![CDATA[
-
-/* ==========================================================================
-   1. DESIGN TOKENS — see Design_System_v1.0.md Sections 2-8 (source of truth)
-   ========================================================================== */
-:root {
-  --bn-primary-hsl: 220, 90%, 56%;
-  --bn-primary: hsl(var(--bn-primary-hsl));
-  --bn-primary-hover: hsl(220, 90%, 48%);
-  --bn-primary-active: hsl(220, 90%, 40%);
-  --bn-primary-subtle: hsl(220, 90%, 96%);
-  --bn-secondary-hsl: 215, 16%, 47%;
-  --bn-secondary: hsl(var(--bn-secondary-hsl));
-  --bn-secondary-subtle: hsl(215, 16%, 94%);
-  --bn-accent-hsl: 262, 83%, 58%;
-  --bn-accent: hsl(var(--bn-accent-hsl));
-  --bn-success: hsl(142, 71%, 45%);
-  --bn-success-subtle: hsl(142, 71%, 95%);
-  --bn-warning: hsl(38, 92%, 50%);
-  --bn-warning-subtle: hsl(38, 92%, 95%);
-  --bn-danger: hsl(354, 70%, 54%);
-  --bn-danger-hover: hsl(354, 70%, 45%);
-  --bn-danger-subtle: hsl(354, 70%, 95%);
-  --bn-info: hsl(199, 89%, 48%);
-  --bn-info-subtle: hsl(199, 89%, 95%);
-
-  --bn-bg: hsl(220, 20%, 98%);
-  --bn-surface: hsl(0, 0%, 100%);
-  --bn-surface-raised: hsl(0, 0%, 100%);
-  --bn-border: hsl(220, 13%, 88%);
-  --bn-border-strong: hsl(220, 13%, 72%);
-  --bn-text-primary: hsl(220, 24%, 12%);
-  --bn-text-secondary: hsl(220, 12%, 42%);
-  --bn-text-tertiary: hsl(220, 9%, 60%);
-  --bn-text-on-primary: hsl(0, 0%, 100%);
-  --bn-disabled-bg: hsl(220, 13%, 93%);
-  --bn-disabled-text: hsl(220, 9%, 60%);
-
-  --bn-focus-ring: 0 0 0 3px hsla(var(--bn-primary-hsl), 0.35);
-
-  --bn-gradient-primary: linear-gradient(135deg, hsl(220,90%,56%), hsl(262,83%,58%));
-  --bn-gradient-subtle: linear-gradient(135deg, hsl(220,90%,97%), hsl(262,83%,97%));
-  --bn-glass-bg: hsla(0,0%,100%,0.72);
-  --bn-blur-md: 12px;
-
-  --bn-font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  --bn-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  --bn-fs-xs: 0.75rem; --bn-fs-sm: 0.875rem; --bn-fs-base: 1rem; --bn-fs-lg: 1.125rem;
-  --bn-fs-xl: 1.25rem; --bn-fs-2xl: 1.5rem; --bn-fs-3xl: 1.875rem; --bn-fs-4xl: 2.25rem; --bn-fs-5xl: 3rem;
-  --bn-fw-normal: 400; --bn-fw-medium: 500; --bn-fw-semibold: 600; --bn-fw-bold: 700;
-  --bn-lh-tight: 1.2; --bn-lh-snug: 1.375; --bn-lh-base: 1.5; --bn-lh-relaxed: 1.625;
-
-  --bn-space-1: 0.25rem; --bn-space-2: 0.5rem; --bn-space-3: 0.75rem; --bn-space-4: 1rem;
-  --bn-space-5: 1.25rem; --bn-space-6: 1.5rem; --bn-space-8: 2rem; --bn-space-10: 2.5rem;
-  --bn-space-12: 3rem; --bn-space-16: 4rem; --bn-space-20: 5rem; --bn-space-24: 6rem;
-
-  --bn-radius-sm: 0.25rem; --bn-radius-md: 0.5rem; --bn-radius-lg: 0.75rem; --bn-radius-xl: 1rem; --bn-radius-full: 9999px;
-
-  --bn-shadow-1: 0 1px 2px 0 rgba(0,0,0,.05);
-  --bn-shadow-2: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06);
-  --bn-shadow-3: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -2px rgba(0,0,0,.05);
-  --bn-shadow-4: 0 20px 25px -5px rgba(0,0,0,.1), 0 10px 10px -5px rgba(0,0,0,.04);
-
-  --bn-container-max: 1280px;
-  --bn-content-max: 800px;
-
-  /* Additional CSS Tokens (Correction #9) */
-  --bn-header-height: 65px;
-  --bn-sidebar-width: 320px;
-  --bn-z-dropdown: 100;
-  --bn-z-sticky: 200;
-  --bn-z-modal: 500;
-  --bn-z-tooltip: 600;
-
-  --bn-transition-fast: 150ms cubic-bezier(.4,0,.2,1);
-  --bn-transition-base: 250ms cubic-bezier(.4,0,.2,1);
-  --bn-transition-slow: 350ms cubic-bezier(.4,0,.2,1);
-}
-
-[data-theme="dark"] {
-  --bn-bg: hsl(222, 47%, 11%);
-  --bn-surface: hsl(217, 33%, 17%);
-  --bn-surface-raised: hsl(217, 33%, 22%);
-  --bn-border: hsl(215, 25%, 27%);
-  --bn-border-strong: hsl(215, 20%, 45%);
-  --bn-text-primary: hsl(210, 40%, 98%);
-  --bn-text-secondary: hsl(215, 20%, 75%);
-  --bn-text-tertiary: hsl(215, 16%, 55%);
-  --bn-primary-subtle: hsla(220,90%,56%,.15);
-  --bn-secondary-subtle: hsla(215,16%,47%,.15);
-  --bn-success-subtle: hsla(142,71%,45%,.15);
-  --bn-warning-subtle: hsla(38,92%,50%,.15);
-  --bn-danger-subtle: hsla(354,70%,54%,.15);
-  --bn-info-subtle: hsla(199,89%,48%,.15);
-  --bn-disabled-bg: hsl(217,33%,24%);
-  --bn-disabled-text: hsl(215,16%,45%);
-  --bn-gradient-subtle: linear-gradient(135deg, hsla(220,90%,56%,.12), hsla(262,83%,58%,.12));
-  --bn-glass-bg: hsla(217,33%,17%,.72);
-  --bn-shadow-1: 0 1px 2px 0 rgba(0,0,0,.4);
-  --bn-shadow-2: 0 4px 6px -1px rgba(0,0,0,.5), 0 2px 4px -1px rgba(0,0,0,.3);
-  --bn-shadow-3: 0 10px 15px -3px rgba(0,0,0,.6), 0 4px 6px -2px rgba(0,0,0,.4);
-  --bn-shadow-4: 0 20px 25px -5px rgba(0,0,0,.7), 0 10px 10px -5px rgba(0,0,0,.5);
-}
-
-/* Selection Styling (Correction #7) */
-::selection {
-  background: var(--bn-primary);
-  color: #fff;
-}
-
-/* ==========================================================================
-   2. CSS RESET
-   ========================================================================== */
-*, *::before, *::after { box-sizing: border-box; }
-html, body, h1, h2, h3, h4, p, figure, blockquote, dl, dd, ul, ol { margin: 0; }
-ul[class], ol[class] { list-style: none; padding: 0; }
-html:focus-within { scroll-behavior: smooth; }
-body { min-height: 100vh; text-rendering: optimizeSpeed; }
-img, picture, svg { display: block; max-width: 100%; }
-/* Image Default Height Auto (Correction #8) */
-img { height: auto; }
-input, button, textarea, select { font: inherit; color: inherit; }
-a { color: inherit; }
-@media (prefers-reduced-motion: reduce) {
-  html:focus-within { scroll-behavior: auto; }
-  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
-}
-
-/* ==========================================================================
-   3. BASE STYLES / TYPOGRAPHY / COLOR SYSTEM APPLICATION
-   ========================================================================== */
-html { -webkit-text-size-adjust: 100%; }
-body {
-  font-family: var(--bn-font-sans);
-  font-size: var(--bn-fs-base);
-  line-height: var(--bn-lh-base);
-  color: var(--bn-text-primary);
-  background: var(--bn-bg);
-  -webkit-font-smoothing: antialiased;
-  /* Optimized Body Transition (Correction #6) */
-  transition: background-color var(--bn-transition-base), color var(--bn-transition-base);
-}
-h1, h2, h3, h4 { line-height: var(--bn-lh-tight); font-weight: var(--bn-fw-bold); color: var(--bn-text-primary); }
-h1 { font-size: var(--bn-fs-4xl); }
-h2 { font-size: var(--bn-fs-3xl); }
-h3 { font-size: var(--bn-fs-2xl); }
-h4 { font-size: var(--bn-fs-xl); }
-p { color: var(--bn-text-secondary); }
-a { text-decoration: none; }
-code, pre, kbd { font-family: var(--bn-font-mono); }
-:focus-visible { outline: none; box-shadow: var(--bn-focus-ring); border-radius: var(--bn-radius-sm); }
-
-/* Skip link (accessibility helper - Target Correction #4) */
-.bn-skip-link {
-  position: absolute; top: -48px; left: var(--bn-space-4); z-index: 100;
-  background: var(--bn-primary); color: var(--bn-text-on-primary);
-  padding: var(--bn-space-3) var(--bn-space-5); border-radius: var(--bn-radius-md);
-  font-weight: var(--bn-fw-semibold); transition: top var(--bn-transition-fast);
-}
-.bn-skip-link:focus { top: var(--bn-space-4); }
-
-/* ==========================================================================
-   4. LAYOUT SYSTEM
-   ========================================================================== */
-.bn-container { max-width: var(--bn-container-max); margin-inline: auto; padding-inline: var(--bn-space-6); }
-.bn-content { max-width: var(--bn-content-max); margin-inline: auto; }
-.bn-section { padding-block: var(--bn-space-16); }
-.bn-section--tight { padding-block: var(--bn-space-12); }
-
-.bn-grid { display: grid; gap: var(--bn-space-5); grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
-.bn-grid--categories { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
-.bn-grid--tutorials { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
-.bn-grid--stats { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
-
-/* ==========================================================================
-   5. UTILITY CLASSES
-   ========================================================================== */
-.bn-visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-.u-text-center { text-align: center; }
-.u-text-left { text-align: left; }
-.u-text-right { text-align: right; }
-.u-flex { display: flex; }
-.u-grid { display: grid; }
-.u-items-center { align-items: center; }
-.u-justify-between { justify-content: space-between; }
-.u-gap-2 { gap: var(--bn-space-2); }
-.u-gap-4 { gap: var(--bn-space-4); }
-.u-gap-6 { gap: var(--bn-space-6); }
-.u-mt-2 { margin-top: var(--bn-space-2); } .u-mt-4 { margin-top: var(--bn-space-4); } .u-mt-8 { margin-top: var(--bn-space-8); }
-.u-mb-2 { margin-bottom: var(--bn-space-2); } .u-mb-4 { margin-bottom: var(--bn-space-4); } .u-mb-8 { margin-bottom: var(--bn-space-8); }
-.u-p-4 { padding: var(--bn-space-4); } .u-p-6 { padding: var(--bn-space-6); }
-.u-hide-mobile { display: none; }
-@media (min-width: 640px) { .u-hide-mobile { display: revert; } .u-hide-desktop { display: none; } }
-
-/* ==========================================================================
-   6. RESPONSIVE BREAKPOINTS
-   ========================================================================== */
-@media (max-width: 640px) {
-  h1 { font-size: var(--bn-fs-3xl); }
-  .bn-section { padding-block: var(--bn-space-12); }
-}
-
-/* ==========================================================================
-   7. GLOBAL HEADER / MAIN / FOOTER SHELL
-   ========================================================================== */
-.bn-header { position: sticky; top: 0; z-index: var(--bn-z-sticky); background: var(--bn-surface); border-bottom: 1px solid var(--bn-border); transition: background var(--bn-transition-base), backdrop-filter var(--bn-transition-base); }
-.bn-header.is-scrolled { background: var(--bn-glass-bg); backdrop-filter: blur(var(--bn-blur-md)); -webkit-backdrop-filter: blur(var(--bn-blur-md)); }
-.bn-header-inner { display: flex; align-items: center; justify-content: space-between; gap: var(--bn-space-4); padding-block: var(--bn-space-4); }
-.bn-logo { display: flex; align-items: center; gap: var(--bn-space-2); font-weight: var(--bn-fw-bold); font-size: var(--bn-fs-xl); color: var(--bn-text-primary); }
-.bn-logo-mark { color: var(--bn-primary); }
-.bn-nav { display: none; align-items: center; gap: var(--bn-space-6); font-size: var(--bn-fs-sm); font-weight: var(--bn-fw-medium); color: var(--bn-text-secondary); }
-@media (min-width: 860px) { .bn-nav { display: flex; } }
-.bn-nav a:hover { color: var(--bn-primary); }
-.bn-header-actions { display: flex; align-items: center; gap: var(--bn-space-2); }
-.bn-icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: var(--bn-radius-md); border: 1px solid var(--bn-border); background: var(--bn-surface); color: var(--bn-text-secondary); transition: background var(--bn-transition-fast), border-color var(--bn-transition-fast); }
-.bn-icon-btn:hover { background: var(--bn-primary-subtle); border-color: var(--bn-primary); color: var(--bn-primary); }
-.bn-hamburger { display: inline-flex; }
-@media (min-width: 860px) { .bn-hamburger { display: none; } }
-.bn-mobile-nav { position: fixed; inset: 0 0 auto 0; top: var(--bn-header-height); background: var(--bn-surface); border-bottom: 1px solid var(--bn-border); box-shadow: var(--bn-shadow-3); z-index: 45; padding: var(--bn-space-4) var(--bn-space-6) var(--bn-space-6); transform: translateY(-8px); opacity: 0; pointer-events: none; transition: transform var(--bn-transition-base), opacity var(--bn-transition-base); }
-.bn-mobile-nav.is-open { transform: translateY(0); opacity: 1; pointer-events: auto; }
-.bn-mobile-nav a { display: block; padding: var(--bn-space-3) 0; font-weight: var(--bn-fw-medium); border-bottom: 1px solid var(--bn-border); color: var(--bn-text-primary); }
-@media (min-width: 860px) { .bn-mobile-nav { display: none; } }
-.bn-scroll-locked { overflow: hidden; }
-.bn-nav-overlay { position: fixed; inset: 0; background: hsla(220, 24%, 12%, 0.45); opacity: 0; pointer-events: none; z-index: 44; transition: opacity var(--bn-transition-base); }
-.bn-nav-overlay.is-open { opacity: 1; pointer-events: auto; }
-
-.bn-main { min-height: 60vh; }
-
-.bn-footer { border-top: 1px solid var(--bn-border); padding-block: var(--bn-space-12) var(--bn-space-8); background: var(--bn-surface); }
-.bn-footer-grid { display: grid; gap: var(--bn-space-8); grid-template-columns: 1.4fr repeat(3, 1fr); }
-@media (max-width: 760px) { .bn-footer-grid { grid-template-columns: 1fr 1fr; } }
-.bn-footer-tagline { color: var(--bn-text-secondary); font-size: var(--bn-fs-sm); max-width: 32ch; margin-top: var(--bn-space-3); }
-.bn-footer-heading { font-size: var(--bn-fs-sm); font-weight: var(--bn-fw-semibold); margin-bottom: var(--bn-space-3); color: var(--bn-text-primary); }
-.bn-footer-links li { margin-bottom: var(--bn-space-2); }
-.bn-footer-links a { font-size: var(--bn-fs-sm); color: var(--bn-text-secondary); }
-.bn-footer-links a:hover { color: var(--bn-primary); }
-.bn-footer-bottom { margin-top: var(--bn-space-10); padding-top: var(--bn-space-6); border-top: 1px solid var(--bn-border); display: flex; flex-wrap: wrap; gap: var(--bn-space-4); align-items: center; justify-content: space-between; font-size: var(--bn-fs-xs); color: var(--bn-text-tertiary); }
-
-/* Minimal post/tool-page shell */
-.bn-tool-page { max-width: var(--bn-content-max); margin-inline: auto; padding-block: var(--bn-space-12); }
-.bn-tool-page :is(h2, h3) { margin-top: var(--bn-space-8); margin-bottom: var(--bn-space-3); }
-.bn-tool-page p { margin-bottom: var(--bn-space-4); line-height: var(--bn-lh-relaxed); }
-
-/* ==========================================================================
-   8. PRINT STYLES
-   ========================================================================== */
-@media print {
-  .bn-header, .bn-footer, .bn-mobile-nav, .bn-skip-link, .bn-icon-btn, script { display: none !important; }
-  body { background: #fff; color: #000; }
-  .bn-tool-page { max-width: 100%; }
-  a[href]::after { content: " (" attr(href) ")"; font-size: 0.85em; color: #555; }
-}
-
-]]></b:skin>
-</head>
 <body>
-<!-- Skip link Target Updated to #main-content (Correction #4) -->
-<a class='bn-skip-link' href='#main-content'>Skip to content</a>
+<header>
+<nav>
+<main>
+<section>
+<footer>
+<script>
+Keep the hierarchy shallow and predictable.
+---
+# 6. Heading Hierarchy
+Each page must contain exactly one:
+<h1>
+Use headings in logical order.
+Correct:
+<h1>
+<h2>
+<h3>
+<h4>
+Avoid:
+<h1>
+<h3>
+<h2>
+Never skip heading levels without a valid structural reason.
+---
+# 7. Landmark Elements
+Use semantic landmark elements instead of generic containers.
+Required landmarks:
+<header>
+<nav>
+<main>
+<footer>
+Benefits:
+• Better screen reader navigation
+• Improved SEO understanding
+• Clear document structure
+Avoid replacing landmarks with unnecessary div containers.
+---
+# 7.5 Skip Navigation Link
+Every page should include a Skip to Content link.
+Purpose:
+• Improve keyboard navigation
+• Allow users to bypass repeated navigation
+• Improve screen reader experience
+Recommended implementation:
+<a class="skip-link" href="#main-content">
+Skip to content
+</a>
+The skip link should become visible when focused.
 
-<!-- Global live region for screen-reader announcements -->
-<div aria-live='polite' class='bn-visually-hidden' id='bn-live-region'></div>
+# 8. Navigation
+Wrap primary navigation inside:
+<nav>
+Provide an accessible label when multiple navigation regions exist.
+Example:
+aria-label="Primary Navigation"
+Current page should use:
+aria-current="page"
+---
+# 9. Links
+Links should describe their destination.
+Good:
+Download PDF
+Image Converter
+About Banynova
+Avoid:
+Click Here
+Read More
+Learn More
+Open
+Avoid opening internal links in a new tab.
+---
+# 10. Buttons
+Use:
+<button>
+for actions.
+Use:
+<a>
+only for navigation.
+Never style links to behave like buttons without proper semantics.
+---
+# 11. Images
+Every meaningful image requires descriptive:
+alt
+Examples:
+Good:
+alt="PNG to JPG Converter Interface"
+Bad:
+alt="image"
+Decorative images:
+alt=""
+---
+# 12. SVG
+Prefer inline SVG for:
+• Logo
+• Icons
+• UI Graphics
+SVG should include:
+role="img"
+when appropriate.
+Decorative SVG should be hidden from assistive technologies.
+---
+# 13. Forms
+Every form control must have:
+<label>
+Associate labels correctly using:
+for
+and
+id
+Never rely on placeholder text as a replacement for labels.
+---
+# 14. Inputs
 
-<!-- ============================== HEADER ============================== -->
-<b:section id='bn-header-section' maxwidgets='1' name='Header' showaddelement='no'>
-<b:widget id='Header1' locked='true' title='Banynova' type='Header' version='2'>
-<b:includable id='main'>
-<header class='bn-header' id='bn-header'>
-  <div class='bn-container bn-header-inner'>
-    <a class='bn-logo' expr:href='data:blog.homepageUrl'>
-      <svg class='bn-logo-mark' height='26' viewBox='0 0 24 24' width='26'><rect height='18' rx='5' stroke='currentColor' stroke-width='2' width='18' x='3' y='3'/><path d='M8 12h5m0 0-2-2m2 2-2 2' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>
-      <data:blog.title/>
-    </a>
-    <!-- Navigation Links Updated to prevent 404s (Correction #5) -->
-    <nav aria-label='Primary' class='bn-nav'>
-      <a expr:href='data:blog.homepageUrl + &quot;#tools&quot;'>Tools</a>
-      <a expr:href='data:blog.homepageUrl + &quot;#categories&quot;'>Categories</a>
-      <a expr:href='data:blog.homepageUrl + &quot;#blog&quot;'>Blog</a>
-      <a expr:href='data:blog.homepageUrl + &quot;#resources&quot;'>Resources</a>
-      <a expr:href='data:blog.homepageUrl + &quot;p/about.html&quot;'>About</a>
-    </nav>
-    <div class='bn-header-actions'>
-      <button aria-label='Toggle dark mode' aria-pressed='false' class='bn-icon-btn' id='bn-theme-toggle' type='button'>
-        <svg height='18' id='bn-theme-icon' viewBox='0 0 24 24' width='18'><circle cx='12' cy='12' r='4' stroke='currentColor' stroke-width='2'/><path d='M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4' stroke='currentColor' stroke-linecap='round' stroke-width='2'/></svg>
-      </button>
-      <button aria-expanded='false' aria-label='Open menu' class='bn-icon-btn bn-hamburger' id='bn-menu-toggle' type='button'>
-        <svg height='18' viewBox='0 0 24 24' width='18'><path d='M4 7h16M4 12h16M4 17h16' stroke='currentColor' stroke-linecap='round' stroke-width='2'/></svg>
-      </button>
-    </div>
-  </div>
-  <div class='bn-nav-overlay' id='bn-nav-overlay'></div>
-  <nav aria-label='Mobile' class='bn-mobile-nav' id='bn-mobile-nav'>
-    <a expr:href='data:blog.homepageUrl + &quot;#tools&quot;'>Tools</a>
-    <a expr:href='data:blog.homepageUrl + &quot;#categories&quot;'>Categories</a>
-    <a expr:href='data:blog.homepageUrl + &quot;#blog&quot;'>Blog</a>
-    <a expr:href='data:blog.homepageUrl + &quot;#resources&quot;'>Resources</a>
-    <a expr:href='data:blog.homepageUrl + &quot;p/about.html&quot;'>About</a>
-  </nav>
-</header>
-</b:includable>
-</b:widget>
-</b:section>
+Use the most appropriate input type.
 
-<!-- ============================== MAIN ============================== -->
-<!-- ID changed from bn-main to main-content (Correction #4) -->
-<main class='bn-main' id='main-content'>
-<b:section id='bn-main-section' name='Main' showaddelement='yes'>
-<b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog' version='2'>
-<b:includable id='main'>
-<b:if cond='data:blog.url == data:blog.homepageUrl'>
-  <!-- Homepage v1.x injects here -->
-<b:else/>
-  <b:loop values='data:posts' var='post'>
-    <b:include data='post' name='post'/>
-  </b:loop>
-</b:if>
-</b:includable>
-<b:includable id='post' var='post'>
-<article class='bn-tool-page'>
-  <h1><data:post.title/></h1>
-  <data:post.body/>
-</article>
-</b:includable>
-</b:widget>
-</b:section>
-</main>
+Examples:
 
-<!-- ============================== FOOTER ============================== -->
-<footer class='bn-footer'>
-<div class='bn-container bn-footer-grid'>
-  <div>
-    <a class='bn-logo' expr:href='data:blog.homepageUrl'>
-      <svg class='bn-logo-mark' height='24' viewBox='0 0 24 24' width='24'><rect height='18' rx='5' stroke='currentColor' stroke-width='2' width='18' x='3' y='3'/><path d='M8 12h5m0 0-2-2m2 2-2 2' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>
-      <data:blog.title/>
-    </a>
-    <p class='bn-footer-tagline'>Powering Your Digital Workflow. Built for developers, creators, marketers, students, and everyone in between.</p>
-  </div>
-  <div>
-    <h3 class='bn-footer-heading'>Quick Links</h3>
-    <ul class='bn-footer-links'>
-      <li><a expr:href='data:blog.homepageUrl + &quot;#tools&quot;'>Tools</a></li>
-      <li><a expr:href='data:blog.homepageUrl + &quot;#categories&quot;'>Categories</a></li>
-      <li><a expr:href='data:blog.homepageUrl + &quot;#blog&quot;'>Blog</a></li>
-      <li><a expr:href='data:blog.homepageUrl + &quot;#resources&quot;'>Resources</a></li>
-      <li><a expr:href='data:blog.homepageUrl + &quot;p/about.html&quot;'>About</a></li>
-    </ul>
-  </div>
-  <div>
-    <h3 class='bn-footer-heading'>Legal</h3>
-    <ul class='bn-footer-links'>
-      <li><a expr:href='data:blog.homepageUrl + &quot;p/privacy-policy.html&quot;'>Privacy Policy</a></li>
-      <li><a expr:href='data:blog.homepageUrl + &quot;p/terms.html&quot;'>Terms of Service</a></li>
-      <li><a expr:href='data:blog.homepageUrl + &quot;p/accessibility.html&quot;'>Accessibility</a></li>
-      <li><a expr:href='data:blog.homepageUrl + &quot;p/cookies.html&quot;'>Cookies</a></li>
-      <li><a expr:href='data:blog.homepageUrl + &quot;p/disclaimer.html&quot;'>Disclaimer</a></li>
-    </ul>
-  </div>
-  <div>
-    <h3 class='bn-footer-heading'>Navigation</h3>
-    <ul class='bn-footer-links'>
-      <li><a expr:href='data:blog.homepageUrl + &quot;sitemap.xml&quot;'>Sitemap</a></li>
-      <li><a expr:href='data:blog.homepageUrl + &quot;p/contact.html&quot;'>Contact Us</a></li>
-    </ul>
-  </div>
-</div>
-<b:section id='bn-footer-section' name='Footer' showaddelement='yes'>
-</b:section>
-<div class='bn-container bn-footer-bottom'>
-  <span>© <span id='bn-year'></span> Banynova. All rights reserved.</span>
-  <span>Your files never leave your browser.</span>
-</div>
-</footer>
+email
 
-<!-- ============================== BASE JAVASCRIPT ============================== -->
-<script>//<![CDATA[
-(function (global) {
-  'use strict';
+url
 
-  var Banynova = global.Banynova || {};
+search
 
-  /* ------------------------------------------------------------------------
-     STORAGE — thin, safe wrapper
-     ------------------------------------------------------------------------ */
-  Banynova.storage = {
-    get: function (key) {
-      try { return window.localStorage.getItem(key); } catch (e) { return null; }
-    },
-    set: function (key, value) {
-      try { window.localStorage.setItem(key, value); return true; } catch (e) { return false; }
-    },
-    remove: function (key) {
-      try { window.localStorage.removeItem(key); return true; } catch (e) { return false; }
-    }
-  };
+number
 
-  /* ------------------------------------------------------------------------
-     THEME TOGGLE SYSTEM
-     ------------------------------------------------------------------------ */
-  Banynova.theme = {
-    STORAGE_KEY: 'bn-theme',
-    get: function () {
-      return document.documentElement.getAttribute('data-theme') || 'light';
-    },
-    set: function (mode) {
-      document.documentElement.setAttribute('data-theme', mode);
-      Banynova.storage.set(this.STORAGE_KEY, mode);
-    },
-    toggle: function () {
-      this.set(this.get() === 'dark' ? 'light' : 'dark');
-    },
-    ICON_SUN: '<circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path>',
-    ICON_MOON: '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>',
-    init: function () {
-      var toggle = document.getElementById('bn-theme-toggle');
-      var icon = document.getElementById('bn-theme-icon');
-      if (!toggle) { return; }
-      function updateThemeButton(announce) {
-        var dark = Banynova.theme.get() === 'dark';
-        toggle.setAttribute('aria-pressed', String(dark));
-        toggle.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
-        if (icon) { icon.innerHTML = dark ? Banynova.theme.ICON_MOON : Banynova.theme.ICON_SUN; }
-        if (announce) { Banynova.a11y.announce(dark ? 'Dark mode enabled' : 'Light mode enabled'); }
-      }
-      updateThemeButton(false);
-      toggle.addEventListener('click', function () {
-        Banynova.theme.toggle();
-        updateThemeButton(true);
-      });
-    }
-  };
+password
 
-  /* ------------------------------------------------------------------------
-     ACCESSIBILITY HELPERS
-     ------------------------------------------------------------------------ */
-  Banynova.a11y = {
-    announce: function (message) {
-      var region = document.getElementById('bn-live-region');
-      if (!region) { return; }
-      region.textContent = '';
-      window.setTimeout(function () { region.textContent = message; }, 50);
-    },
-    prefersReducedMotion: function () {
-      return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-    },
-    trapFocus: function (container) {
-      var focusable = container.querySelectorAll('a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])');
-      if (focusable.length === 0) { return function () {}; }
-      var first = focusable[0];
-      var last = focusable[focusable.length - 1];
-      function handleKey(e) {
-        if (e.key !== 'Tab') { return; }
-        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-      }
-      container.addEventListener('keydown', handleKey);
-      return function () { container.removeEventListener('keydown', handleKey); };
-    }
-  };
+date
 
-  /* ------------------------------------------------------------------------
-     GLOBAL UTILITIES
-     ------------------------------------------------------------------------ */
-  Banynova.utils = {
-    qs: function (sel, ctx) { return (ctx || document).querySelector(sel); },
-    qsa: function (sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); },
-    debounce: function (fn, wait) {
-      var t;
-      return function () {
-        var args = arguments, ctx = this;
-        window.clearTimeout(t);
-        t = window.setTimeout(function () { fn.apply(ctx, args); }, wait || 200);
-      };
-    },
-    throttle: function (fn, limit) {
-      var inThrottle;
-      return function () {
-        var args = arguments, ctx = this;
-        if (!inThrottle) {
-          fn.apply(ctx, args);
-          inThrottle = true;
-          window.setTimeout(function () { inThrottle = false; }, limit || 200);
-        }
-      };
-    }
-  };
+Proper input types improve usability and accessibility.
+# 15. Tables
+Use tables only for tabular data.
+Never use tables for layout.
+Include:
+<thead>
+<tbody>
+<th>
+Use scope attributes where appropriate.
+---
+# 16. Lists
+Use:
+<ul>
+for unordered content.
+Use:
+<ol>
 
-  /* ------------------------------------------------------------------------
-     PERFORMANCE HELPERS
-     ------------------------------------------------------------------------ */
-  Banynova.perf = {
-    lazyLoadImages: function (selector) {
-      var imgs = Banynova.utils.qsa(selector || 'img[data-src]');
-      if (imgs.length === 0) { return; }
-      if (!('IntersectionObserver' in window)) {
-        imgs.forEach(function (img) {
-          if (img.dataset.src) { img.src = img.dataset.src; }
-        });
-        return;
-      }
-      var obs = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            var img = entry.target;
-            if (img.dataset.src) { img.src = img.dataset.src; }
-            obs.unobserve(img);
-          }
-        });
-      });
-      imgs.forEach(function (img) { obs.observe(img); });
-    }
-  };
+for ordered sequences.
+Avoid manually numbering list items.
+---
+# 17. Accessibility Attributes
+Use ARIA only when native HTML cannot express meaning.
+Rule:
+Native HTML first.
+ARIA second.
+No ARIA is better than incorrect ARIA.
+---
+# 18. Interactive Elements
+Every interactive element must be:
+• Keyboard accessible
+• Focusable
+• Clearly visible
+• Operable without a mouse
+Avoid JavaScript-only interactions that cannot be reached by keyboard.
+# 19. Focus Management
+Maintain a visible focus indicator.
 
-  /* ------------------------------------------------------------------------
-     HEADER SCROLL & MOBILE MENU CONTROLLER
-     ------------------------------------------------------------------------ */
-  Banynova.ui = {
-    initHeaderScroll: function () {
-      var header = document.getElementById('bn-header');
-      if (!header) { return; }
-      /* Scroll Handler Throttled (Correction #3) */
-      var handleScroll = Banynova.utils.throttle(function () {
-        if (window.scrollY > 10) {
-          header.classList.add('is-scrolled');
-        } else {
-          header.classList.remove('is-scrolled');
-        }
-      }, 100);
-      window.addEventListener('scroll', handleScroll, { passive: true });
-    },
-    initMobileNav: function () {
-      var toggle = document.getElementById('bn-menu-toggle');
-      var nav = document.getElementById('bn-mobile-nav');
-      var overlay = document.getElementById('bn-nav-overlay');
-      if (!toggle || !nav || !overlay) { return; }
+Never remove focus styles unless replaced with an equally visible alternative.
+Logical tab order must follow the visual layout.
+---
+# 20. Responsive HTML
+Write HTML that adapts naturally.
+Avoid unnecessary wrapper elements.
+Prefer flexible structures over deeply nested containers.
+HTML should support responsive CSS rather than requiring it.
+---
+# 21. Metadata
+Every page should include:
+• Title
+• Description
+• Canonical URL
+• Open Graph
+• Twitter Cards
+• Structured Data
 
-      var releaseFocusTrap = null;
+Metadata should accurately describe the page content.
 
-      function openMenu() {
-        toggle.setAttribute('aria-expanded', 'true');
-        toggle.setAttribute('aria-label', 'Close menu');
-        nav.classList.add('is-open');
-        overlay.classList.add('is-open');
-        document.body.classList.add('bn-scroll-locked');
-        releaseFocusTrap = Banynova.a11y.trapFocus(nav);
-        Banynova.a11y.announce('Menu opened');
-      }
+---
 
-      function closeMenu() {
-        toggle.setAttribute('aria-expanded', 'false');
-        toggle.setAttribute('aria-label', 'Open menu');
-        nav.classList.remove('is-open');
-        overlay.classList.remove('is-open');
-        document.body.classList.remove('bn-scroll-locked');
-        if (typeof releaseFocusTrap === 'function') {
-          releaseFocusTrap();
-          releaseFocusTrap = null;
-        }
-        Banynova.a11y.announce('Menu closed');
-      }
+# 22. Lazy Loading
 
-      toggle.addEventListener('click', function () {
-        var isOpen = nav.classList.contains('is-open');
-        if (isOpen) { closeMenu(); } else { openMenu(); }
-      });
+Apply:
 
-      overlay.addEventListener('click', closeMenu);
+loading="lazy"
 
-      window.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && nav.classList.contains('is-open')) {
-          closeMenu();
-          toggle.focus();
-        }
-      });
-    },
-    initDynamicYear: function () {
-      var yearEl = document.getElementById('bn-year');
-      if (yearEl) {
-        yearEl.textContent = new Date().getFullYear();
-      }
-    }
-  };
+decoding="async"
 
-  /* ------------------------------------------------------------------------
-     GLOBAL INITIALIZATION
-     ------------------------------------------------------------------------ */
-  document.addEventListener('DOMContentLoaded', function () {
-    Banynova.theme.init();
-    Banynova.perf.lazyLoadImages();
-    Banynova.ui.initHeaderScroll();
-    Banynova.ui.initMobileNav();
-    Banynova.ui.initDynamicYear();
-  });
+only to below-the-fold images.
+Never lazy-load:
+• Hero images
+• LCP images
+• Above-the-fold visuals
 
-})(window);
-//]]></script>
-</body>
-</html>
+---
+
+# 23. Embedded Content
+
+Minimize third-party embeds.
+
+If embedding external content:
+
+• Load lazily where possible.
+• Preserve accessibility.
+• Maintain responsive layouts.
+
+Avoid unnecessary iframes.
+
+---
+
+# 24. Data Attributes
+
+Use:
+
+data-*
+
+attributes for JavaScript hooks.
+Avoid using CSS classes solely for JavaScript targeting.
+Example:
+data-theme
+data-tool
+data-category
+---
+# 25. IDs and Classes
+IDs must be unique.
+Classes should describe purpose rather than appearance.
+Good:
+
+bn-search-input
+
+bn-tool-card
+
+bn-primary-button
+
+Avoid:
+blue-box
+left-column
+big-text
+---
+# 26. Whitespace
+
+Maintain readable markup.
+Use consistent indentation.
+Avoid excessive nesting.
+Group related elements logically.
+Readable HTML reduces maintenance costs.
+---
+# 27. Comments
+Use comments to explain structure or architecture.
+Good:
+<!-- Primary Navigation -->
+<!-- Tool Grid -->
+Avoid comments that simply restate the code.
+
+---
+
+# 28. Performance Guidelines
+
+Keep HTML lightweight.
+
+Avoid:
+
+• Duplicate markup
+• Empty containers
+• Excessive nesting
+• Unused elements
+
+Every element should have a clear purpose.
+
+---
+
+# 29. SEO Guidelines
+
+Use semantic structure to improve search engine understanding.
+
+Ensure:
+
+• One H1
+• Proper headings
+• Descriptive links
+• Meaningful alt text
+• Structured data
+• Canonical URLs
+Avoid duplicate page titles and descriptions.
+---
+# 30. Maintainability
+HTML should be easy to read and modify.
+Before adding new markup, ask:
+• Is this semantic?
+• Is it accessible?
+• Is it reusable?
+• Can it be simplified?
+• Does it improve clarity?
+
+Choose simplicity over unnecessary complexity.
+---
+# 31. Validation
+Before publishing, verify:
+
+✓ HTML validates successfully.
+
+✓ No duplicate IDs exist.
+
+✓ Heading hierarchy is correct.
+
+✓ All forms have labels.
+
+✓ Images include appropriate alt text.
+
+✓ Links are descriptive.
+
+✓ Keyboard navigation works.
+
+✓ Responsive layout is preserved.
+
+✓ Accessibility has been reviewed.
+
+✓ SEO metadata is complete.
+---
+# 32. Overall HTML Principle
+HTML is the structural foundation of every Banynova page.
+Every element should communicate meaning, support accessibility, improve SEO, and remain easy to maintain.
+Build semantic, clean, and reusable markup that prioritizes clarity over complexity, enabling the platform to scale consistently as new features and modules are introduced.
+# End of Part 3
+# ==========================================================================
+# BANYNOVA ENGINEERING STANDARDS
+# Part 4 — CSS Engineering Standards
+# Version: 1.0
+# 1. Purpose
+This document defines the CSS engineering standards for Banynova.
+The objective is to build a styling system that is:
+• Scalable
+• Maintainable
+• Performance-first
+• Responsive
+• Accessible
+• Consistent
+
+CSS should function as a reusable design system rather than page-specific styling.
+
+---
+
+# 2. CSS Philosophy
+CSS is responsible only for presentation.
+It must never contain application logic.
+JavaScript controls behavior.
+HTML defines structure.
+Maintain a strict separation of concerns.
+---
+# 3. Design System Philosophy
+Banynova follows a Design Token architecture.
+Visual values should never be hardcoded inside components.
+Instead, components consume reusable design tokens.
+Benefits:
+• Consistency
+• Easy theme updates
+• Better maintainability
+• Faster redesigns
+
+---
+# 4. Design Tokens
+Store all reusable values as CSS Custom Properties.
+Recommended categories:
+## Colors
+--bn-primary
+--bn-secondary
+--bn-accent
+--bn-success
+
+--bn-warning
+--bn-danger
+--bn-surface
+
+--bn-background
+
+--bn-text
+--bn-border
+---
+## Typography
+--bn-font-family
+--bn-font-size-xs
+--bn-font-size-sm
+--bn-font-size-md
+--bn-font-size-lg
+--bn-font-size-xl
+--bn-line-height
+--bn-font-weight
+---
+
+## Spacing
+
+--bn-space-1
+
+--bn-space-2
+
+--bn-space-3
+--bn-space-4
+--bn-space-5
+--bn-space-6
+
+Use spacing tokens instead of fixed pixel values.
+---
+## Border Radius
+
+--bn-radius-sm
+
+--bn-radius-md
+
+--bn-radius-lg
+
+--bn-radius-xl
+
+--bn-radius-full
+---
+## Shadows
+--bn-shadow-xs
+--bn-shadow-sm
+--bn-shadow-md
+--bn-shadow-lg
+--bn-shadow-xl
+---
+
+## Duration
+--bn-transition-fast
+--bn-transition-base
+--bn-transition-slow
+---
+## Z-Index
+--bn-z-dropdown
+--bn-z-sticky
+--bn-z-modal
+--bn-z-tooltip
+Avoid arbitrary z-index values.
+## Layout Tokens 
+--bn-header-height 
+--bn-sidebar-width 
+## Layer Tokens 
+--bn-z-dropdown 
+--bn-z-sticky 
+--bn-z-modal 
+--bn-z-tooltip
+---
+# 5. Naming Convention
+Use descriptive component names.
+Examples:
+.bn-header
+.bn-nav
+.bn-btn
+.bn-card
+.bn-search
+.bn-footer
+
+.bn-grid
+
+.bn-container
+
+Avoid names based on appearance.
+
+Bad:
+
+.blue-box
+
+.left-column
+
+.big-text
+---
+# 6. CSS Architecture
+
+Recommended order:
+
+1. Design Tokens
+
+2. Reset
+
+3. Base Elements
+
+4. Typography
+
+5. Layout
+
+6. Components
+
+7. Utilities
+
+8. Animations
+
+9. Responsive Rules
+Keep architecture predictable.
+---
+# 7. CSS File Organization
+Separate styles logically.
+Examples:
+Variables
+Reset
+Typography
+Layout
+Navigation
+Hero
+Cards
+Buttons
+Forms
+Footer
+Utilities
+Animations
+Responsive
+Never mix unrelated styles.
+---
+# 8. Layout Standards
+Use Flexbox and Grid.
+Avoid float-based layouts.
+Every layout should:
+• Stretch naturally
+
+• Avoid fixed heights
+
+• Support dynamic content
+
+• Adapt to different screen sizes
+---
+# 9. Grid System
+Use CSS Grid for two-dimensional layouts.
+Examples:
+Tool Directory
+Categories
+Homepage Sections
+Feature Cards
+Avoid fixed column counts.
+Preferred:
+repeat(auto-fit, minmax())
+
+or
+
+repeat(auto-fill, minmax())
+
+---
+
+# 10. Container Standards
+
+Use a reusable container class.
+
+Example responsibilities:
+
+• Max width
+
+• Horizontal padding
+
+• Responsive margins
+
+Avoid page-specific container implementations.
+
+---
+
+# 11. Responsive Design Rules
+
+Design mobile-first.
+
+Recommended breakpoints:
+
+Small
+
+Medium
+
+Large
+
+Extra Large
+Breakpoints should represent layout changes rather than specific devices.
+Avoid device-specific CSS.
+---
+# 12. Spacing System
+Never use random spacing.
+Always use spacing tokens.
+Avoid:
+margin:17px;
+Prefer:
+var(--bn-space-*)
+Maintain consistent vertical rhythm.
+---
+
+# 13. Typography Rules
+Typography should scale consistently.
+Avoid hardcoded font sizes.
+Maintain:
+Readable line-height
+Predictable spacing
+Consistent hierarchy
+Limit font families.
+---
+# 14. Component Design
+
+Every component should be:
+
+Reusable
+
+Independent
+
+Predictable
+
+Documented
+
+Avoid deeply nested selectors.
+
+Example:
+Good
+.bn-card
+.bn-card-title
+.bn-card-description
+Avoid
+
+.page .wrapper .content .card h3
+---
+# 15. Utility Classes
+Utility classes should solve one problem.
+Examples:
+.hidden
+.visually-hidden
+.text-center
+.flex
+.grid
+.mt-auto
+Avoid creating hundreds of utility classes.
+Components remain the primary styling approach.
+Recommended utility classes:
+.container
+.grid
+.flex
+
+.visually-hidden
+
+.sr-only
+.hidden
+Utility classes should:
+• Solve common layout problems
+• Remain lightweight
+• Avoid replacing components
+---
+# 16. Color Rules
+Never hardcode colors inside components.
+Always reference design tokens.
+Example:
+var(--bn-primary)
+instead of
+#3b82f6
+This simplifies future redesigns.
+---
+# 17. Theme Support
+Light and Dark themes should share the same components.
+
+Only design tokens should change.
+
+Avoid duplicate component styles.
+
+Theme switching should not duplicate CSS.
+
+---
+
+# 18. Responsive Images
+Images should:
+Scale naturally
+Maintain aspect ratio
+Never overflow containers
+Support lazy loading where appropriate
+Avoid fixed image dimensions unless required.
+Default image styling:
+img {
+height:auto;
+}
+Images should:
+• Maintain aspect ratio
+• Prevent distortion
+• Adapt to container size
+---
+
+# 19. Performance Rules
+
+Prefer:
+transform
+opacity
+background-color
+Avoid animating:
+width
+height
+top
+left
+margin
+padding
+Layout-triggering properties increase rendering cost.
+---
+# 20. CSS Containment
+For large tool listings and searchable directories, consider:
+content-visibility: auto;
+
+contain-intrinsic-size: 600px;
+Benefits:
+• Faster rendering
+• Reduced layout work
+• Better scrolling performance
+Apply selectively rather than globally.
+---
+# 21. Motion Rules
+Motion should communicate:
+State
+Feedback
+Hierarchy
+Avoid decorative animations that do not improve usability.
+
+Animations must never delay user interaction.
+
+Motion should enhance clarity rather than decoration.
+---
+# 22. Motion Accessibility
+Always respect:
+@media (prefers-reduced-motion: reduce)
+Reduce or disable:
+• Continuous animations
+• Floating effects
+• Hover transitions
+• Parallax
+• Infinite loops
+Ensure every feature remains fully usable without animation.
+--- 
+# 22.5. Focus Management Styles
+Use :focus-visible instead of styling every :focus state.
+Example:
+:focus-visible {
+outline: var(--bn-focus-ring);
+}
+Focus indicators must:
+• Be clearly visible
+• Have sufficient contrast
+• Work across all interactive elements
+Avoid removing default focus styles without replacement.
+
+# 23. Transition Rules
+Prefer:
+transition:
+background-color,
+color,
+transform,
+opacity;
+Avoid:
+transition: all;
+Only animate required properties.
+---
+# 24. Hover Effects
+Hover should provide feedback without distracting users.
+Good examples:
+• Slight elevation
+• Border highlight
+• Background-color change
+• Shadow adjustment
+Avoid excessive movement.
+---
+# 25. Shadow System
+Use predefined shadow tokens.
+Do not invent new shadow values for each component.
+Maintain consistency across the UI.
+---
+# 26. Border Radius
+Border radius should use design tokens.
+Avoid random values.
+Maintain visual consistency throughout the platform.
+---
+# 27. CSS Comments
+Use comments to separate architectural sections.
+Example:
+==========================================================================
+COMPONENTS
+==========================================================================
+
+Avoid commenting every individual selector.
+---
+# 28. Maintainability
+Before adding new CSS ask:
+
+Can this reuse an existing component?
+
+Can this use a design token?
+
+Can this become a utility?
+
+Does it introduce duplication?
+
+Prefer extending existing systems over creating new ones.
+---
+# 29. Validation Checklist
+Before publishing verify:
+✓ No duplicate declarations.
+✓ No unused selectors.
+✓ No unnecessary specificity.
+✓ Design tokens are used consistently.
+✓ Responsive behavior is tested.
+✓ Components remain reusable.
+✓ Motion respects reduced-motion preferences.
+✓ Performance best practices are followed.
+---
+# 30. Overall CSS Principle
+CSS should function as a scalable design system rather than a collection of page-specific styles.
+Every rule should improve consistency, maintainability, accessibility, responsiveness, and performance.
+The design token system should remain the single source of truth, enabling future redesigns, additional themes, and platform growth with minimal code changes.
+
+# 31. Print Styles
+Provide print-friendly styles where content may be printed.
+Example:
+@media print {
+...
+}
+Print styles should:
+• Remove unnecessary navigation
+• Hide decorative elements
+• Preserve readable content
+• Maintain proper spacing
+} 
+
+# 32. Selection Styling
+Provide consistent text selection styling.
+Example:
+::selection {
+background: var(--bn-primary);
+color: white;
+}
+Selection styles should maintain readability and sufficient contrast.
+# End of Part 4
+# ==========================================================================
+# BANYNOVA ENGINEERING STANDARDS
+# Part 5 — JavaScript Engineering Standards
+# Version: 1.0
+# ==========================================================================
+
+# 1. Purpose
+This document defines the JavaScript engineering standards for Banynova.
+The goal is to ensure JavaScript remains:
+• Modular
+• Lightweight
+• Predictable
+• Maintainable
+• Accessible
+• Performance-first
+JavaScript should enhance the user experience without becoming a dependency for core content.
+
+---
+
+# 2. JavaScript Philosophy
+
+JavaScript controls behavior, not structure or presentation.
+
+Responsibilities include:
+
+• User interaction
+• State management
+• Theme switching
+• Search
+• Performance enhancements
+• Progressive enhancement
+Avoid generating large HTML structures with JavaScript whenever server-side or semantic HTML is sufficient.
+---
+# 3. Progressive Enhancement
+The website should remain functional even when JavaScript is unavailable.
+Core content must remain accessible.
+JavaScript should enhance functionality rather than replace it.
+Examples:
+
+✓ Theme switching
+
+✓ Search suggestions
+
+✓ Lazy loading
+
+✓ Animations
+
+These should improve the experience without preventing access to essential content.
+
+---
+
+# 4. Module Architecture
+
+Organize JavaScript into small, focused modules.
+
+Recommended modules:
+
+• Theme
+
+• Storage
+
+• Navigation
+
+• Search
+
+• Accessibility
+
+• Performance
+
+• Utilities
+
+• Lazy Loader
+
+• Dialog
+
+• Analytics (future)
+
+Each module should have a single responsibility.
+
+Avoid monolithic scripts.
+
+---
+
+# 5. Global Namespace
+
+Expose only one global namespace.
+
+Example:
+
+Banynova
+
+All modules should live under this namespace.
+
+Example:
+
+Banynova.theme
+
+Banynova.search
+
+Banynova.storage
+
+Banynova.utils
+
+Avoid polluting the global scope.
+
+---
+
+# 6. Coding Style
+
+Use modern ES6+ syntax.
+
+Prefer:
+
+const
+
+let
+
+Arrow Functions
+
+Template Literals
+
+Optional Chaining
+
+Nullish Coalescing
+
+Avoid:
+
+var
+
+Implicit globals
+
+Legacy JavaScript patterns
+
+---
+
+# 7. Event Handling
+
+Use event delegation whenever practical.
+
+Attach listeners to stable parent elements rather than individual children.
+
+Benefits:
+
+• Better performance
+
+• Reduced memory usage
+
+• Easier maintenance
+
+Always remove listeners when no longer needed.
+
+---
+
+# 8. Event Listener Guidelines
+
+Prefer:
+
+addEventListener()
+
+Avoid:
+
+onclick
+
+onchange
+
+Inline event handlers
+
+Always use passive listeners for scrolling and touch interactions when appropriate.
+
+Example:
+
+{ passive: true }
+
+---
+
+# 9. Performance Principles
+
+JavaScript should minimize:
+
+• Layout recalculations
+
+• Forced synchronous reflows
+
+• Unnecessary DOM updates
+
+• Repeated queries
+
+Prefer caching DOM references.
+
+Batch updates whenever possible.
+
+---
+
+# 10. DOM Manipulation
+
+Query the DOM once whenever practical.
+
+Avoid repeated:
+
+document.querySelector()
+
+inside loops.
+
+Cache frequently used elements.
+
+Minimize DOM mutations.
+
+---
+
+# 11. Debounce
+
+Use debounce for user input events.
+
+Examples:
+
+• Search input
+
+• Window resize
+
+• Live validation
+
+Recommended delay:
+
+200–300 ms
+
+Debounce prevents unnecessary repeated execution.
+
+---
+
+# 12. Throttle
+
+Use throttle for continuous events.
+
+Examples:
+
+• Scroll
+
+• Mouse move
+
+• Resize (when continuous updates are needed)
+
+Recommended interval:
+
+100 ms
+
+Never attach unthrottled scroll handlers.
+
+---
+
+# 13. requestAnimationFrame
+
+Use requestAnimationFrame()
+
+for visual updates.
+
+Examples:
+
+• Animations
+
+• Scroll effects
+
+• Progress indicators
+
+Avoid using timers for rendering work.
+
+---
+
+# 14. Lazy Loading
+
+Use native browser capabilities whenever possible.
+
+Preferred:
+
+loading="lazy"
+
+IntersectionObserver
+
+Avoid scroll-based lazy loading.
+
+Never lazy-load:
+
+• Hero images
+
+• LCP images
+
+• Above-the-fold content
+
+---
+
+# 15. Theme Management
+
+Theme switching should:
+
+• Be instantaneous
+
+• Persist across sessions
+
+• Avoid layout shifts
+
+• Prevent FOUC
+
+Store only the selected theme.
+
+Avoid duplicating component styles.
+
+Prefer CSS variables over JavaScript styling.
+
+---
+
+# 16. Storage
+
+Use localStorage only for lightweight preferences.
+
+Examples:
+
+• Theme
+
+• User settings
+
+• UI preferences
+
+Do not store:
+
+• Sensitive information
+
+• Large datasets
+
+• Temporary DOM state
+
+Always validate stored values before use.
+
+---
+
+# 17. Search Architecture
+
+Search should be modular and reusable.
+
+Recommended flow:
+
+Input
+
+↓
+
+Normalize Query
+
+↓
+
+Search Index
+
+↓
+
+Rank Results
+
+↓
+
+Render Results
+
+↓
+
+Keyboard Navigation
+
+↓
+
+Selection
+
+Search logic should remain independent of UI rendering.
+
+---
+
+# 18. Search Performance
+
+Avoid searching the DOM directly.
+
+Instead:
+
+• Build an in-memory index
+
+• Normalize strings once
+
+• Cache searchable data
+
+Use debounce to reduce unnecessary searches.
+
+---
+
+# 19. Accessibility
+
+Every JavaScript feature should support:
+
+• Keyboard navigation
+
+• Screen readers
+
+• Visible focus
+
+• Reduced motion
+
+• ARIA updates where appropriate
+
+JavaScript should never reduce accessibility.
+
+---
+
+# 20. Error Handling
+
+Handle unexpected situations gracefully.
+
+Avoid uncaught exceptions.
+
+Log useful debugging information during development.
+
+Fail gracefully in production.
+
+---
+
+# 21. Async Operations
+
+Use:
+
+async / await
+
+instead of nested callbacks.
+
+Always handle:
+
+try
+
+catch
+
+finally
+
+Avoid callback pyramids.
+
+---
+
+# 22. Network Requests
+
+Minimize network requests.
+
+Cache reusable data.
+
+Avoid duplicate requests.
+
+Cancel obsolete requests when appropriate.
+
+Future APIs should support graceful failure.
+
+---
+
+# 23. Security
+
+Never trust client-side input.
+
+Always sanitize:
+
+• Search queries
+
+• URL parameters
+
+• Dynamic HTML
+
+Avoid:
+
+eval()
+
+new Function()
+
+Unsafe HTML injection
+
+Prefer:
+
+textContent
+
+instead of
+
+innerHTML
+
+unless sanitization is guaranteed.
+
+---
+
+# 24. Motion Performance
+
+JavaScript should never animate layout-triggering properties.
+
+Prefer:
+
+transform
+
+opacity
+
+Let CSS handle animations whenever possible.
+
+JavaScript should trigger state changes—not frame-by-frame animations.
+
+---
+
+# 25. Memory Management
+
+Prevent memory leaks.
+
+Remove:
+
+• Event listeners
+
+• Timers
+
+• Observers
+
+• References to removed elements
+
+Unused objects should become eligible for garbage collection.
+
+---
+
+# 26. Utilities
+
+Shared logic belongs inside:
+
+Banynova.utils
+
+Examples:
+
+• debounce()
+
+• throttle()
+
+• clamp()
+
+• escapeHTML()
+
+• uniqueId()
+
+Avoid duplicating helper functions across modules.
+
+---
+
+# 27. Documentation
+
+Every public module should include:
+
+Purpose
+
+Parameters
+
+Return Value
+
+Dependencies
+
+Side Effects
+
+Document complex algorithms with concise comments.
+
+---
+
+# 28. Code Review Checklist
+
+Before publishing JavaScript, verify:
+
+✓ Modules have a single responsibility.
+
+✓ No global variables are introduced.
+
+✓ DOM queries are optimized.
+
+✓ Scroll events are throttled.
+
+✓ Input events are debounced.
+
+✓ Passive listeners are used where appropriate.
+
+✓ Accessibility remains intact.
+
+✓ Theme initialization prevents FOUC.
+
+✓ Search performance has been reviewed.
+
+✓ No unused code remains.
+
+---
+
+# 29. Future Scalability
+
+Design JavaScript modules so they can support:
+
+• Hundreds of tools
+
+• Multiple search indexes
+
+• Additional themes
+
+• Offline capabilities
+
+• PWA features
+
+• Plugin architecture (future)
+
+Core modules should remain backward-compatible as new functionality is added.
+
+---
+
+# 30. Overall JavaScript Principle
+
+JavaScript should enhance—not dominate—the user experience.
+
+Every module should be modular, reusable, performant, accessible, and easy to maintain.
+
+Favor simplicity over cleverness, native browser capabilities over heavy abstractions, and progressive enhancement over dependency-driven design.
+The Banynova JavaScript architecture should remain lightweight, scalable, and resilient as the platform evolves.
+# End of Part 5
+# ==========================================================================
+# ==========================================================================
+# BANYNOVA ENGINEERING STANDARDS
+# Part 6 — UI Components Standards
+# Version: 1.0
+# ==========================================================================
+
+# 1. Purpose
+
+This document defines the UI Component standards for Banynova.
+
+Every component should be:
+
+• Reusable
+• Accessible
+• Responsive
+• Performance-first
+• Theme-aware
+• Maintainable
+
+Components should behave consistently across the Homepage, Tool Pages, Category Pages, Blog, Search, Tutorials, and future modules.
+
+---
+
+# 2. Component Philosophy
+
+Every component should have a single responsibility.
+
+A component should:
+
+• Solve one UI problem
+• Be reusable
+• Be independent
+• Be configurable
+• Avoid page-specific logic
+
+Never duplicate components for different pages.
+
+---
+
+# 3. Component Structure
+
+Each component should follow:
+
+Component
+
+↓
+
+Variants
+
+↓
+
+States
+
+↓
+
+Accessibility
+
+↓
+
+Responsive Behavior
+
+↓
+
+Theme Support
+
+↓
+
+Motion
+
+Maintain a predictable structure.
+
+---
+
+# 4. Header
+
+The Header is the primary navigation container.
+
+It should contain:
+
+• Logo
+• Primary Navigation
+• Search
+• Theme Toggle
+• Mobile Menu
+
+Requirements:
+
+• Sticky (optional)
+• Lightweight
+• Responsive
+• Keyboard accessible
+
+Avoid large promotional banners inside the header.
+
+---
+
+# 5. Navigation
+
+Navigation should remain simple.
+
+Recommended structure:
+
+• Tools
+
+• Categories
+
+• Blog
+
+• Resources
+
+• About
+
+Requirements:
+
+✓ Semantic <nav>
+
+✓ aria-label
+
+✓ aria-current
+
+✓ Keyboard support
+
+✓ Mobile navigation
+
+Avoid deep navigation hierarchies.
+
+---
+
+# 6. Hero Section
+
+The Hero introduces the platform.
+
+Recommended content:
+
+• Main heading
+
+• Short description
+
+• Primary CTA
+
+• Secondary CTA
+
+• Search
+
+• Illustration
+
+Keep messaging concise.
+
+Hero animations should remain subtle.
+
+Never autoplay distracting effects.
+
+---
+
+# 7. Search Component
+
+Search should be available across the platform.
+
+Capabilities:
+
+• Instant search
+
+• Keyboard navigation
+
+• Highlight matches
+
+• Empty state
+
+• Accessible suggestions
+
+Use:
+
+role="combobox"
+
+where appropriate.
+
+Search should remain functional without animations.
+
+---
+
+# 8. Tool Cards
+
+Tool cards should provide quick access.
+
+Recommended content:
+
+• Icon
+
+• Tool Name
+
+• Description
+
+• Category
+
+Optional:
+
+• Popular badge
+
+• New badge
+
+• Updated badge
+
+Cards should maintain equal heights where practical.
+
+---
+
+# 9. Buttons
+
+Buttons communicate actions.
+
+Primary
+
+Secondary
+
+Outline
+
+Ghost
+
+Danger
+
+Loading
+
+Disabled
+
+Buttons should:
+
+• Have consistent padding
+
+• Visible hover
+
+• Visible focus
+
+• Clear active state
+
+Avoid oversized buttons.
+
+---
+
+# 10. Button Guidelines
+
+Buttons should use verbs.
+
+Examples:
+
+Convert
+
+Generate
+
+Compress
+
+Download
+
+Analyze
+
+Avoid vague labels like:
+
+Submit
+
+Go
+
+Click
+
+---
+
+# 11. Badges
+
+Badges indicate status.
+
+Recommended badges:
+
+New
+
+Updated
+
+Popular
+
+Beta
+
+AI
+
+Free
+
+Limited
+
+Badges should never replace important content.
+
+Use concise text.
+
+---
+
+# 12. Forms
+
+Forms should remain simple.
+
+Each input requires:
+
+• Label
+
+• Help text (when needed)
+
+• Validation
+
+• Error message
+
+Avoid unnecessary fields.
+
+---
+
+# 13. Form Validation
+
+Validation should occur:
+
+• During submission
+
+• Progressively where appropriate
+
+Errors should explain:
+
+• What happened
+
+• How to fix it
+
+Never rely only on color.
+
+---
+
+# 14. Input Fields
+
+Recommended types:
+
+search
+
+email
+
+url
+
+number
+
+password
+
+date
+
+textarea
+
+Use appropriate autocomplete values.
+
+---
+
+# 15. Dropdowns
+
+Dropdowns should:
+
+• Open via keyboard
+
+• Close with Escape
+
+• Support arrow navigation
+
+• Preserve focus
+
+Avoid oversized dropdown menus.
+
+---
+
+# 16. Dialogs
+
+Dialogs should:
+
+Trap keyboard focus
+
+Close with Escape
+
+Restore focus after closing
+
+Prevent background interaction
+Dialogs should use:
+role="dialog"
+and
+aria-modal="true"
+---
+# 17. Alerts
+Alert types:
+Success
+Information
+Warning
+Error
+Each alert should include:
+• Icon
+
+• Message
+
+• Appropriate color
+
+Critical alerts should be announced to assistive technologies.
+
+---
+
+# 18. Empty States
+
+Every empty state should explain:
+
+Why nothing is shown
+
+What users can do next
+
+Examples:
+
+No Search Results
+
+No Saved Tools
+
+No Categories
+
+No Articles
+
+Include a helpful call-to-action.
+
+---
+
+# 19. Loading States
+
+Use lightweight loading indicators.
+
+Prefer:
+
+Skeleton Screens
+
+instead of spinning loaders for content.
+
+Loading indicators should not block interaction unnecessarily.
+
+---
+
+# 20. Footer
+
+Recommended links:
+
+Contact
+
+Privacy Policy
+
+Terms
+
+Cookies
+
+Accessibility
+
+Sitemap
+
+Copyright
+
+Footer should remain simple.
+
+Avoid repeating navigation excessively.
+
+---
+
+# 21. Icons
+
+Icons should support labels.
+
+Avoid icon-only controls unless:
+
+aria-label
+
+is provided.
+
+Icons should remain visually consistent.
+
+---
+
+# 22. Theme Support
+
+Every component must support:
+
+Light Theme
+
+Dark Theme
+
+High Contrast (future)
+
+Only design tokens should change.
+
+Never duplicate component CSS.
+
+---
+
+# 23. Responsive Behavior
+
+Components should adapt naturally.
+
+Examples:
+
+Cards stack vertically.
+
+Navigation collapses.
+
+Buttons wrap.
+
+Forms resize.
+
+Avoid horizontal scrolling.
+
+---
+
+# 24. Motion
+
+Motion should:
+
+Communicate feedback
+
+Support hierarchy
+
+Improve usability
+
+Avoid decorative animation.
+
+Respect:
+
+prefers-reduced-motion
+
+---
+
+# 25. Accessibility
+
+Every component should support:
+
+Keyboard Navigation
+
+Screen Readers
+
+Visible Focus
+
+Color Contrast
+
+Reduced Motion
+
+Semantic HTML
+
+Accessibility is mandatory.
+
+---
+
+# 26. Performance
+
+Components should:
+
+Avoid unnecessary DOM depth
+
+Avoid duplicate markup
+
+Reuse existing components
+
+Minimize JavaScript
+
+Prefer CSS solutions
+
+Use lazy loading where appropriate
+
+Performance should remain a primary consideration.
+
+---
+
+# 27. Naming Convention
+Recommended:
+.bn-btn
+.bn-card
+.bn-header
+.bn-nav
+.bn-footer
+.bn-dialog
+.bn-alert
+.bn-search
+.bn-form
+Use consistent naming throughout the project.
+---
+# 28. Component Lifecycle
+
+Each component should define:
+
+Purpose
+
+Variants
+
+States
+
+Accessibility
+
+Responsive Behavior
+
+Theme Support
+
+Dependencies
+
+Avoid undocumented behaviors.
+
+---
+
+# 29. Code Review Checklist
+
+Before releasing any component:
+
+✓ Accessible
+
+✓ Responsive
+
+✓ Theme-aware
+
+✓ Reusable
+
+✓ Keyboard-friendly
+
+✓ Screen-reader compatible
+
+✓ Performance reviewed
+
+✓ Motion reviewed
+
+✓ No duplicated logic
+
+✓ Naming conventions followed
+
+---
+
+# 30. Overall UI Principle
+
+Every UI component should provide a consistent, intuitive, and accessible user experience.
+
+Components should be reusable building blocks rather than page-specific implementations.
+
+Design for clarity over decoration, functionality over complexity, and consistency over customization.
+
+The Banynova UI component library should remain scalable, maintainable, and future-ready, allowing new features and modules to integrate seamlessly without redesigning the core interface.
+
+# End of Part 6
+# ==========================================================================
+# BANYNOVA ENGINEERING STANDARDS
+# Part 7 — Accessibility Standards (WCAG 2.2 AA)
+# Version: 1.0
+# ==========================================================================
+
+# 1. Purpose
+
+This document defines the accessibility standards for Banynova.
+Accessibility is a core engineering requirement—not an optional enhancement.
+Every page, component, and interaction must be designed to ensure equal access for all users, including people using assistive technologies.
+Target compliance:
+• WCAG 2.2 Level AA
+These standards apply across the entire platform.
+---
+# 2. Accessibility Philosophy
+Accessibility should be built into every stage of development.
+Never treat accessibility as a post-development task.
+Accessibility must influence:
+• Design
+• HTML Structure
+• CSS
+• JavaScript
+• UI Components
+• Content
+• Documentation
+
+Every feature should remain usable regardless of ability, device, or input method.
+---
+# 3. WCAG 2.2 AA Compliance
+Banynova targets WCAG 2.2 Level AA.
+Core principles:
+• Perceivable
+• Operable
+• Understandable
+• Robust
+Every new feature should be reviewed against these four principles before release.
+---
+# 4. Semantic HTML
+Always use semantic HTML first.
+Preferred elements:
+<header>
+<nav>
+<main>
+<section>
+<article>
+
+<aside>
+
+<footer>
+
+<button>
+<form>
+<label>
+Semantic HTML improves accessibility without additional ARIA.
+---
+# 5. Keyboard Navigation
+Every interactive element must be fully operable using only the keyboard.
+Users should be able to:
+✓ Navigate using Tab
+✓ Move backwards using Shift + Tab
+✓ Activate controls using Enter
+✓ Toggle buttons using Space
+✓ Close dialogs using Escape
+Mouse interaction must never be required.
+---
+# 6. Focus Management
+Keyboard focus should always remain visible.
+Requirements:
+• Never remove the default focus indicator unless replacing it with a more visible alternative.
+• Focus order must follow the visual layout.
+• Focus should never become trapped except inside modal dialogs.
+• Restore focus after closing dialogs or menus.
+
+Use :focus-visible to provide keyboard-specific focus indicators.
+Mouse users should not receive unnecessary focus outlines, while keyboard users must always receive clear focus feedback.
+---
+# 7. Focus Indicators
+Provide clear focus styles.
+Recommended:
+• Outline
+• Border
+• Box Shadow
+Focus indicators must have sufficient contrast against both light and dark themes.
+Avoid relying only on color changes.
+---
+# 8. Skip Navigation
+Every page should include a Skip to Content link.
+Purpose:
+• Bypass repeated navigation
+• Improve keyboard navigation
+• Improve screen reader usability
+The link should become visible when focused.
+The skip link should target:
+<main id="main-content">
+and allow keyboard users to bypass repeated navigation.
+---
+# 9. Screen Reader Support
+Ensure content is understandable by screen readers.
+Guidelines:
+• Use meaningful headings.
+• Use proper landmark elements.
+• Provide descriptive labels.
+• Maintain logical reading order.
+• Avoid redundant announcements.
+Screen readers should be able to navigate the page efficiently.
+---
+# 10. Headings
+Maintain a logical heading hierarchy.
+Rules:
+• One H1 per page
+• No skipped heading levels
+• Headings describe section content
+Avoid using headings purely for styling.
+---
+# 11. Forms
+Every form control requires:
+
+• Associated label
+• Instructions when needed
+• Error message
+• Validation feedback
+
+Never rely solely on placeholders.
+Required fields should be identified programmatically.
+---
+# 12. Form Validation
+Validation messages should:
+• Clearly describe the problem
+• Explain how to fix it
+• Be announced to assistive technologies
+• Not rely solely on color
+Users should not lose entered data after validation errors.
+---
+# 13. Images
+Meaningful images require descriptive:
+alt
+
+Decorative images:
+
+alt=""
+Complex graphics should include additional descriptions when necessary.
+---
+# 14. Icons
+Icons should not communicate information by themselves.
+Provide:
+• Visible labels
+or
+• aria-label
+Decorative icons should be hidden from assistive technologies.
+---
+# 15. Links
+Links should describe their destination.
+Good:
+Download PDF Guide
+PNG to JPG Converter
+Accessibility Documentation
+
+Avoid:
+
+Click Here
+
+Read More
+Learn More
+---
+# 16. Buttons
+Buttons should clearly describe their action.
+Examples:
+Convert File
+Generate Password
+Copy Result
+Avoid generic labels such as:
+Submit
+OK
+Go
+---
+# 17. Color Contrast
+
+Text should maintain sufficient contrast.
+
+Target WCAG AA minimums:
+
+• Normal text: 4.5:1
+• Large text: 3:1
+
+Avoid low-contrast color combinations.
+Test both Light and Dark themes.
+---
+# 18. Color Usage
+Never rely only on color to communicate meaning.
+Always pair color with:
+• Icons
+• Labels
+• Text
+• Patterns where appropriate
+
+Users with color vision deficiencies should receive the same information.
+
+---
+
+# 19. Reduced Motion
+
+Respect user motion preferences.
+Implement:
+@media (prefers-reduced-motion: reduce)
+Reduce or disable:
+• Transitions
+• Hover animations
+• Floating effects
+• Parallax
+• Continuous loops
+• Auto-playing decorative motion
+All essential functionality must remain available without animation.
+---
+# 20. Motion Guidelines
+Animations should:
+• Improve feedback
+• Clarify hierarchy
+• Support usability
+Animations must never:
+• Delay interaction
+• Hide information
+• Cause distraction
+• Trigger unnecessary motion
+Motion should enhance clarity rather than decoration.
+---
+# 21. ARIA Guidelines
+Use ARIA only when native HTML cannot express the required semantics.
+Principles:
+• Native HTML first
+• ARIA second
+• No ARIA is better than incorrect ARIA
+
+Avoid unnecessary ARIA attributes.
+
+---
+
+# 22. Landmark Regions
+Use landmarks consistently.
+Recommended:
+<header>
+<nav>
+<main>
+<aside>
+<footer>
+Provide accessible names when multiple landmarks of the same type exist.
+
+---
+
+# 23. Live Regions
+
+Use ARIA live regions for dynamic content.
+
+Examples:
+
+• Search results
+• Status messages
+• Form validation
+• Notifications
+Avoid excessive announcements.
+Only announce meaningful changes.
+---
+# 24. Dialog Accessibility
+Dialogs must:
+• Use role="dialog"
+• Include aria-modal="true"
+• Trap keyboard focus
+• Restore focus after closing
+• Close with Escape
+Background content should not remain interactive.
+---
+# 25. Responsive Accessibility
+Accessibility should remain consistent across:
+• Desktop
+• Tablet
+• Mobile
+Touch targets should be comfortably sized.
+Avoid interactions that depend on hover alone.
+---
+# 26. Content Readability
+Content should be easy to read.
+Guidelines:
+• Short paragraphs
+• Clear headings
+• Consistent spacing
+• Plain language
+• Predictable terminology
+Readable content benefits all users.
+---
+# 27. Testing
+Accessibility testing should include:
+✓ Keyboard-only navigation
+✓ Screen reader testing
+✓ Color contrast verification
+✓ Reduced motion testing
+✓ Responsive testing
+✓ Focus order verification
+✓ Form validation review
+✓ Landmark inspection
+Accessibility should be tested before every production release.
+
+---
+
+# 28. Accessibility Checklist
+
+Before publishing verify:
+
+✓ Semantic HTML is used.
+✓ Heading hierarchy is correct.
+✓ Images include appropriate alt text.
+✓ Forms include labels.
+✓ Keyboard navigation works.
+✓ Focus indicators are visible.
+✓ Color contrast meets WCAG AA.
+✓ Reduced motion is supported.
+✓ ARIA usage is valid.
+✓ Screen reader experience has been reviewed.
+---
+# 29. Future Accessibility
+Future features should continue supporting:
+• Voice navigation
+• High Contrast themes
+• Additional language support
+• Improved assistive technology compatibility
+Accessibility improvements should remain backward-compatible.
+
+---
+
+# 30. Overall Accessibility Principle
+
+Accessibility is a fundamental quality attribute of Banynova.
+
+Every user—regardless of ability, device, or assistive technology—should be able to perceive, understand, navigate, and interact with the platform independently.
+Engineering decisions should prioritize inclusive design, ensuring that accessibility, usability, and performance evolve together as the platform grows.
+# End of Part 7
+# ==========================================================================
+# BANYNOVA ENGINEERING STANDARDS
+# Part 8 — Performance Standards
+# Version: 1.0
+# ==========================================================================
+# 1. Purpose
+This document defines the performance engineering standards for Banynova.
+
+Performance is treated as a core product feature—not a post-launch optimization.
+
+Every page should be:
+
+• Fast
+• Responsive
+• Efficient
+• Stable
+• Scalable
+
+Performance should be considered during architecture, implementation, testing, and future maintenance.
+
+---
+
+# 2. Performance Philosophy
+
+Every engineering decision should minimize:
+
+• Network requests
+• JavaScript execution
+• Rendering work
+• Layout recalculations
+• Memory usage
+
+Optimize before adding complexity.
+
+The fastest code is the code that never executes.
+
+---
+
+# 3. Performance Goals
+
+Target excellent real-world user experience.
+
+Recommended targets:
+
+✓ Lighthouse Performance ≥ 95
+
+✓ Core Web Vitals: Good
+
+✓ First Contentful Paint (FCP) ≤ 1.8 s
+
+✓ Largest Contentful Paint (LCP) ≤ 2.5 s
+
+✓ Interaction to Next Paint (INP) ≤ 200 ms
+
+✓ Cumulative Layout Shift (CLS) ≤ 0.1
+
+Performance should be measured on mobile-first conditions.
+
+---
+
+# 4. Core Web Vitals
+
+Core Web Vitals are primary performance indicators.
+
+Monitor:
+
+• LCP
+• CLS
+• INP
+
+Optimize continuously rather than only before release.
+
+---
+
+# 5. Largest Contentful Paint (LCP)
+
+The largest visible element should load quickly.
+
+Common LCP elements:
+
+• Hero heading
+• Hero image
+• Hero illustration
+• Featured tool card
+
+Guidelines:
+
+✓ Avoid render-blocking resources.
+
+✓ Preload critical assets when appropriate.
+
+✓ Do not lazy-load the LCP image.
+
+✓ Minimize server response time.
+
+✓ Reduce CSS and JavaScript blocking.
+
+---
+
+# 6. Cumulative Layout Shift (CLS)
+
+Visual layout should remain stable.
+
+Avoid:
+
+• Images without dimensions
+
+• Dynamic content pushing existing content
+
+• Font swaps causing layout movement
+
+• Delayed advertisements
+
+Always reserve space for:
+
+• Images
+
+• Videos
+
+• Embedded content
+
+• Dynamic components
+
+Target:
+
+CLS ≤ 0.1
+
+---
+
+# 7. Interaction to Next Paint (INP)
+
+User interactions should feel immediate.
+
+Optimize:
+
+• Clicks
+
+• Keyboard input
+
+• Search
+
+• Menus
+
+• Dialogs
+
+• Forms
+
+Avoid long JavaScript tasks.
+
+Break expensive work into smaller operations.
+
+Target:
+
+INP ≤ 200 ms
+
+---
+
+# 8. JavaScript Performance
+
+Keep JavaScript lightweight.
+
+Guidelines:
+
+• Minimize execution time.
+
+• Remove unused code.
+
+• Avoid synchronous heavy operations.
+
+• Use native browser APIs.
+
+• Defer non-critical scripts.
+
+Prefer event delegation.
+
+---
+
+# 9. JavaScript Budget
+
+Maintain a performance budget.
+
+Recommended:
+
+Initial JavaScript:
+
+≤ 150 KB (compressed)
+
+Critical JavaScript:
+
+≤ 50 KB
+
+Avoid unnecessary third-party libraries.
+
+Every additional script should provide measurable value.
+
+---
+
+# 10. CSS Performance
+
+Organize CSS efficiently.
+
+Avoid:
+
+• Duplicate rules
+
+• Deep selectors
+
+• Excessive specificity
+
+Use:
+
+• Design Tokens
+
+• Reusable Components
+
+• Utility Classes where appropriate
+
+---
+
+# 11. Critical CSS
+
+Inline only the CSS required for above-the-fold rendering.
+
+Non-critical styles should load after the initial render.
+
+Goals:
+
+• Faster First Paint
+
+• Faster LCP
+
+• Reduced render blocking
+
+Avoid inlining the entire stylesheet.
+
+---
+
+# 12. Image Optimization
+
+Images should be optimized before deployment.
+
+Recommendations:
+
+• Use modern formats (WebP, AVIF where supported)
+
+• Compress images
+
+• Resize appropriately
+
+• Avoid oversized assets
+
+• Use responsive images
+
+Images should never be larger than required.
+
+---
+
+# 13. Responsive Images
+
+Use responsive image techniques.
+
+Prefer:
+
+srcset
+
+sizes
+
+Serve images based on viewport size.
+
+Avoid delivering desktop-sized images to mobile devices.
+
+---
+
+# 14. Lazy Loading
+
+Apply lazy loading only to below-the-fold content.
+
+Use:
+
+loading="lazy"
+
+decoding="async"
+
+Do NOT lazy-load:
+
+• Hero images
+
+• Above-the-fold images
+
+• LCP elements
+
+Lazy loading should improve—not delay—the user experience.
+
+---
+
+# 15. SVG Optimization
+
+Prefer SVG for:
+
+• Logos
+
+• Icons
+
+• Simple illustrations
+
+Optimize SVG files by removing unnecessary metadata.
+
+Reuse symbols where practical.
+
+---
+
+# 16. Font Loading
+
+Limit the number of font families and font weights.
+
+Recommendations:
+
+• Prefer system fonts where possible.
+
+• Self-host fonts when practical.
+
+• Preload critical fonts only.
+
+• Use font-display: swap.
+
+Avoid loading unused font variants.
+
+---
+
+# 17. Network Requests
+
+Reduce total network requests.
+
+Combine resources when appropriate.
+
+Avoid duplicate downloads.
+
+Cache reusable assets effectively.
+
+Every request should have a clear purpose.
+
+---
+
+# 18. DOM Performance
+
+Keep the DOM lightweight.
+
+Avoid:
+
+• Deep nesting
+
+• Duplicate elements
+
+• Empty wrappers
+
+Large DOM trees increase rendering cost.
+
+---
+
+# 19. Rendering Performance
+
+Prefer GPU-friendly properties.
+
+Animate:
+
+• transform
+
+• opacity
+
+• background-color
+
+Avoid animating:
+
+• width
+
+• height
+
+• top
+
+• left
+
+• margin
+
+• padding
+
+---
+
+# 20. CSS Containment
+
+For large directories and grids, consider:
+
+content-visibility: auto;
+
+contain-intrinsic-size: 600px;
+
+Benefits:
+
+• Faster rendering
+
+• Reduced layout work
+
+• Better scrolling performance
+
+Apply selectively.
+
+---
+
+# 21. Scroll Performance
+
+Never attach expensive scroll handlers.
+
+Use:
+
+• Throttle
+
+• Passive listeners
+
+• requestAnimationFrame() where appropriate
+
+Avoid repeated layout calculations during scrolling.
+
+---
+
+# 22. Search Performance
+
+Search should remain responsive.
+
+Recommendations:
+
+• Debounce input
+
+• Cache searchable data
+
+• Normalize once
+
+• Avoid repeated DOM traversal
+
+Search should scale efficiently as the number of tools grows.
+
+---
+
+# 23. Memory Management
+
+Avoid memory leaks.
+
+Remove:
+
+• Event listeners
+
+• Timers
+
+• Observers
+
+Release references to removed DOM nodes.
+
+Monitor memory usage during long browsing sessions.
+
+---
+
+# 24. Third-Party Resources
+
+Minimize third-party dependencies.
+
+Before adding a new dependency, evaluate:
+
+• Performance impact
+
+• Privacy implications
+
+• Maintenance cost
+
+Remove unused third-party scripts promptly.
+
+---
+
+# 25. Progressive Enhancement
+
+Performance optimizations should never break core functionality.
+
+Users on older devices or slower networks should still be able to:
+
+✓ Navigate
+
+✓ Search
+
+✓ Read content
+
+✓ Use tools
+
+Enhancements should improve—not replace—the base experience.
+
+---
+
+# 26. Performance Monitoring
+
+Performance should be monitored continuously.
+
+Recommended checks:
+
+✓ Lighthouse
+
+✓ Core Web Vitals
+
+✓ Mobile Performance
+
+✓ Bundle Size
+
+✓ DOM Size
+
+✓ Network Requests
+
+✓ Accessibility Impact
+
+---
+
+# 27. Code Review Checklist
+
+Before publishing:
+
+✓ LCP optimized
+
+✓ CLS minimized
+
+✓ INP reviewed
+
+✓ Images optimized
+
+✓ Fonts optimized
+
+✓ Critical CSS extracted
+
+✓ JavaScript budget respected
+
+✓ Lazy loading implemented correctly
+
+✓ No unnecessary third-party scripts
+
+✓ Performance tested on mobile
+
+---
+
+# 28. Future Scalability
+
+Performance architecture should support:
+
+• Hundreds of tools
+
+• Large search indexes
+
+• Category directories
+
+• Blog growth
+
+• Progressive Web App migration
+
+Future modules should integrate without degrading existing performance.
+
+---
+
+# 29. Performance Budget
+
+Recommended budgets:
+
+HTML ≤ 50 KB
+Critical CSS ≤ 20 KB
+
+Initial JavaScript ≤ 150 KB
+
+Critical JavaScript ≤ 50 KB
+
+Largest Image ≤ 200 KB
+
+Initial Requests ≤ 30
+
+These budgets should be reviewed periodically as the platform evolves.
+---
+# 30. Overall Performance Principle
+Performance is a continuous engineering discipline.
+Every optimization should improve real user experience while preserving maintainability, accessibility, and scalability.
+Banynova should remain lightweight, responsive, and efficient as the platform grows, ensuring that new features never compromise the speed and reliability of the existing foundation.
+# End of Part 8
+# ==========================================================================
+# ==========================================================================
+# BANYNOVA ENGINEERING STANDARDS
+# Part 9 — SEO Engineering Standards
+# Version: 1.0
+# ==========================================================================
+
+# 1. Purpose
+
+This document defines the Search Engine Optimization (SEO) standards for Banynova.
+
+The objective is to ensure every page is:
+
+• Discoverable
+
+• Crawlable
+
+• Indexable
+
+• Shareable
+
+• Structured
+
+• Future-proof
+
+SEO should be integrated into the engineering process from the beginning rather than added after development.
+
+---
+
+# 2. SEO Philosophy
+
+SEO is a combination of:
+
+• High-quality content
+
+• Semantic HTML
+
+• Technical optimization
+
+• Performance
+
+• Accessibility
+
+• Structured data
+
+Engineering decisions should support long-term organic visibility rather than short-term ranking tactics.
+
+---
+
+# 3. Page Metadata
+
+Every indexable page must include:
+
+• Unique Title
+
+• Meta Description
+
+• Canonical URL
+
+• Viewport
+
+• Charset
+
+• Theme Color
+
+• Robots Directive
+
+Metadata should accurately represent the page's content.
+
+---
+
+# 4. Title Standards
+
+Each page requires a unique title.
+
+Recommended length:
+
+50–60 characters
+
+Structure:
+
+Primary Topic | Banynova
+
+Examples:
+
+PNG to JPG Converter | Banynova
+
+Password Generator | Banynova
+
+Avoid keyword stuffing or duplicate titles.
+
+---
+
+# 5. Meta Description
+
+Every page should include a unique meta description.
+
+Recommended length:
+
+140–160 characters
+
+Requirements:
+
+• Describe the page clearly
+
+• Encourage clicks
+
+• Reflect actual content
+
+Avoid duplicate descriptions.
+
+---
+
+# 6. Canonical URLs
+
+Every indexable page must define a canonical URL.
+
+Canonical URLs help prevent duplicate indexing.
+
+Verify canonical implementation for:
+
+• Homepage
+
+• Tool Pages
+
+• Blog Posts
+
+• Static Pages
+
+• Category Pages
+
+• Search Pages (when appropriate)
+
+Canonical URLs should always resolve to the preferred version of the page.
+
+---
+
+# 7. Robots Directives
+
+Use robots directives carefully.
+
+Indexable pages:
+
+index, follow
+
+Non-indexable pages may include:
+
+noindex
+
+nofollow
+
+or other directives when justified.
+
+Never block valuable content unintentionally.
+
+---
+
+# 8. Open Graph
+
+Every public page should include Open Graph metadata.
+
+Minimum properties:
+
+og:title
+
+og:description
+
+og:type
+
+og:url
+
+og:image
+
+og:site_name
+
+og:locale
+
+Images should be high quality and suitable for social sharing.
+
+---
+
+# 9. Twitter Cards
+
+Every shareable page should include Twitter metadata.
+
+Recommended:
+
+twitter:card = summary_large_image
+
+Include:
+
+twitter:title
+
+twitter:description
+
+twitter:image
+
+twitter:site (optional)
+
+Maintain consistency with Open Graph metadata.
+
+---
+
+# 10. Social Images
+
+Social preview images should:
+
+• Be unique where practical
+
+• Match page content
+
+• Use high resolution
+
+• Include branding consistently
+
+Recommended size:
+
+1200 × 630 pixels
+
+Avoid text-heavy designs.
+
+---
+
+# 11. Structured Data Philosophy
+
+Structured Data should describe page content for search engines.
+
+Prefer JSON-LD.
+
+Avoid Microdata unless necessary.
+
+Validate all structured data before deployment.
+
+---
+
+# 12. Homepage Structured Data
+
+Homepage should include:
+
+• Organization
+
+• WebSite
+
+• SearchAction
+
+• WebPage
+
+These schemas establish the site's identity and search capabilities.
+
+---
+
+# 13. Tool Page Structured Data
+
+Tool pages should include:
+
+• SoftwareApplication
+
+• BreadcrumbList
+
+• FAQPage (when applicable)
+
+Optional future schemas:
+
+• HowTo
+
+• VideoObject
+
+Use only schemas that accurately represent the page.
+
+---
+
+# 14. Blog Structured Data
+
+Blog posts should include:
+
+• Article
+
+Optional:
+
+• BreadcrumbList
+
+• FAQPage
+
+• Author
+
+• ImageObject
+
+Ensure publication dates are accurate.
+
+---
+
+# 15. Category Page Structured Data
+
+Category pages should include:
+
+• CollectionPage
+
+Optional:
+
+• BreadcrumbList
+
+This improves understanding of grouped content.
+
+---
+
+# 16. Breadcrumbs
+
+Breadcrumb navigation should be implemented for:
+
+• Tool Pages
+
+• Blog Posts
+
+• Documentation
+
+• Categories
+
+Provide both:
+
+• Visible navigation
+
+• BreadcrumbList structured data
+
+---
+
+# 17. Sitemap
+
+Maintain an XML sitemap.
+
+Include:
+
+• Homepage
+
+• Tool Pages
+
+• Blog Posts
+
+• Categories
+
+• Static Pages
+
+Exclude:
+
+• Duplicate URLs
+
+• Error pages
+
+• Non-indexable pages
+
+Update the sitemap automatically whenever possible.
+
+---
+
+# 18. Robots.txt
+
+Maintain a clean robots.txt file.
+
+Allow crawling of public content.
+
+Block:
+
+• Internal search parameters (if necessary)
+
+• Duplicate resources
+
+• Administrative paths
+
+Robots.txt should support—not replace—proper indexing strategies.
+
+---
+
+# 19. URL Standards
+
+URLs should be:
+
+• Short
+
+• Descriptive
+
+• Human-readable
+
+• Lowercase
+
+Use hyphens instead of underscores.
+
+Avoid unnecessary parameters.
+
+Example:
+
+/tools/image-compressor
+
+Avoid:
+
+/page?id=18392
+
+---
+
+# 20. Internal Linking
+
+Create meaningful internal links between related pages.
+
+Examples:
+
+Homepage → Categories
+
+Category → Tools
+
+Blog → Tools
+
+Documentation → Tutorials
+
+Internal linking improves navigation and crawlability.
+
+---
+
+# 21. Heading Structure
+
+Maintain a semantic heading hierarchy.
+
+Requirements:
+
+• One H1
+
+• Logical H2–H6 order
+
+• Descriptive headings
+
+Headings should improve both accessibility and SEO.
+
+---
+
+# 22. Images
+
+Every meaningful image should include:
+
+• Descriptive alt text
+
+• Appropriate filename
+
+• Responsive dimensions
+
+• Optimized format
+
+Image SEO contributes to overall discoverability.
+
+---
+
+# 23. Performance and SEO
+
+Performance directly affects search visibility.
+
+Optimize:
+
+• Core Web Vitals
+
+• LCP
+
+• CLS
+
+• INP
+
+• Mobile performance
+
+Fast pages improve both user experience and search rankings.
+
+---
+
+# 24. Content Standards
+
+Content should be:
+
+• Original
+
+• Helpful
+
+• Accurate
+
+• Well-structured
+
+• Regularly updated
+
+Avoid duplicate or low-value content.
+
+---
+
+# 25. Pagination
+
+When pagination is introduced:
+
+• Preserve logical navigation
+
+• Maintain crawlability
+
+• Avoid duplicate content
+
+Use consistent URL structures.
+
+---
+
+# 26. Validation
+
+Validate:
+
+✓ Meta Tags
+
+✓ Open Graph
+
+✓ Twitter Cards
+
+✓ Structured Data
+
+✓ Canonical URLs
+
+✓ Sitemap
+
+✓ Robots.txt
+
+✓ Rich Results
+
+Perform validation before production deployment.
+
+---
+
+# 27. SEO Checklist
+
+Before publishing:
+
+✓ Unique Title
+
+✓ Unique Description
+
+✓ Canonical URL
+
+✓ Robots Directive
+
+✓ Open Graph
+
+✓ Twitter Cards
+
+✓ JSON-LD
+
+✓ Optimized Images
+
+✓ Internal Links
+
+✓ Structured Heading Hierarchy
+
+---
+
+# 28. Future SEO
+
+Future improvements may include:
+
+• Multilingual SEO
+
+• hreflang
+
+• Video SEO
+
+• Image SEO
+
+• AI-friendly structured content
+
+• Entity optimization
+
+The SEO architecture should remain flexible enough to support future search technologies.
+
+---
+
+# 29. Monitoring
+
+Regularly monitor:
+
+• Search Console
+
+• Index Coverage
+
+• Crawl Errors
+
+• Structured Data Validation
+
+• Core Web Vitals
+
+• Organic Traffic
+
+SEO should be treated as an ongoing engineering process rather than a one-time configuration.
+
+---
+
+# 30. Overall SEO Principle
+
+SEO is the result of clean architecture, semantic markup, accessible design, fast performance, and high-quality content.
+
+Every Banynova page should be engineered to help both users and search engines understand its purpose with minimal ambiguity.
+
+The SEO foundation should remain scalable, standards-compliant, and adaptable to future search engine evolution while preserving long-term maintainability.
+
+# End of Part 9
+# ==========================================================================
+# ==========================================================================
+# BANYNOVA ENGINEERING STANDARDS
+# Part 10 — Tool Page Standards
+# Version: 1.0
+# ==========================================================================
+
+# 1. Purpose
+
+This document defines the engineering standards for all Banynova Tool Pages.
+
+Every tool page should be:
+
+• Fast
+
+• Accessible
+
+• SEO-friendly
+
+• User-focused
+
+• Scalable
+
+• Consistent
+
+Tool pages are the core product of the Banynova platform and should provide a predictable, high-quality user experience.
+
+---
+
+# 2. Tool Page Philosophy
+
+Every tool page should solve one specific problem.
+
+Avoid combining multiple unrelated tools on the same page.
+
+Each tool page should:
+
+• Explain its purpose
+
+• Provide immediate interaction
+
+• Deliver results quickly
+
+• Guide users toward related tools
+
+The primary action should remain visible without unnecessary scrolling.
+
+---
+
+# 3. URL Structure
+
+URLs should be:
+
+• Short
+
+• Human-readable
+
+• Descriptive
+
+• Lowercase
+
+Use hyphens instead of underscores.
+
+Recommended structure:
+
+/tools/image-compressor
+
+/tools/password-generator
+
+/tools/json-formatter
+
+Avoid:
+
+/tool?id=123
+
+/tools/imagecompressor2
+
+URLs should remain stable to preserve SEO value.
+
+---
+
+# 4. Page Layout
+
+Recommended structure:
+
+1. Breadcrumb
+
+2. Hero Section
+
+3. Tool Interface
+
+4. Tool Description
+
+5. Features
+
+6. Usage Instructions
+
+7. FAQ
+
+8. Related Tools
+
+9. Call to Action
+
+10. Footer
+
+Maintain a consistent layout across all tool pages.
+
+---
+
+# 5. Hero Section
+
+The Hero should include:
+
+• Tool Name (H1)
+
+• Short description
+
+• Primary action button
+
+• Optional illustration
+
+Keep introductory content concise.
+
+Users should immediately understand what the tool does.
+
+---
+
+# 6. Tool Interface
+
+The tool interface is the primary content.
+
+Requirements:
+
+• Visible above the fold whenever practical
+
+• Responsive
+
+• Keyboard accessible
+
+• Mobile-friendly
+
+• Fast to load
+
+Avoid unnecessary decorative elements around the tool.
+
+---
+
+# 7. Tool Controls
+
+Controls should follow a predictable order.
+
+Typical flow:
+
+Input
+
+↓
+
+Options
+
+↓
+
+Primary Action
+
+↓
+
+Result
+
+↓
+
+Secondary Actions
+
+Buttons should use clear action verbs.
+
+Examples:
+
+Convert
+
+Generate
+
+Compress
+
+Format
+
+Analyze
+
+---
+
+# 8. Results Section
+
+Results should appear without causing layout shifts.
+
+Include:
+
+• Copy Button
+
+• Download Button (when applicable)
+
+• Reset Button
+
+• Share Button (optional)
+
+Results should remain selectable and accessible.
+
+---
+
+# 9. Related Tools
+
+Every tool page should recommend relevant tools.
+
+Recommended:
+
+4–8 related tools
+
+Selection should prioritize:
+
+• Same category
+
+• Similar workflow
+
+• Frequently used together
+
+Display related tools as reusable tool cards.
+
+---
+
+# 10. FAQ Section
+
+Each tool page should include an FAQ section when appropriate.
+
+Recommended:
+
+3–8 frequently asked questions.
+
+FAQs should:
+
+• Answer real user questions
+
+• Improve usability
+
+• Support SEO
+
+Include FAQPage structured data when FAQs are present.
+
+---
+
+# 11. Breadcrumb Navigation
+
+Provide visible breadcrumb navigation.
+
+Example:
+
+Home
+
+>
+
+Tools
+
+>
+
+Image Tools
+
+>
+
+Image Compressor
+
+Also include:
+
+BreadcrumbList
+
+JSON-LD structured data.
+
+Breadcrumbs improve navigation and search engine understanding.
+
+---
+
+# 12. SoftwareApplication Schema
+
+Every tool page should include:
+
+SoftwareApplication
+
+JSON-LD.
+
+Recommended properties:
+
+• Name
+
+• Description
+
+• Application Category
+
+• Operating System
+
+• URL
+
+• Offers (if applicable)
+
+• Publisher
+
+Use accurate metadata only.
+
+Do not include unsupported properties.
+
+---
+
+# 13. Search Integration
+
+Every tool page should integrate with the global search system.
+
+Search should allow users to discover:
+
+• Other tools
+
+• Categories
+
+• Documentation
+
+• Tutorials
+
+Search behavior should remain consistent across the platform.
+
+---
+
+# 14. Tool Description
+
+Provide a concise explanation below the tool.
+
+Recommended sections:
+
+• Overview
+
+• Key Features
+
+• Benefits
+
+• Supported Formats
+
+Avoid long introductory paragraphs before the tool interface.
+
+---
+
+# 15. Usage Instructions
+
+Explain how to use the tool.
+
+Recommended format:
+
+Step 1
+
+Step 2
+
+Step 3
+
+Step 4
+
+Instructions should be easy to scan.
+
+Avoid unnecessary technical terminology.
+
+---
+
+# 16. Features Section
+
+Highlight the tool's capabilities.
+
+Examples:
+
+• Fast Processing
+
+• Secure
+
+• Browser-Based
+
+• No Installation
+
+• Free to Use
+
+• Mobile Friendly
+
+Keep feature descriptions concise.
+
+---
+
+# 17. Error Handling
+
+Provide clear feedback.
+
+Examples:
+
+Invalid Input
+
+Unsupported File
+
+Empty Field
+
+Network Error
+
+Error messages should explain:
+
+• What happened
+
+• Why
+
+• How to fix it
+
+Avoid generic messages like:
+
+Something went wrong.
+
+---
+
+# 18. Empty States
+
+When no result exists, explain the next step.
+
+Examples:
+
+Upload a file to begin.
+
+Enter text to format.
+
+Generate your first password.
+
+Empty states should guide users toward successful interaction.
+
+---
+
+# 19. Accessibility
+
+Every tool page should support:
+
+✓ Keyboard navigation
+
+✓ Screen readers
+
+✓ Visible focus indicators
+
+✓ Semantic HTML
+
+✓ Reduced motion
+
+✓ WCAG 2.2 AA compliance
+
+Accessibility is required for all interactive controls.
+
+---
+
+# 20. Performance
+
+Tool pages should prioritize:
+
+• Fast initial load
+
+• Optimized images
+
+• Lazy loading for non-critical assets
+
+• Minimal JavaScript
+
+• Efficient rendering
+
+Interactive functionality should remain responsive.
+
+---
+
+# 21. SEO Requirements
+
+Every tool page should include:
+
+✓ Unique Title
+
+✓ Meta Description
+
+✓ Canonical URL
+
+✓ Open Graph
+
+✓ Twitter Cards
+
+✓ SoftwareApplication Schema
+
+✓ Breadcrumb Schema
+
+✓ FAQ Schema (when applicable)
+
+✓ Descriptive H1
+
+✓ Internal links to related tools
+
+---
+
+# 22. Internal Linking
+
+Link to:
+
+• Related tools
+
+• Parent category
+
+• Relevant blog articles
+
+• Tutorials
+
+• Documentation
+
+Internal linking should improve navigation and topical authority.
+
+---
+
+# 23. Responsive Design
+
+Tool pages should adapt across all screen sizes.
+
+Requirements:
+
+• Responsive layouts
+
+• Flexible tool interface
+
+• Readable typography
+
+• Touch-friendly controls
+
+Avoid horizontal scrolling.
+
+---
+
+# 24. Analytics Readiness
+
+Future analytics integration should support:
+
+• Tool usage
+
+• Conversion events
+
+• Search queries
+
+• Copy actions
+
+• Download actions
+
+Analytics should remain modular and privacy-conscious.
+
+---
+
+# 25. Future Scalability
+
+Tool pages should support future enhancements without structural redesign.
+
+Examples:
+
+• AI-assisted features
+
+• User preferences
+
+• Saved history
+
+• Tool ratings
+
+• Comments
+
+• Localization
+
+Core layouts should remain backward-compatible.
+
+---
+
+# 26. Code Review Checklist
+
+Before publishing a tool page:
+
+✓ URL follows standards.
+
+✓ Layout is consistent.
+
+✓ Tool loads correctly.
+
+✓ Related tools included.
+
+✓ FAQ reviewed.
+
+✓ Breadcrumb implemented.
+
+✓ SoftwareApplication schema validated.
+
+✓ Search integration verified.
+
+✓ Accessibility tested.
+
+✓ Performance reviewed.
+
+---
+
+# 27. Quality Standards
+
+Every tool page should provide:
+
+• Clear purpose
+
+• Immediate usability
+
+• Reliable performance
+
+• Consistent design
+
+• Helpful guidance
+
+• Discoverable related content
+
+Users should accomplish their task with minimal effort.
+
+---
+
+# 28. Future Enhancements
+
+Potential future additions include:
+
+• AI-powered recommendations
+
+• Recently used tools
+
+• Personalized suggestions
+
+• Tool collections
+
+• Offline support (PWA)
+
+• Community ratings
+
+These enhancements should integrate without modifying the core tool page architecture.
+
+---
+
+# 29. Maintenance Guidelines
+
+Review tool pages periodically to ensure:
+
+✓ Metadata remains accurate.
+
+✓ Internal links are valid.
+
+✓ Related tools stay relevant.
+
+✓ Structured data validates successfully.
+
+✓ Content reflects current functionality.
+
+Tool pages should evolve without compromising consistency.
+
+---
+
+# 30. Overall Tool Page Principle
+
+A Banynova Tool Page should prioritize usability above all else.
+Users should be able to understand the tool, complete their task, and discover related resources with minimal friction.
+Every tool page should follow a consistent architecture that supports accessibility, performance, SEO, scalability, and long-term maintainability, ensuring the platform can grow without requiring fundamental structural changes.
+# End of Part 10
+# ==========================================================================
+# ==========================================================================
+# BANYNOVA ENGINEERING STANDARDS
+# Part 11 — Homepage Standards
+# Version: 1.0
+# ==========================================================================
+
+# 1. Purpose
+
+This document defines the engineering and design standards for the Banynova Homepage.
+
+The Homepage is the primary entry point to the platform and should clearly communicate the product, guide users to relevant tools, and support long-term scalability.
+
+Every homepage should be:
+
+• Fast
+
+• Accessible
+
+• SEO-friendly
+
+• Responsive
+
+• Discoverable
+
+• Conversion-focused
+
+---
+
+# 2. Homepage Philosophy
+
+The homepage should answer three questions within the first few seconds:
+
+• What is Banynova?
+
+• What can users do here?
+
+• Where should users go next?
+
+The homepage should prioritize clarity over decoration and functionality over complexity.
+
+---
+
+# 3. Homepage Objectives
+
+Primary objectives:
+
+• Introduce Banynova
+
+• Encourage tool discovery
+
+• Support search
+
+• Highlight popular categories
+
+• Increase user engagement
+
+• Improve SEO
+
+• Drive internal navigation
+
+Every section should support one or more of these objectives.
+
+---
+
+# 4. Recommended Homepage Layout
+
+Recommended page order:
+
+1. Header
+
+2. Hero
+
+3. Search
+
+4. Featured Categories
+
+5. Popular Tools
+
+6. Featured Tutorials
+
+7. Platform Statistics
+
+8. Why Choose Banynova
+
+9. Call-to-Action (CTA)
+
+10. Footer
+
+Keep the layout consistent and easy to scan.
+
+---
+
+# 5. Header
+
+The homepage header should include:
+
+• Logo
+
+• Primary Navigation
+
+• Search Shortcut (optional)
+
+• Theme Toggle
+
+• Mobile Menu
+
+Header behavior:
+
+✓ Responsive
+
+✓ Keyboard accessible
+
+✓ Sticky (optional)
+
+✓ Lightweight
+
+Avoid overcrowding the header with secondary links.
+
+---
+
+# 6. Hero Section
+
+The Hero should immediately communicate Banynova's value.
+
+Recommended content:
+
+• H1 headline
+
+• Short description
+
+• Primary CTA
+
+• Secondary CTA
+
+• Hero illustration or mockup
+
+The Hero should remain visually clean and concise.
+
+---
+
+# 7. Search
+
+Homepage search is a primary navigation feature.
+
+Requirements:
+
+✓ Prominently placed
+
+✓ Keyboard accessible
+
+✓ Instant suggestions
+
+✓ Debounced input
+
+✓ Mobile-friendly
+
+Search should help users quickly find tools, categories, tutorials, and documentation.
+
+---
+
+# 8. Featured Categories
+
+Display major tool categories.
+
+Recommended:
+
+6–12 categories
+
+Each category card should include:
+
+• Icon
+
+• Category name
+
+• Short description
+
+• Tool count (optional)
+
+Categories should be visually consistent and reusable.
+
+---
+
+# 9. Popular Tools
+
+Highlight frequently used tools.
+
+Recommended:
+
+8–12 tool cards
+
+Each card should display:
+
+• Icon
+
+• Tool name
+
+• Short description
+
+• Category
+
+• Optional badges (New, Popular, Updated)
+
+Use reusable card components.
+---
+# 10. Featured Tutorials
+Show educational content that helps users get more value from the platform.
+Recommended:
+3–6 tutorials
+Each tutorial card should include:
+• Thumbnail (optional)
+• Title
+• Short description
+• Reading time (optional)
+• Category
+Encourage users to explore beyond individual tools.
+
+---
+
+# 11. Platform Statistics
+
+Display concise, meaningful metrics.
+
+Examples:
+
+• Total Tools
+
+• Categories
+
+• Tutorials
+
+• Monthly Users (if applicable)
+
+• Supported Formats
+
+Use simple, readable cards.
+
+Avoid exaggerated or misleading numbers.
+
+---
+
+# 12. Why Choose Banynova
+
+Highlight platform advantages.
+
+Examples:
+
+• Free to Use
+
+• Browser-Based
+
+• Privacy-Focused
+
+• Fast Performance
+
+• No Installation
+
+• Mobile Friendly
+
+Present these as concise feature cards with icons.
+
+---
+
+# 13. Call-to-Action (CTA)
+
+Include a clear CTA near the end of the homepage.
+
+Examples:
+
+• Explore All Tools
+
+• Browse Categories
+
+• Start Converting
+
+• Read Tutorials
+
+CTA buttons should use action-oriented labels.
+
+Avoid multiple competing primary CTAs.
+
+---
+
+# 14. Cards
+
+All homepage cards should follow the shared component system.
+
+Requirements:
+
+✓ Equal spacing
+
+✓ Consistent radius
+
+✓ Reusable design
+
+✓ Responsive layout
+
+✓ Accessible interactions
+
+Cards should support Light and Dark themes without separate implementations.
+
+---
+
+# 15. Search Integration
+
+Homepage search should integrate with the global search index.
+
+Users should be able to discover:
+
+• Tools
+
+• Categories
+
+• Tutorials
+
+• Documentation
+
+Results should remain consistent with search behavior across the rest of the platform.
+
+---
+
+# 16. Motion System
+
+Motion should reinforce hierarchy and interaction without becoming distracting.
+
+Recommended motion:
+
+• Hero illustration floating
+
+• Button hover feedback
+
+• Card elevation on hover
+
+• Navigation underline animation
+
+• Search result reveal
+
+• Section fade-in (optional)
+
+Animations should:
+
+✓ Be GPU-friendly
+
+✓ Use transform and opacity
+
+✓ Avoid layout-triggering properties
+
+✓ Never delay interaction
+
+---
+
+# 17. Motion Accessibility
+
+Respect user preferences.
+
+Implement:
+
+@media (prefers-reduced-motion: reduce)
+
+Reduce or disable:
+
+• Floating animations
+
+• Continuous loops
+
+• Hover motion
+
+• Parallax
+
+• Decorative transitions
+
+All essential functionality must remain available without animation.
+
+---
+
+# 18. Responsive Design
+
+Homepage should adapt smoothly across all screen sizes.
+
+Requirements:
+
+• Mobile-first layout
+
+• Flexible grids
+
+• Readable typography
+
+• Touch-friendly controls
+
+• No horizontal scrolling
+
+Breakpoints should be based on layout needs rather than specific devices.
+
+---
+
+# 19. Accessibility
+
+Homepage must support:
+
+✓ WCAG 2.2 AA
+
+✓ Keyboard navigation
+
+✓ Screen readers
+
+✓ Semantic HTML
+
+✓ Visible focus indicators
+
+✓ Sufficient color contrast
+
+✓ Skip-to-content link
+
+Accessibility should be validated before release.
+
+---
+
+# 20. Performance
+
+Homepage should prioritize fast loading.
+
+Recommendations:
+
+• Optimize LCP elements
+
+• Lazy-load below-the-fold images
+
+• Inline Critical CSS
+
+• Minimize JavaScript
+
+• Optimize fonts
+
+• Compress images
+
+• Reduce unnecessary network requests
+
+Performance should be monitored continuously.
+
+---
+
+# 21. SEO
+
+Homepage should include:
+
+✓ Unique Title
+
+✓ Meta Description
+
+✓ Canonical URL
+
+✓ Open Graph
+
+✓ Twitter Cards
+
+✓ JSON-LD:
+
+- Organization
+- WebSite
+- SearchAction
+- WebPage
+
+✓ XML Sitemap inclusion
+
+✓ Robots directives
+
+Ensure metadata accurately reflects the homepage.
+
+---
+
+# 22. Future Scalability
+
+Homepage architecture should support future modules without structural redesign.
+
+Potential future additions:
+
+• Recently Added Tools
+
+• Trending Tools
+
+• AI Recommendations
+
+• User Collections
+
+• Testimonials
+
+• Newsletter
+
+• Featured Integrations
+
+Core layout components should remain backward-compatible so future modules can be integrated without breaking existing templates.
+
+---
+
+# 23. Code Review Checklist
+
+Before publishing the homepage:
+
+✓ Layout follows the standard structure.
+
+✓ Hero communicates the platform clearly.
+
+✓ Search works correctly.
+
+✓ Categories are organized logically.
+
+✓ Tool cards are reusable.
+
+✓ Tutorials are relevant.
+
+✓ Statistics are accurate.
+
+✓ CTA is prominent.
+
+✓ Footer includes essential links.
+
+✓ Motion respects reduced-motion preferences.
+
+✓ Accessibility has been tested.
+
+✓ Performance meets Core Web Vitals targets.
+
+✓ SEO metadata and structured data validate successfully.
+
+---
+
+# 24. Quality Standards
+
+A production-ready homepage should:
+
+• Load quickly
+
+• Guide users intuitively
+
+• Support exploration
+
+• Encourage engagement
+
+• Scale gracefully
+
+• Maintain visual consistency
+
+Every section should provide value and justify its presence.
+
+---
+# 25. Overall Homepage Principle
+The Banynova Homepage should function as the central gateway to the platform.
+It should help users discover tools, understand the platform, and navigate efficiently while maintaining excellent accessibility, performance, SEO, and usability.
+The homepage architecture should follow a component-first design system that supports incremental growth, enabling new sections and features to be added without requiring fundamental redesign or compromising the consistency of the overall user experience.
+# End of Part 11
+# ==========================================================================
+# ==========================================================================
+# BANYNOVA ENGINEERING STANDARDS
+# Part 12 — Production Checklist
+# Version: 1.0
+# ==========================================================================
+
+# 1. Purpose
+
+This document defines the final production readiness checklist for Banynova.
+
+Every page, component, and feature should pass this checklist before deployment.
+
+The objective is to ensure:
+
+• High quality
+
+• Performance
+
+• Accessibility
+
+• Maintainability
+
+• Security
+
+• Scalability
+
+• Consistency
+
+This checklist serves as the final engineering verification prior to release.
+
+---
+
+# 2. Production Philosophy
+
+Deployment is not the end of development.
+
+Every release should be:
+
+• Stable
+
+• Predictable
+
+• Well-tested
+
+• Backward-compatible
+
+• Fully documented
+
+Never deploy features that bypass the engineering standards.
+
+---
+
+# 3. Code Review Checklist
+
+Before merging code, verify:
+
+✓ Naming conventions are consistent.
+
+✓ Components are reusable.
+
+✓ No duplicated logic exists.
+
+✓ No unnecessary complexity.
+
+✓ HTML is semantic.
+
+✓ CSS follows the design token system.
+
+✓ JavaScript modules have a single responsibility.
+
+✓ Comments explain architecture—not obvious code.
+
+✓ Dead code has been removed.
+
+✓ Code formatting is consistent.
+
+✓ No console.log() statements remain in production code.
+
+✓ No commented-out legacy code remains.
+
+---
+
+# 4. HTML Review
+
+Verify:
+
+✓ Valid HTML5.
+
+✓ One H1 per page.
+
+✓ Proper heading hierarchy.
+
+✓ Semantic elements used.
+
+✓ Labels associated with all form controls.
+
+✓ Meaningful alt text.
+
+✓ Accessible landmarks.
+
+✓ Valid metadata.
+
+✓ Clean document structure.
+
+---
+
+# 5. CSS Review
+
+Verify:
+
+✓ Design Tokens are used consistently.
+
+✓ No duplicate styles.
+
+✓ No unnecessary specificity.
+
+✓ Mobile-first responsive design.
+
+✓ Components remain reusable.
+
+✓ Utility classes remain minimal.
+
+✓ No hardcoded colors.
+
+✓ Motion follows standards.
+
+✓ Reduced-motion support implemented.
+
+---
+
+# 6. JavaScript Review
+
+Verify:
+
+✓ Modular architecture.
+
+✓ No global variables.
+
+✓ Event delegation where appropriate.
+
+✓ Debounce applied to input events.
+
+✓ Throttle applied to scroll events.
+
+✓ Theme initialization prevents FOUC.
+
+✓ Search is optimized.
+
+✓ No unused modules.
+
+✓ No blocking synchronous tasks.
+
+---
+
+# 7. Performance Audit
+
+Verify:
+
+✓ Lighthouse Performance ≥ 95.
+
+✓ LCP ≤ 2.5 seconds.
+
+✓ CLS ≤ 0.1.
+
+✓ INP ≤ 200 milliseconds.
+
+✓ Minimal JavaScript execution.
+
+✓ Efficient rendering.
+
+✓ Images optimized.
+
+✓ Fonts optimized.
+
+✓ Critical CSS applied.
+
+✓ Lazy loading implemented correctly.
+
+✓ Network requests minimized.
+
+✓ No unnecessary third-party resources.
+
+---
+
+# 8. Accessibility Audit
+
+Verify WCAG 2.2 AA compliance.
+
+Checklist:
+
+✓ Keyboard navigation.
+
+✓ Screen reader compatibility.
+
+✓ Visible focus indicators.
+
+✓ Logical tab order.
+
+✓ Proper ARIA usage.
+
+✓ Semantic HTML.
+
+✓ Skip-to-content link.
+
+✓ Color contrast meets AA.
+
+✓ Reduced-motion support.
+
+✓ Accessible dialogs.
+
+✓ Accessible forms.
+
+✓ Accessible search.
+
+Accessibility testing should be performed using both automated tools and manual review.
+
+---
+
+# 9. SEO Audit
+
+Verify:
+
+✓ Unique title.
+
+✓ Unique description.
+
+✓ Canonical URL.
+
+✓ Open Graph metadata.
+
+✓ Twitter Cards.
+
+✓ Robots directives.
+
+✓ JSON-LD validation.
+
+✓ Structured data passes Rich Results Test.
+
+✓ Sitemap updated.
+
+✓ Robots.txt verified.
+
+✓ Internal links reviewed.
+
+✓ No broken links.
+
+---
+
+# 10. Browser Testing
+
+Test the latest stable versions of:
+
+✓ Google Chrome
+
+✓ Mozilla Firefox
+
+✓ Microsoft Edge
+
+✓ Apple Safari
+
+Verify:
+
+• Layout
+
+• Navigation
+
+• Forms
+
+• Search
+
+• Dialogs
+
+• Animations
+
+• Theme switching
+
+Avoid browser-specific implementations whenever possible.
+
+---
+
+# 11. Mobile Testing
+
+Test on multiple viewport sizes.
+
+Verify:
+
+✓ Responsive layout.
+
+✓ Touch-friendly controls.
+
+✓ Navigation.
+
+✓ Search.
+
+✓ Forms.
+
+✓ Dialogs.
+
+✓ Images.
+
+✓ Typography.
+
+✓ No horizontal scrolling.
+
+✓ Comfortable touch targets.
+
+Mobile performance should receive the same priority as desktop.
+
+---
+
+# 12. Theme Verification
+
+Verify:
+
+✓ Light Theme.
+
+✓ Dark Theme.
+
+✓ Theme persistence.
+
+✓ No flash of incorrect theme.
+
+✓ Accessible contrast in both themes.
+
+✓ Components render consistently.
+
+---
+
+# 13. Motion Verification
+
+Verify:
+
+✓ GPU-friendly animations.
+
+✓ No layout-triggering animations.
+
+✓ Hover effects remain subtle.
+
+✓ Motion never delays interaction.
+
+✓ prefers-reduced-motion is respected.
+
+✓ Continuous animations can be disabled.
+
+Animations should enhance usability rather than distract from it.
+
+---
+
+# 14. Security Review
+
+Verify:
+
+✓ User input is sanitized.
+
+✓ No unsafe HTML injection.
+
+✓ No use of eval().
+
+✓ Sensitive information is never stored in localStorage.
+
+✓ External links use appropriate security attributes when opening new tabs.
+
+✓ Dependencies are reviewed.
+
+Platform limitations (such as Blogger-managed security headers) should be documented where applicable.
+
+---
+
+# 15. Content Review
+
+Verify:
+
+✓ Grammar reviewed.
+
+✓ Spelling reviewed.
+
+✓ Consistent terminology.
+
+✓ Helpful instructions.
+
+✓ Accurate documentation.
+
+✓ Updated screenshots (when applicable).
+
+✓ No placeholder text.
+
+✓ No Lorem Ipsum.
+
+---
+
+# 16. Future Scalability Review
+
+Verify:
+
+✓ Components remain reusable.
+
+✓ Modules remain independent.
+
+✓ Architecture supports future growth.
+
+✓ New pages follow existing standards.
+
+✓ No page-specific hacks.
+
+✓ Core layouts remain backward-compatible.
+
+✓ Future integrations will not require structural redesign.
+
+The component-first architecture should support incremental platform growth.
+
+---
+
+# 17. Deployment Checklist
+
+Before deployment:
+
+✓ Final code review completed.
+
+✓ Performance audit passed.
+
+✓ Accessibility audit passed.
+
+✓ SEO audit passed.
+
+✓ Browser testing completed.
+
+✓ Mobile testing completed.
+
+✓ Structured data validated.
+
+✓ Sitemap regenerated or verified.
+
+✓ Robots.txt reviewed.
+
+✓ Version number updated (if applicable).
+
+✓ Backup created.
+
+✓ Deployment approved.
+
+✓ Production environment verified.
+
+---
+
+# 18. Post-Deployment Verification
+
+Immediately after deployment:
+
+✓ Homepage loads correctly.
+
+✓ Navigation works.
+
+✓ Search functions correctly.
+
+✓ Tool pages load.
+
+✓ Theme switching works.
+
+✓ Images load properly.
+
+✓ No JavaScript errors.
+
+✓ No broken internal links.
+
+✓ Structured data remains valid.
+
+✓ Analytics (if enabled) is receiving data.
+
+---
+
+# 19. Continuous Improvement
+
+After each release:
+
+• Review performance metrics.
+
+• Monitor accessibility issues.
+
+• Analyze user feedback.
+
+• Fix regressions promptly.
+
+• Update engineering documentation.
+
+• Refactor when justified.
+
+Engineering standards should evolve alongside the platform without sacrificing backward compatibility.
+
+---
+
+# 20. Release Approval Criteria
+
+A release is considered production-ready only when:
+
+✓ Engineering Standards are satisfied.
+
+✓ Quality Assurance is completed.
+
+✓ Accessibility meets WCAG 2.2 AA.
+
+✓ Performance targets are achieved.
+
+✓ SEO requirements are validated.
+
+✓ No critical or high-severity issues remain.
+
+If any critical requirement fails, deployment should be postponed until the issue is resolved.
+---
+# 21. Overall Production Principle
+Production readiness is achieved through disciplined engineering—not last-minute fixes.
+Every Banynova release should demonstrate consistency, reliability, accessibility, performance, security, and maintainability.
+The engineering foundation should remain component-first, standards-driven, and backward-compatible, ensuring that future enhancements can be integrated without compromising the stability, quality, or long-term scalability of the platform.
+# End of Part 12
