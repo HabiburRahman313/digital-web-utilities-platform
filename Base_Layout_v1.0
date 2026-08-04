@@ -23,8 +23,6 @@
   Theme -> Backup/Restore -> Upload the downloaded file.
 
   WHAT STILL NEEDS TO BE FILLED IN
-  - Replace the favicon href below with your real uploaded favicon URL.
-  - Replace the og:image content URL with your default open graph image.
   - The post template ("post" includable) is intentionally minimal — the
     Universal Tool Template (Roadmap Step 4) will extend it once tool pages
     are being built; for now it renders a plain, readable article.
@@ -67,14 +65,14 @@
 <b:if cond='data:blog.metaDescription'>
 <meta expr:content='data:blog.metaDescription' property='og:description'/>
 </b:if>
-<meta content='YOUR_IMAGE_URL' property='og:image'/>
+<meta content='https://banynova.blogspot.com/og-image.png' property='og:image'/>
 
 <meta content='summary_large_image' name='twitter:card'/>
 <meta expr:content='data:blog.pageName' name='twitter:title'/>
 <b:if cond='data:blog.metaDescription'>
 <meta expr:content='data:blog.metaDescription' name='twitter:description'/>
 </b:if>
-<meta content='YOUR_IMAGE_URL' name='twitter:image'/>
+<meta content='https://banynova.blogspot.com/og-image.png' name='twitter:image'/>
 
 <!-- ======================= JSON-LD STRUCTURED DATA ======================= -->
 <b:if cond='data:blog.url == data:blog.homepageUrl'>
@@ -656,114 +654,105 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
       var imgs = Banynova.utils.qsa(selector || 'img[data-src]');
       if (imgs.length === 0) { return; }
       if (!('IntersectionObserver' in window)) {
-        imgs.forEach(function (img) { img.src = img.getAttribute('data-src'); });
+        imgs.forEach(function (img) {
+          if (img.dataset.src) { img.src = img.dataset.src; }
+        });
         return;
       }
-      var observer = new IntersectionObserver(function (entries, obs) {
+      var obs = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {
             var img = entry.target;
-            img.src = img.getAttribute('data-src');
-            img.removeAttribute('data-src');
+            if (img.dataset.src) { img.src = img.dataset.src; }
             obs.unobserve(img);
           }
         });
       });
-      imgs.forEach(function (img) { observer.observe(img); });
+      imgs.forEach(function (img) { obs.observe(img); });
+    }
+  };
+
+  /* ------------------------------------------------------------------------
+     HEADER SCROLL & MOBILE MENU CONTROLLER
+     ------------------------------------------------------------------------ */
+  Banynova.ui = {
+    initHeaderScroll: function () {
+      var header = document.getElementById('bn-header');
+      if (!header) { return; }
+      var handleScroll = Banynova.utils.throttle(function () {
+        if (window.scrollY > 10) {
+          header.classList.add('is-scrolled');
+        } else {
+          header.classList.remove('is-scrolled');
+        }
+      }, 100);
+      window.addEventListener('scroll', handleScroll, { passive: true });
     },
-    loadScript: function (src, callback) {
-      var existing = document.querySelector('script[src="' + src + '"]');
-      if (existing) { if (callback) { callback(); } return; }
-      var s = document.createElement('script');
-      s.src = src;
-      s.async = true;
-      if (callback) { s.onload = callback; }
-      document.head.appendChild(s);
-    }
-  };
+    initMobileNav: function () {
+      var toggle = document.getElementById('bn-menu-toggle');
+      var nav = document.getElementById('bn-mobile-nav');
+      var overlay = document.getElementById('bn-nav-overlay');
+      if (!toggle || !nav || !overlay) { return; }
 
-  /* ------------------------------------------------------------------------
-     BROWSER COMPATIBILITY / FEATURE SUPPORT
-     ------------------------------------------------------------------------ */
-  Banynova.support = {
-    clipboard: !!(navigator.clipboard && navigator.clipboard.writeText),
-    webCrypto: !!(window.crypto && window.crypto.subtle),
-    intersectionObserver: 'IntersectionObserver' in window,
-    backdropFilter: !!(window.CSS && window.CSS.supports && (window.CSS.supports('backdrop-filter', 'blur(1px)') || window.CSS.supports('-webkit-backdrop-filter', 'blur(1px)')))
-  };
-
-  /* ------------------------------------------------------------------------
-     MOBILE NAV + HEADER SCROLL (shell behavior, always present)
-     ------------------------------------------------------------------------ */
-  function initHeaderShell() {
-    var header = document.getElementById('bn-header');
-    if (header) {
-      window.addEventListener(
-        'scroll',
-        Banynova.utils.throttle(function () {
-          header.classList.toggle('is-scrolled', window.scrollY > 8);
-        }, 100),
-        { passive: true }
-      );
-    }
-    var menuBtn = document.getElementById('bn-menu-toggle');
-    var mobileNav = document.getElementById('bn-mobile-nav');
-    var overlay = document.getElementById('bn-nav-overlay');
-    if (menuBtn && mobileNav) {
       var releaseFocusTrap = null;
+
       function openMenu() {
-        mobileNav.classList.add('is-open');
-        menuBtn.setAttribute('aria-expanded', 'true');
+        toggle.setAttribute('aria-expanded', 'true');
+        toggle.setAttribute('aria-label', 'Close menu');
+        nav.classList.add('is-open');
+        overlay.classList.add('is-open');
         document.body.classList.add('bn-scroll-locked');
-        if (overlay) { overlay.classList.add('is-open'); }
-        releaseFocusTrap = Banynova.a11y.trapFocus(mobileNav);
+        releaseFocusTrap = Banynova.a11y.trapFocus(nav);
+        Banynova.a11y.announce('Menu opened');
       }
+
       function closeMenu() {
-        mobileNav.classList.remove('is-open');
-        menuBtn.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Open menu');
+        nav.classList.remove('is-open');
+        overlay.classList.remove('is-open');
         document.body.classList.remove('bn-scroll-locked');
-        if (overlay) { overlay.classList.remove('is-open'); }
-        if (releaseFocusTrap) { releaseFocusTrap(); releaseFocusTrap = null; }
+        if (typeof releaseFocusTrap === 'function') {
+          releaseFocusTrap();
+          releaseFocusTrap = null;
+        }
+        Banynova.a11y.announce('Menu closed');
       }
-      menuBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        if (mobileNav.classList.contains('is-open')) { closeMenu(); } else { openMenu(); }
+
+      toggle.addEventListener('click', function () {
+        var isOpen = nav.classList.contains('is-open');
+        if (isOpen) { closeMenu(); } else { openMenu(); }
       });
-      if (overlay) {
-        overlay.addEventListener('click', function () { closeMenu(); menuBtn.focus(); });
-      }
-      document.addEventListener('click', function (e) {
-        if (mobileNav.classList.contains('is-open') && !mobileNav.contains(e.target) && !menuBtn.contains(e.target)) {
+
+      overlay.addEventListener('click', closeMenu);
+
+      window.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && nav.classList.contains('is-open')) {
           closeMenu();
+          toggle.focus();
         }
       });
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && mobileNav.classList.contains('is-open')) {
-          closeMenu();
-          menuBtn.focus();
-        }
-      });
+    },
+    initDynamicYear: function () {
+      var yearEl = document.getElementById('bn-year');
+      if (yearEl) {
+        yearEl.textContent = new Date().getFullYear();
+      }
     }
-    var yearEl = document.getElementById('bn-year');
-    if (yearEl) { yearEl.textContent = String(new Date().getFullYear()); }
-  }
+  };
 
-  global.Banynova = Banynova;
-
-  if (Object.freeze) {
-    Object.freeze(Banynova.storage);
-    Object.freeze(Banynova.theme);
-    Object.freeze(Banynova.a11y);
-    Object.freeze(Banynova.utils);
-    Object.freeze(Banynova.perf);
-    Object.freeze(Banynova.support);
-  }
-
-  Banynova.theme.init();
-  initHeaderShell();
+  /* ------------------------------------------------------------------------
+     GLOBAL INITIALIZATION
+     ------------------------------------------------------------------------ */
+  document.addEventListener('DOMContentLoaded', function () {
+    Banynova.theme.init();
+    Banynova.perf.lazyLoadImages();
+    Banynova.ui.initHeaderScroll();
+    Banynova.ui.initMobileNav();
+    Banynova.ui.initDynamicYear();
+  });
 
 })(window);
 //]]></script>
-
 </body>
 </html>
