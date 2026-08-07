@@ -1,0 +1,1182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ============================================================================
+  BANYNOVA — BASE LAYOUT (Blogger Theme Foundation)
+  Version 2.0 — rebuilt to comply with BANYNOVA ENGINEERING STANDARDS
+  (Parts 1-9 and 12: Core Principles, Blogger XML, HTML, CSS, JavaScript,
+  UI Components, Accessibility WCAG 2.2 AA, Performance, SEO, Production
+  Checklist).
+  ============================================================================
+  Governed by Documentation_Governance_v1.0.md, Design_System_v1.0.md, and
+  the BANYNOVA ENGINEERING STANDARDS document.
+
+  WHAT THIS FILE IS
+  A COMPLETE, standalone Blogger theme file — not a fragment. Exactly one
+  b:skin block, a correct html/head/body skeleton, one Header section and
+  one Main section using Blogger's own Blog widget, and a Footer section.
+
+  BEFORE YOU TOUCH ANYTHING IN BLOGGER
+  1. Theme -> Backup/Restore -> Download theme. Save that file somewhere
+     safe. This is the single most important step.
+  2. Theme -> Edit HTML -> select all existing content -> delete it ->
+     paste this entire file in its place.
+  3. Use Preview BEFORE clicking Save — check homepage, a normal post,
+     and mobile width.
+  4. Only Save once preview looks correct.
+
+  TWO DELIBERATE DEVIATIONS FROM THE STANDARDS DOCUMENT (flagged, not
+  silently applied — Part 3 Section 3 asks for <!DOCTYPE html> and
+  <html lang="en">):
+  - No literal <!DOCTYPE html> is written here. Blogger's rendering engine
+    injects the HTML5 doctype into the final output automatically; the
+    template source itself is XML compiled by Blogger, not raw HTML sent
+    to the browser. Adding a literal doctype before <html> risks an extra,
+    non-standard node ahead of the required single root element.
+  - <html lang='en'> IS included below (see the html tag) — that part of
+    the standard is followed directly, since it carries no such conflict.
+
+  WHAT STILL NEEDS TO BE FILLED IN
+  - Replace the favicon href with your real uploaded favicon URL.
+  - Replace the og:image / twitter:image placeholder URL with a real
+    1200x630 social image (Part 9 Section 10).
+  - Replace the placeholder social/GitHub links in the footer.
+  - The post template ("post" includable) stays intentionally minimal —
+    the Universal Tool Template (Roadmap Step 4) extends it once tool
+    pages are being built.
+  - FAQPage / BreadcrumbList JSON-LD are intentionally NOT added here —
+    Part 9 Section 13 scopes those to tool pages, and structured data
+    should never describe content that isn't visibly on the page yet.
+
+  CHANGELOG (v1.0 -> v2.0)
+  - New head order matches Part 2 Section 7 exactly (charset, viewport,
+    theme-color, color-scheme, canonical, title, description, OG,
+    Twitter, icons, structured data, CSS, critical JS).
+  - Added color-scheme meta, referrer-policy meta, og:image, og:locale,
+    twitter:image/title/description, and Organization / WebSite+
+    SearchAction / WebPage JSON-LD (Part 9 Sections 8, 9, 12).
+  - Skip link now targets id="main-content" (Part 7 Section 8).
+  - New design tokens: header-height, sidebar-width, and a z-index scale
+    (dropdown/sticky/modal/tooltip) replacing ad hoc z-index numbers
+    (Part 4 Section 4).
+  - body transition now animates background-color, not background
+    (Part 4 Section 23).
+  - Added img { height: auto } and a documented img/picture/svg block
+    (Part 4 Section 18).
+  - Added ::selection styling (Part 4 Section 32).
+  - Logo SVG de-duplicated into one <symbol>, referenced via <use> in
+    the header and footer (Part 2 Section 16).
+  - Navigation restructured to Tools / Categories / Blog / Resources /
+    About per Part 6 Section 5, with aria-current="page" wired in JS.
+  - Footer expanded: Quick Links, Legal (Privacy, Terms, Cookies,
+    Accessibility), Contact, plus Sitemap/RSS/GitHub — Disclaimer moved
+    out of the primary Legal list into the secondary bottom bar
+    (Part 6 Section 20).
+  - Header scroll handler now wrapped in Banynova.utils.throttle (100ms)
+    instead of an unthrottled listener (Part 5 Section 12).
+  - JS reorganized under a proper Banynova.navigation module (scroll,
+    mobile menu, active-link) matching the Module Architecture in
+    Part 5 Section 4, still frozen per-module (not at the top level) so
+    future modules — search, clipboard, etc. — can still be added.
+  - Added Banynova.perf.applyLazyLoadingToPostImages(), since Blogger
+    post-body <img> tags come from user content and can't be templated
+    directly — this is the practical way to apply Part 2 Section 15's
+    loading="lazy" / decoding="async" rule to that content, skipping the
+    first image so a genuine hero/LCP image is never lazy-loaded.
+  - Fixed two non-mobile-first breakpoints (Part 4 Section 11 requires
+    mobile-first): h1 size, .bn-section padding, and .bn-footer-grid
+    column count now define their small/mobile value as the base rule,
+    scaling up via min-width media queries — previously the base rules
+    held desktop values overridden down via max-width, which is the
+    opposite of mobile-first.
+  ============================================================================
+-->
+<html b:css='false' b:defaultwidgetversion='2' b:layoutsVersion='3' b:responsive='true' expr:dir='data:blog.languageDirection' lang='en' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+<!-- ======================= 1. CHARSET / VIEWPORT ======================= -->
+<meta charset='UTF-8'/>
+<meta content='width=device-width, initial-scale=1' name='viewport'/>
+
+<!-- ======================= 2. THEME COLOR / COLOR SCHEME ======================= -->
+<meta content='#2a6df4' name='theme-color'/>
+<meta content='light dark' name='color-scheme'/>
+
+<!-- ======================= 3. CANONICAL ======================= -->
+<b:if cond='data:blog.url == data:blog.homepageUrl'>
+<link expr:href='data:blog.homepageUrl' rel='canonical'/>
+<b:else/>
+<link expr:href='data:blog.canonicalUrl' rel='canonical'/>
+</b:if>
+
+<!-- ======================= 4. TITLE ======================= -->
+<title><data:blog.pageTitle/></title>
+
+<!-- ======================= 5. META DESCRIPTION / ROBOTS / AUTHOR ======================= -->
+<!-- Fallback text is the approved sitewide description from the Brand Voice
+     Guide — used whenever a page has no custom description set (label
+     pages, some posts), so every page still gets a real snippet instead of
+     Google auto-generating one from arbitrary page text. -->
+<b:if cond='data:blog.metaDescription'>
+<meta expr:content='data:blog.metaDescription' name='description'/>
+<b:else/>
+<meta content='Banynova offers free online tools for developers, marketers, creators, and students. Fast, private, browser-based utilities. No sign-up. No uploads.' name='description'/>
+</b:if>
+<b:if cond='data:blog.searchLabel OR data:blog.searchQuery'>
+<meta content='noindex, follow' name='robots'/>
+<b:else/>
+<meta content='index, follow' name='robots'/>
+</b:if>
+<meta content='Banynova' name='author'/>
+<meta content='strict-origin-when-cross-origin' name='referrer'/>
+
+<!-- ======================= 6. OPEN GRAPH ======================= -->
+<meta content='website' property='og:type'/>
+<meta expr:content='data:blog.title' property='og:site_name'/>
+<meta expr:content='data:blog.pageName' property='og:title'/>
+<meta expr:content='data:blog.canonicalUrl' property='og:url'/>
+<b:if cond='data:blog.metaDescription'>
+<meta expr:content='data:blog.metaDescription' property='og:description'/>
+<b:else/>
+<meta content='Banynova offers free online tools for developers, marketers, creators, and students. Fast, private, browser-based utilities. No sign-up. No uploads.' property='og:description'/>
+</b:if>
+<meta content='https://banynova.blogspot.com/og-image.png' property='og:image'/>
+<meta content='en_US' property='og:locale'/>
+
+<!-- ======================= 7. TWITTER CARDS ======================= -->
+<meta content='summary_large_image' name='twitter:card'/>
+<meta expr:content='data:blog.pageName' name='twitter:title'/>
+<b:if cond='data:blog.metaDescription'>
+<meta expr:content='data:blog.metaDescription' name='twitter:description'/>
+<b:else/>
+<meta content='Banynova offers free online tools for developers, marketers, creators, and students. Fast, private, browser-based utilities. No sign-up. No uploads.' name='twitter:description'/>
+</b:if>
+<meta content='https://banynova.blogspot.com/og-image.png' name='twitter:image'/>
+
+<!-- ======================= 8. ICONS (replace with your uploaded favicon URL) ======================= -->
+<link href='https://banynova.blogspot.com/favicon.ico' rel='icon' type='image/x-icon'/>
+
+<!-- ======================= 9. STRUCTURED DATA (JSON-LD) ======================= -->
+<script type='application/ld+json'>
+{
+  &quot;@context&quot;: &quot;https://schema.org&quot;,
+  &quot;@type&quot;: &quot;Organization&quot;,
+  &quot;name&quot;: &quot;Banynova&quot;,
+  &quot;url&quot;: &quot;<data:blog.homepageUrl/>&quot;,
+  &quot;slogan&quot;: &quot;Powering Your Digital Workflow.&quot;
+}
+</script>
+<script type='application/ld+json'>
+{
+  &quot;@context&quot;: &quot;https://schema.org&quot;,
+  &quot;@type&quot;: &quot;WebSite&quot;,
+  &quot;name&quot;: &quot;<data:blog.title/>&quot;,
+  &quot;url&quot;: &quot;<data:blog.homepageUrl/>&quot;,
+  &quot;potentialAction&quot;: {
+    &quot;@type&quot;: &quot;SearchAction&quot;,
+    &quot;target&quot;: &quot;<data:blog.homepageUrl/>search?q={search_term_string}&quot;,
+    &quot;query-input&quot;: &quot;required name=search_term_string&quot;
+  }
+}
+</script>
+<script type='application/ld+json'>
+{
+  &quot;@context&quot;: &quot;https://schema.org&quot;,
+  &quot;@type&quot;: &quot;WebPage&quot;,
+  &quot;name&quot;: &quot;<data:blog.pageTitle/>&quot;,
+  &quot;url&quot;: &quot;<data:blog.canonicalUrl/>&quot;,
+  &quot;isPartOf&quot;: { &quot;@type&quot;: &quot;WebSite&quot;, &quot;url&quot;: &quot;<data:blog.homepageUrl/>&quot; }
+}
+</script>
+
+<!-- ======================= 10. NO-FLASH THEME INIT (critical, runs before CSS paints) ======================= -->
+<!-- Applies saved preference (LocalStorage) or system preference to <html> before first paint, per Part 2 Section 17 (prevent FOUC). -->
+<script>//<![CDATA[
+(function () {
+  try {
+    var saved = window.localStorage.getItem('bn-theme');
+    var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var mode = saved || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', mode);
+  } catch (e) {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+})();
+//]]></script>
+
+<!-- Defensive critical CSS, adjacent to the script above (Part 8 Section 11
+     treats this as legitimate above-the-fold critical CSS, distinct from
+     the main design-system skin below). In this template the full skin is
+     inline CDATA right after this, so the practical FOUC window is already
+     near-zero — this is belt-and-suspenders: it guarantees the background
+     flips the instant data-theme is set, with zero dependency on how much
+     of the skin the browser has parsed yet. Kept intentionally to just the
+     two background colors, not a duplicate of the token system. -->
+<style>
+html[data-theme="dark"] { background-color: hsl(222, 47%, 11%); }
+html[data-theme="light"] { background-color: hsl(220, 20%, 98%); }
+</style>
+
+<b:include data='blog' name='all-head-content'/>
+
+<!-- ======================= 11. THE ONE AND ONLY SKIN (CSS) ======================= -->
+<b:skin><![CDATA[
+
+/* ==========================================================================
+   1. DESIGN TOKENS — see Design_System_v1.0.md Sections 2-8 (source of truth)
+   ========================================================================== */
+:root {
+  --bn-primary-hsl: 220, 90%, 56%;
+  --bn-primary: hsl(var(--bn-primary-hsl));
+  --bn-primary-hover: hsl(220, 90%, 48%);
+  --bn-primary-active: hsl(220, 90%, 40%);
+  --bn-primary-subtle: hsl(220, 90%, 96%);
+  --bn-secondary-hsl: 215, 16%, 47%;
+  --bn-secondary: hsl(var(--bn-secondary-hsl));
+  --bn-secondary-subtle: hsl(215, 16%, 94%);
+  --bn-accent-hsl: 262, 83%, 58%;
+  --bn-accent: hsl(var(--bn-accent-hsl));
+  --bn-success: hsl(142, 71%, 45%);
+  --bn-success-subtle: hsl(142, 71%, 95%);
+  --bn-warning: hsl(38, 92%, 50%);
+  --bn-warning-subtle: hsl(38, 92%, 95%);
+  --bn-danger: hsl(354, 70%, 54%);
+  --bn-danger-hover: hsl(354, 70%, 45%);
+  --bn-danger-subtle: hsl(354, 70%, 95%);
+  --bn-info: hsl(199, 89%, 48%);
+  --bn-info-subtle: hsl(199, 89%, 95%);
+
+  --bn-bg: hsl(220, 20%, 98%);
+  --bn-surface: hsl(0, 0%, 100%);
+  --bn-surface-raised: hsl(0, 0%, 100%);
+  --bn-border: hsl(220, 13%, 88%);
+  --bn-border-strong: hsl(220, 13%, 72%);
+  --bn-text-primary: hsl(220, 24%, 12%);
+  --bn-text-secondary: hsl(220, 12%, 42%);
+  --bn-text-tertiary: hsl(220, 9%, 60%);
+  --bn-text-on-primary: hsl(0, 0%, 100%);
+  --bn-disabled-bg: hsl(220, 13%, 93%);
+  --bn-disabled-text: hsl(220, 9%, 60%);
+
+  --bn-focus-ring: 0 0 0 3px hsla(var(--bn-primary-hsl), 0.35);
+
+  --bn-gradient-primary: linear-gradient(135deg, hsl(220,90%,56%), hsl(262,83%,58%));
+  --bn-gradient-subtle: linear-gradient(135deg, hsl(220,90%,97%), hsl(262,83%,97%));
+  --bn-glass-bg: hsla(0,0%,100%,0.72);
+  --bn-blur-md: 12px;
+
+  --bn-font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --bn-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --bn-fs-xs: 0.75rem; --bn-fs-sm: 0.875rem; --bn-fs-base: 1rem; --bn-fs-lg: 1.125rem;
+  --bn-fs-xl: 1.25rem; --bn-fs-2xl: 1.5rem; --bn-fs-3xl: 1.875rem; --bn-fs-4xl: 2.25rem; --bn-fs-5xl: 3rem;
+  --bn-fw-normal: 400; --bn-fw-medium: 500; --bn-fw-semibold: 600; --bn-fw-bold: 700;
+  --bn-lh-tight: 1.2; --bn-lh-snug: 1.375; --bn-lh-base: 1.5; --bn-lh-relaxed: 1.625;
+
+  --bn-space-1: 0.25rem; --bn-space-2: 0.5rem; --bn-space-3: 0.75rem; --bn-space-4: 1rem;
+  --bn-space-5: 1.25rem; --bn-space-6: 1.5rem; --bn-space-8: 2rem; --bn-space-10: 2.5rem;
+  --bn-space-12: 3rem; --bn-space-16: 4rem; --bn-space-20: 5rem; --bn-space-24: 6rem;
+
+  --bn-radius-sm: 0.25rem; --bn-radius-md: 0.5rem; --bn-radius-lg: 0.75rem; --bn-radius-xl: 1rem; --bn-radius-full: 9999px;
+
+  --bn-shadow-1: 0 1px 2px 0 rgba(0,0,0,.05);
+  --bn-shadow-2: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06);
+  --bn-shadow-3: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -2px rgba(0,0,0,.05);
+  --bn-shadow-4: 0 20px 25px -5px rgba(0,0,0,.1), 0 10px 10px -5px rgba(0,0,0,.04);
+
+  --bn-container-max: 1280px;
+  --bn-content-max: 800px;
+
+  /* Layout tokens (Part 4 Section 4 "Layout Tokens") */
+  --bn-header-height: 65px;
+  --bn-sidebar-width: 320px;
+
+  /* Z-Index scale (Part 4 Section 4 "Layer Tokens") — avoid arbitrary z-index values */
+  --bn-z-dropdown: 100;
+  --bn-z-sticky: 200;
+  --bn-z-modal: 500;
+  --bn-z-tooltip: 600;
+
+  --bn-transition-fast: 150ms cubic-bezier(.4,0,.2,1);
+  --bn-transition-base: 250ms cubic-bezier(.4,0,.2,1);
+  --bn-transition-slow: 350ms cubic-bezier(.4,0,.2,1);
+}
+
+[data-theme="dark"] {
+  --bn-bg: hsl(222, 47%, 11%);
+  --bn-surface: hsl(217, 33%, 17%);
+  --bn-surface-raised: hsl(217, 33%, 22%);
+  --bn-border: hsl(215, 25%, 27%);
+  --bn-border-strong: hsl(215, 20%, 45%);
+  --bn-text-primary: hsl(210, 40%, 98%);
+  --bn-text-secondary: hsl(215, 20%, 75%);
+  --bn-text-tertiary: hsl(215, 16%, 55%);
+  --bn-primary-subtle: hsla(220,90%,56%,.15);
+  --bn-secondary-subtle: hsla(215,16%,47%,.15);
+  --bn-success-subtle: hsla(142,71%,45%,.15);
+  --bn-warning-subtle: hsla(38,92%,50%,.15);
+  --bn-danger-subtle: hsla(354,70%,54%,.15);
+  --bn-info-subtle: hsla(199,89%,48%,.15);
+  --bn-disabled-bg: hsl(217,33%,24%);
+  --bn-disabled-text: hsl(215,16%,45%);
+  --bn-gradient-subtle: linear-gradient(135deg, hsla(220,90%,56%,.12), hsla(262,83%,58%,.12));
+  --bn-glass-bg: hsla(217,33%,17%,.72);
+  --bn-shadow-1: 0 1px 2px 0 rgba(0,0,0,.4);
+  --bn-shadow-2: 0 4px 6px -1px rgba(0,0,0,.5), 0 2px 4px -1px rgba(0,0,0,.3);
+  --bn-shadow-3: 0 10px 15px -3px rgba(0,0,0,.6), 0 4px 6px -2px rgba(0,0,0,.4);
+  --bn-shadow-4: 0 20px 25px -5px rgba(0,0,0,.7), 0 10px 10px -5px rgba(0,0,0,.5);
+}
+
+/* ==========================================================================
+   2. CSS RESET
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+html, body, h1, h2, h3, h4, p, figure, blockquote, dl, dd, ul, ol { margin: 0; }
+ul[class], ol[class] { list-style: none; padding: 0; }
+html:focus-within { scroll-behavior: smooth; }
+body { min-height: 100vh; text-rendering: optimizeSpeed; }
+img,
+picture,
+svg {
+  display: block;
+  max-width: 100%;
+}
+img { height: auto; }
+input, button, textarea, select { font: inherit; color: inherit; }
+a { color: inherit; }
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+/* ==========================================================================
+   3. BASE ELEMENTS & TYPOGRAPHY
+   ========================================================================== */
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--bn-font-sans);
+  font-size: var(--bn-fs-base);
+  line-height: var(--bn-lh-base);
+  color: var(--bn-text-primary);
+  background: var(--bn-bg);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color var(--bn-transition-base), color var(--bn-transition-base);
+}
+h1, h2, h3, h4 { line-height: var(--bn-lh-tight); font-weight: var(--bn-fw-bold); color: var(--bn-text-primary); }
+h1 { font-size: var(--bn-fs-3xl); }
+h2 { font-size: var(--bn-fs-3xl); }
+h3 { font-size: var(--bn-fs-2xl); }
+h4 { font-size: var(--bn-fs-xl); }
+p { color: var(--bn-text-secondary); }
+a { text-decoration: none; }
+code, pre, kbd { font-family: var(--bn-font-mono); }
+:focus-visible { outline: none; box-shadow: var(--bn-focus-ring); border-radius: var(--bn-radius-sm); }
+::selection { background: var(--bn-primary); color: var(--bn-text-on-primary); }
+
+/* ==========================================================================
+   4. LAYOUT SYSTEM
+   ========================================================================== */
+.bn-container { max-width: var(--bn-container-max); margin-inline: auto; padding-inline: var(--bn-space-6); }
+.bn-content { max-width: var(--bn-content-max); margin-inline: auto; }
+.bn-section { padding-block: var(--bn-space-12); }
+.bn-section--tight { padding-block: var(--bn-space-12); }
+
+.bn-grid { display: grid; gap: var(--bn-space-5); grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.bn-grid--categories { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.bn-grid--tutorials { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.bn-grid--stats { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+
+/* ==========================================================================
+   5. COMPONENTS
+   ========================================================================== */
+
+/* --- Skip Link --- */
+.bn-skip-link {
+  position: absolute; top: -48px; left: var(--bn-space-4); z-index: var(--bn-z-tooltip);
+  background: var(--bn-primary); color: var(--bn-text-on-primary);
+  padding: var(--bn-space-3) var(--bn-space-5); border-radius: var(--bn-radius-md);
+  font-weight: var(--bn-fw-semibold); transition: top var(--bn-transition-fast);
+}
+.bn-skip-link:focus { top: var(--bn-space-4); }
+
+/* --- Header --- */
+.bn-header { position: sticky; top: 0; z-index: var(--bn-z-sticky); background: var(--bn-surface); border-bottom: 1px solid var(--bn-border); transition: background-color var(--bn-transition-base), backdrop-filter var(--bn-transition-base); }
+.bn-header.is-scrolled { background: var(--bn-glass-bg); backdrop-filter: blur(var(--bn-blur-md)); -webkit-backdrop-filter: blur(var(--bn-blur-md)); }
+.bn-header-inner { display: flex; align-items: center; justify-content: space-between; gap: var(--bn-space-4); padding-block: var(--bn-space-4); min-height: var(--bn-header-height); }
+.bn-logo { display: flex; align-items: center; gap: var(--bn-space-2); font-weight: var(--bn-fw-bold); font-size: var(--bn-fs-xl); color: var(--bn-text-primary); }
+.bn-logo-mark { color: var(--bn-primary); }
+
+/* --- Navigation --- */
+.bn-nav { display: none; align-items: center; gap: var(--bn-space-6); font-size: var(--bn-fs-sm); font-weight: var(--bn-fw-medium); color: var(--bn-text-secondary); }
+@media (min-width: 860px) { .bn-nav { display: flex; } }
+.bn-nav a:hover { color: var(--bn-primary); }
+.bn-nav a[aria-current="page"] { color: var(--bn-primary); font-weight: var(--bn-fw-semibold); }
+.bn-header-actions { display: flex; align-items: center; gap: var(--bn-space-2); }
+.bn-icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: var(--bn-radius-md); border: 1px solid var(--bn-border); background: var(--bn-surface); color: var(--bn-text-secondary); transition: background-color var(--bn-transition-fast), border-color var(--bn-transition-fast); }
+.bn-icon-btn:hover { background: var(--bn-primary-subtle); border-color: var(--bn-primary); color: var(--bn-primary); }
+.bn-hamburger { display: inline-flex; }
+@media (min-width: 860px) { .bn-hamburger { display: none; } }
+.bn-mobile-nav { position: fixed; inset: 0 0 auto 0; top: var(--bn-header-height); background: var(--bn-surface); border-bottom: 1px solid var(--bn-border); box-shadow: var(--bn-shadow-3); z-index: var(--bn-z-dropdown); padding: var(--bn-space-4) var(--bn-space-6) var(--bn-space-6); transform: translateY(-8px); opacity: 0; pointer-events: none; transition: transform var(--bn-transition-base), opacity var(--bn-transition-base); }
+.bn-mobile-nav.is-open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+.bn-mobile-nav a { display: block; padding: var(--bn-space-3) 0; font-weight: var(--bn-fw-medium); border-bottom: 1px solid var(--bn-border); color: var(--bn-text-primary); }
+.bn-mobile-nav a[aria-current="page"] { color: var(--bn-primary); font-weight: var(--bn-fw-semibold); }
+@media (min-width: 860px) { .bn-mobile-nav { display: none; } }
+.bn-scroll-locked { overflow: hidden; }
+.bn-nav-overlay { position: fixed; inset: 0; background: hsla(220, 24%, 12%, 0.45); opacity: 0; pointer-events: none; z-index: var(--bn-z-dropdown); transition: opacity var(--bn-transition-base); }
+.bn-nav-overlay.is-open { opacity: 1; pointer-events: auto; }
+
+/* --- Main --- */
+.bn-main { min-height: 60vh; }
+
+/* --- Hero (Homepage only) --- */
+.bn-hero { padding-block: var(--bn-space-16) var(--bn-space-12); }
+.bn-hero-inner { max-width: var(--bn-content-max); margin-inline: auto; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.bn-hero-h1 { font-size: var(--bn-fs-4xl); max-width: 15ch; margin-bottom: var(--bn-space-4); }
+.bn-hero-desc { color: var(--bn-text-secondary); font-size: var(--bn-fs-lg); max-width: 52ch; margin-bottom: var(--bn-space-8); }
+
+.bn-hero-search { width: 100%; max-width: 620px; position: relative; }
+.bn-hero-search-field { display: flex; align-items: center; gap: var(--bn-space-2); width: 100%; background: var(--bn-surface); border: 1px solid var(--bn-border); border-radius: var(--bn-radius-xl); padding: var(--bn-space-3) var(--bn-space-3) var(--bn-space-3) var(--bn-space-4); box-shadow: var(--bn-shadow-2); transition: border-color var(--bn-transition-fast), box-shadow var(--bn-transition-fast); }
+.bn-hero-search-field:focus-within { border-color: var(--bn-primary); box-shadow: var(--bn-focus-ring), var(--bn-shadow-2); }
+.bn-hero-search-icon { flex: none; width: 20px; height: 20px; color: var(--bn-text-tertiary); }
+.bn-hero-search-field:focus-within .bn-hero-search-icon { color: var(--bn-primary); }
+.bn-hero-search-input { flex: 1; border: none; outline: none; background: transparent; font: inherit; font-size: var(--bn-fs-base); color: var(--bn-text-primary); min-width: 0; padding-block: var(--bn-space-1); }
+.bn-hero-search-input::placeholder { color: var(--bn-text-tertiary); }
+.bn-hero-search-clear { flex: none; display: none; align-items: center; justify-content: center; width: 26px; height: 26px; border: none; border-radius: var(--bn-radius-full); background: var(--bn-secondary-subtle); color: var(--bn-text-secondary); cursor: pointer; font-size: var(--bn-fs-sm); line-height: 1; transition: background-color var(--bn-transition-fast); }
+.bn-hero-search-clear:hover { background: var(--bn-border); }
+.bn-hero-search-clear.is-visible { display: inline-flex; }
+.bn-hero-search-kbd { flex: none; display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding-inline: var(--bn-space-2); border-radius: var(--bn-radius-sm); border: 1px solid var(--bn-border); background: var(--bn-bg); font-family: var(--bn-font-mono); font-size: var(--bn-fs-xs); color: var(--bn-text-secondary); }
+.bn-hero-search-submit { flex: none; display: inline-flex; align-items: center; gap: var(--bn-space-2); height: 36px; padding-inline: var(--bn-space-4); border: none; border-radius: var(--bn-radius-md); background: var(--bn-primary); color: var(--bn-text-on-primary); font-weight: var(--bn-fw-semibold); font-size: var(--bn-fs-sm); cursor: pointer; transition: background-color var(--bn-transition-fast); }
+.bn-hero-search-submit:hover { background: var(--bn-primary-hover); }
+.bn-hero-search-submit svg { width: 15px; height: 15px; }
+.bn-hero-search-hint { margin-top: var(--bn-space-2); font-family: var(--bn-font-mono); font-size: var(--bn-fs-xs); color: var(--bn-text-tertiary); text-align: left; padding-left: var(--bn-space-1); }
+
+.bn-hero-search-panel { position: absolute; top: calc(100% + var(--bn-space-2)); left: 0; right: 0; background: var(--bn-surface-raised); border: 1px solid var(--bn-border); border-radius: var(--bn-radius-md); box-shadow: var(--bn-shadow-3); overflow: hidden; text-align: left; z-index: var(--bn-z-dropdown); display: none; }
+.bn-hero-search-panel.is-open { display: block; }
+.bn-hero-search-option { display: block; padding: var(--bn-space-3) var(--bn-space-4); font-size: var(--bn-fs-sm); color: var(--bn-text-primary); cursor: pointer; transition: background-color var(--bn-transition-fast); }
+.bn-hero-search-option:hover, .bn-hero-search-option.is-active { background: var(--bn-primary-subtle); }
+.bn-hero-search-option mark { background: none; color: var(--bn-primary); font-weight: var(--bn-fw-semibold); }
+
+.bn-hero-stats { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--bn-space-2) var(--bn-space-6); margin-top: var(--bn-space-6); }
+.bn-hero-stats li { font-family: var(--bn-font-mono); font-size: var(--bn-fs-xs); font-weight: var(--bn-fw-semibold); color: var(--bn-text-primary); }
+.bn-hero-stats li span { font-weight: var(--bn-fw-normal); color: var(--bn-text-tertiary); margin-right: var(--bn-space-2); }
+
+.bn-hero-suggestions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--bn-space-2); margin-top: var(--bn-space-5); max-width: 620px; }
+.bn-hero-chip { font-family: var(--bn-font-mono); font-size: var(--bn-fs-sm); color: var(--bn-text-secondary); background: var(--bn-surface); border: 1px solid var(--bn-border); border-radius: var(--bn-radius-full); padding: var(--bn-space-2) var(--bn-space-4); white-space: nowrap; transition: border-color var(--bn-transition-fast), color var(--bn-transition-fast), background-color var(--bn-transition-fast); }
+.bn-hero-chip:hover, .bn-hero-chip:focus-visible { color: var(--bn-primary); border-color: var(--bn-primary); background: var(--bn-primary-subtle); }
+
+.bn-hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--bn-space-2); margin-top: var(--bn-space-6); }
+.bn-hero-action-btn { font-size: var(--bn-fs-sm); font-weight: var(--bn-fw-medium); color: var(--bn-text-primary); background: transparent; border: 1px solid var(--bn-border); border-radius: var(--bn-radius-md); padding: var(--bn-space-2) var(--bn-space-4); transition: background-color var(--bn-transition-fast), border-color var(--bn-transition-fast); }
+.bn-hero-action-btn:hover, .bn-hero-action-btn:focus-visible { background: var(--bn-surface); border-color: var(--bn-border-strong); }
+
+.bn-hero-trust { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--bn-space-5); margin-top: var(--bn-space-8); padding-top: var(--bn-space-5); border-top: 1px solid var(--bn-border); max-width: 580px; margin-inline: auto; }
+.bn-hero-trust-item { display: inline-flex; align-items: center; gap: var(--bn-space-2); font-size: var(--bn-fs-sm); color: var(--bn-text-secondary); }
+.bn-hero-trust-item svg { width: 15px; height: 15px; color: var(--bn-primary); flex: none; }
+
+@media (max-width: 640px) {
+  .bn-hero { padding-block: var(--bn-space-10) var(--bn-space-8); }
+  .bn-hero-search-kbd, .bn-hero-search-hint { display: none; }
+  .bn-hero-search-submit span { display: none; }
+  .bn-hero-search-submit { width: 36px; padding: 0; justify-content: center; }
+  .bn-hero-suggestions { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; -webkit-overflow-scrolling: touch; }
+}
+
+/* --- Footer --- */
+.bn-footer { border-top: 1px solid var(--bn-border); padding-block: var(--bn-space-12) var(--bn-space-8); background: var(--bn-surface); }
+.bn-footer-grid { display: grid; gap: var(--bn-space-8); grid-template-columns: 1fr 1fr; }
+@media (min-width: 760px) { .bn-footer-grid { grid-template-columns: 1.4fr repeat(3, 1fr); } }
+.bn-footer-tagline { color: var(--bn-text-secondary); font-size: var(--bn-fs-sm); max-width: 32ch; margin-top: var(--bn-space-3); }
+.bn-footer-heading { font-size: var(--bn-fs-sm); font-weight: var(--bn-fw-semibold); margin-bottom: var(--bn-space-3); color: var(--bn-text-primary); }
+.bn-footer-links li { margin-bottom: var(--bn-space-2); }
+.bn-footer-links a { font-size: var(--bn-fs-sm); color: var(--bn-text-secondary); }
+.bn-footer-links a:hover { color: var(--bn-primary); }
+.bn-footer-bottom { margin-top: var(--bn-space-10); padding-top: var(--bn-space-6); border-top: 1px solid var(--bn-border); display: flex; flex-wrap: wrap; gap: var(--bn-space-4); align-items: center; justify-content: space-between; font-size: var(--bn-fs-xs); color: var(--bn-text-tertiary); }
+.bn-footer-bottom a { color: var(--bn-text-tertiary); text-decoration: underline; }
+.bn-footer-bottom a:hover { color: var(--bn-primary); }
+
+/* --- Post / Tool Page shell (extended by the Universal Tool Template, Roadmap Step 4) --- */
+.bn-tool-page { max-width: var(--bn-content-max); margin-inline: auto; padding-block: var(--bn-space-12); }
+.bn-tool-page :is(h2, h3) { margin-top: var(--bn-space-8); margin-bottom: var(--bn-space-3); }
+.bn-tool-page p { margin-bottom: var(--bn-space-4); line-height: var(--bn-lh-relaxed); }
+
+/* ==========================================================================
+   6. UTILITY CLASSES
+   ========================================================================== */
+.bn-visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.u-text-center { text-align: center; }
+.u-text-left { text-align: left; }
+.u-text-right { text-align: right; }
+.u-flex { display: flex; }
+.u-grid { display: grid; }
+.u-items-center { align-items: center; }
+.u-justify-between { justify-content: space-between; }
+.u-gap-2 { gap: var(--bn-space-2); }
+.u-gap-4 { gap: var(--bn-space-4); }
+.u-gap-6 { gap: var(--bn-space-6); }
+.u-mt-2 { margin-top: var(--bn-space-2); } .u-mt-4 { margin-top: var(--bn-space-4); } .u-mt-8 { margin-top: var(--bn-space-8); }
+.u-mb-2 { margin-bottom: var(--bn-space-2); } .u-mb-4 { margin-bottom: var(--bn-space-4); } .u-mb-8 { margin-bottom: var(--bn-space-8); }
+.u-p-4 { padding: var(--bn-space-4); } .u-p-6 { padding: var(--bn-space-6); }
+.u-hide-mobile { display: none; }
+@media (min-width: 640px) { .u-hide-mobile { display: revert; } .u-hide-desktop { display: none; } }
+/* Reserved for large future directories (Homepage/Tool Directory grids) per Part 4 Section 20 — apply selectively, not globally */
+.u-cv-auto { content-visibility: auto; contain-intrinsic-size: 600px; }
+
+/* ==========================================================================
+   7. RESPONSIVE (global overrides; component-level breakpoints live inline
+   above within their own component block — see Design_System_v1.0.md
+   Section 8 for the full breakpoint list)
+   ========================================================================== */
+@media (min-width: 640px) {
+  h1 { font-size: var(--bn-fs-4xl); }
+  .bn-section { padding-block: var(--bn-space-16); }
+}
+
+/* ==========================================================================
+   8. PRINT STYLES
+   ========================================================================== */
+@media print {
+  .bn-header, .bn-footer, .bn-mobile-nav, .bn-nav-overlay, .bn-skip-link, .bn-icon-btn, script { display: none !important; }
+  body { background: #fff; color: #000; }
+  .bn-tool-page { max-width: 100%; }
+  a[href]::after { content: " (" attr(href) ")"; font-size: 0.85em; color: #555; }
+}
+
+]]></b:skin>
+</head>
+<body>
+<a class='bn-skip-link' href='#main-content'>Skip to content</a>
+
+<!-- Global live region for screen-reader announcements (Banynova.a11y.announce uses this) -->
+<div aria-live='polite' class='bn-visually-hidden' id='bn-live-region'></div>
+
+<!-- Shared SVG symbol sprite — the logo is defined once and referenced via
+     <use> in the header and footer, per Part 2 Section 16. Visually hidden;
+     not a rendering target itself. -->
+<svg aria-hidden='true' class='bn-visually-hidden'>
+  <symbol id='bn-logo-icon' viewBox='0 0 24 24'>
+    <rect height='18' rx='5' stroke='currentColor' stroke-width='2' width='18' x='3' y='3'></rect>
+    <path d='M8 12h5m0 0-2-2m2 2-2 2' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'></path>
+  </symbol>
+</svg>
+
+<!-- ============================== HEADER ============================== -->
+<b:section id='bn-header-section' maxwidgets='1' name='Header' showaddelement='no'>
+<b:widget id='Header1' locked='true' title='Banynova' type='Header' version='2'>
+<b:includable id='main'>
+<header class='bn-header' id='bn-header'>
+  <div class='bn-container bn-header-inner'>
+    <a class='bn-logo' expr:href='data:blog.homepageUrl'>
+      <svg class='bn-logo-mark' height='26' width='26'><use href='#bn-logo-icon'></use></svg>
+      <data:blog.title/>
+    </a>
+    <nav aria-label='Primary Navigation' class='bn-nav' id='bn-nav-primary'>
+      <a expr:href='data:blog.homepageUrl'>Tools</a>
+      <a expr:href='data:blog.homepageUrl + &quot;p/categories.html&quot;'>Categories</a>
+      <a expr:href='data:blog.homepageUrl + &quot;p/blog.html&quot;'>Blog</a>
+      <a expr:href='data:blog.homepageUrl + &quot;p/resources.html&quot;'>Resources</a>
+      <a expr:href='data:blog.homepageUrl + &quot;p/about.html&quot;'>About</a>
+    </nav>
+    <div class='bn-header-actions'>
+      <button aria-label='Toggle dark mode' aria-pressed='false' class='bn-icon-btn' id='bn-theme-toggle' type='button'>
+        <svg height='18' id='bn-theme-icon' viewBox='0 0 24 24' width='18'><circle cx='12' cy='12' r='4' stroke='currentColor' stroke-width='2'></circle><path d='M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4' stroke='currentColor' stroke-linecap='round' stroke-width='2'></path></svg>
+      </button>
+      <button aria-expanded='false' aria-label='Open menu' class='bn-icon-btn bn-hamburger' id='bn-menu-toggle' type='button'>
+        <svg height='18' viewBox='0 0 24 24' width='18'><path d='M4 7h16M4 12h16M4 17h16' stroke='currentColor' stroke-linecap='round' stroke-width='2'></path></svg>
+      </button>
+    </div>
+  </div>
+  <div class='bn-nav-overlay' id='bn-nav-overlay'></div>
+  <nav aria-label='Mobile Navigation' class='bn-mobile-nav' id='bn-mobile-nav'>
+    <a expr:href='data:blog.homepageUrl'>Tools</a>
+    <a expr:href='data:blog.homepageUrl + &quot;p/categories.html&quot;'>Categories</a>
+    <a expr:href='data:blog.homepageUrl + &quot;p/blog.html&quot;'>Blog</a>
+    <a expr:href='data:blog.homepageUrl + &quot;p/resources.html&quot;'>Resources</a>
+    <a expr:href='data:blog.homepageUrl + &quot;p/about.html&quot;'>About</a>
+  </nav>
+</header>
+</b:includable>
+</b:widget>
+</b:section>
+
+<!-- ============================== MAIN ============================== -->
+<main class='bn-main' id='main-content'>
+<b:section id='bn-main-section' name='Main' showaddelement='yes'>
+<b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog' version='2'>
+<b:includable id='main'>
+<b:if cond='data:blog.url == data:blog.homepageUrl'>
+<section aria-labelledby='bn-hero-heading' class='bn-hero' expr:data-home='data:blog.homepageUrl' id='bn-hero'>
+  <div class='bn-container bn-hero-inner'>
+
+    <h1 class='bn-hero-h1' id='bn-hero-heading'>Find the Right Online Tool for Any Task — Instantly</h1>
+    <p class='bn-hero-desc'>Banynova is a free directory of browser-based tools for developers, writers, and everyday tasks. Every tool runs instantly with no installation and no signup — most process your data privately, right in your browser.</p>
+
+    <div class='bn-hero-search'>
+      <form class='bn-hero-search-field' expr:action='data:blog.homepageUrl + &quot;search&quot;' id='bn-hero-search-form' method='get' role='search'>
+        <svg aria-hidden='true' class='bn-hero-search-icon' viewBox='0 0 24 24'>
+          <circle cx='11' cy='11' r='7' stroke='currentColor' stroke-width='2'></circle>
+          <path d='M21 21L16.65 16.65' stroke='currentColor' stroke-linecap='round' stroke-width='2'></path>
+        </svg>
+        <label class='bn-visually-hidden' for='bn-hero-search-input'>Search Banynova tools and guides</label>
+        <input aria-autocomplete='list' aria-controls='bn-hero-search-panel' aria-describedby='bn-hero-search-hint' aria-expanded='false' autocomplete='off' class='bn-hero-search-input' id='bn-hero-search-input' name='q' placeholder='Search tools, tutorials, or guides...' role='combobox' type='search'/>
+        <button aria-label='Clear search' class='bn-hero-search-clear' id='bn-hero-search-clear' type='button'>&#215;</button>
+        <span aria-hidden='true' class='bn-hero-search-kbd'>/</span>
+        <button aria-label='Search' class='bn-hero-search-submit' type='submit'>
+          <svg aria-hidden='true' viewBox='0 0 24 24'>
+            <circle cx='11' cy='11' r='7' stroke='currentColor' stroke-width='2.2'></circle>
+            <path d='M21 21L16.65 16.65' stroke='currentColor' stroke-linecap='round' stroke-width='2.2'></path>
+          </svg>
+          <span>Search</span>
+        </button>
+      </form>
+      <ul aria-label='Suggested tools' class='bn-hero-search-panel' id='bn-hero-search-panel' role='listbox'></ul>
+      <p class='bn-hero-search-hint' id='bn-hero-search-hint'>Press <strong>/</strong> to jump to search from anywhere</p>
+    </div>
+
+    <ul aria-label='Banynova at a glance' class='bn-hero-stats' id='bn-hero-stats'></ul>
+
+    <nav aria-label='Popular searches'>
+      <ul class='bn-hero-suggestions' id='bn-hero-suggestions'></ul>
+    </nav>
+
+    <nav aria-label='Quick links'>
+      <ul class='bn-hero-actions' id='bn-hero-actions'></ul>
+    </nav>
+
+    <!-- No-JS / crawler fallback -->
+    <noscript>
+      <ul class='bn-hero-suggestions'>
+        <li><a class='bn-hero-chip' expr:href='data:blog.homepageUrl + &quot;search/label/Word-Counter&quot;'>Word Counter</a></li>
+        <li><a class='bn-hero-chip' expr:href='data:blog.homepageUrl + &quot;search/label/JSON-Formatter&quot;'>JSON Formatter</a></li>
+        <li><a class='bn-hero-chip' expr:href='data:blog.homepageUrl + &quot;search/label/Image-Compressor&quot;'>Image Compressor</a></li>
+        <li><a class='bn-hero-chip' expr:href='data:blog.homepageUrl + &quot;search/label/Base64-Encoder&quot;'>Base64 Encoder</a></li>
+        <li><a class='bn-hero-chip' expr:href='data:blog.homepageUrl + &quot;search/label/Age-Calculator&quot;'>Age Calculator</a></li>
+        <li><a class='bn-hero-chip' expr:href='data:blog.homepageUrl + &quot;search/label/UUID-Generator&quot;'>UUID Generator</a></li>
+        <li><a class='bn-hero-chip' expr:href='data:blog.homepageUrl + &quot;search/label/QR-Code-Generator&quot;'>QR Code Generator</a></li>
+        <li><a class='bn-hero-chip' expr:href='data:blog.homepageUrl + &quot;search/label/Password-Generator&quot;'>Password Generator</a></li>
+      </ul>
+      <ul class='bn-hero-actions'>
+        <li><a class='bn-hero-action-btn' expr:href='data:blog.homepageUrl + &quot;search/label/Popular&quot;'>Popular Tools</a></li>
+        <li><a class='bn-hero-action-btn' expr:href='data:blog.homepageUrl + &quot;p/categories.html&quot;'>Browse Categories</a></li>
+        <li><a class='bn-hero-action-btn' expr:href='data:blog.homepageUrl + &quot;p/blog.html&quot;'>Latest Tutorials</a></li>
+        <li><a class='bn-hero-action-btn' expr:href='data:blog.homepageUrl + &quot;p/resources.html&quot;'>Resources</a></li>
+      </ul>
+    </noscript>
+
+    <ul aria-label='Why Banynova' class='bn-hero-trust'>
+      <li class='bn-hero-trust-item'><svg aria-hidden='true' viewBox='0 0 24 24'><path d='M13 2L4 14h6l-1 8 9-12h-6l1-8z' stroke='currentColor' stroke-linejoin='round' stroke-width='2'></path></svg>Free Forever</li>
+      <li class='bn-hero-trust-item'><svg aria-hidden='true' viewBox='0 0 24 24'><rect height='16' rx='2' stroke='currentColor' stroke-width='2' width='18' x='3' y='4'></rect><path d='M3 8h18' stroke='currentColor' stroke-width='2'></path></svg>Browser-Based</li>
+      <li class='bn-hero-trust-item'><svg aria-hidden='true' viewBox='0 0 24 24'><path d='M12 3l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6l7-3z' stroke='currentColor' stroke-linejoin='round' stroke-width='2'></path></svg>Privacy First</li>
+      <li class='bn-hero-trust-item'><svg aria-hidden='true' viewBox='0 0 24 24'><path d='M12 3v10m0 0l-4-4m4 4l4-4' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'></path><path d='M4 21h16' stroke='currentColor' stroke-linecap='round' stroke-width='2'></path></svg>No Installation</li>
+      <li class='bn-hero-trust-item'><svg aria-hidden='true' viewBox='0 0 24 24'><rect height='20' rx='2' stroke='currentColor' stroke-width='2' width='10' x='7' y='2'></rect><path d='M11 18h2' stroke='currentColor' stroke-linecap='round' stroke-width='2'></path></svg>Mobile Friendly</li>
+      <li class='bn-hero-trust-item'><svg aria-hidden='true' viewBox='0 0 24 24'><path d='M13 2L4 14h6l-1 8 9-12h-6l1-8z' stroke='currentColor' stroke-linejoin='round' stroke-width='2'></path></svg>Fast Loading</li>
+    </ul>
+
+  </div>
+</section>
+<b:else/>
+  <b:loop values='data:posts' var='post'>
+    <b:include data='post' name='post'/>
+  </b:loop>
+</b:if>
+</b:includable>
+<b:includable id='post' var='post'>
+<article class='bn-tool-page'>
+  <h1><data:post.title/></h1>
+  <data:post.body/>
+</article>
+</b:includable>
+</b:widget>
+</b:section>
+</main>
+
+<!-- ============================== FOOTER ============================== -->
+<footer class='bn-footer'>
+<div class='bn-container bn-footer-grid'>
+  <div>
+    <a class='bn-logo' expr:href='data:blog.homepageUrl'>
+      <svg class='bn-logo-mark' height='24' width='24'><use href='#bn-logo-icon'></use></svg>
+      <data:blog.title/>
+    </a>
+    <p class='bn-footer-tagline'>Powering Your Digital Workflow. Built for developers, creators, marketers, students, and everyone in between.</p>
+  </div>
+  <div>
+    <h3 class='bn-footer-heading'>Quick Links</h3>
+    <ul class='bn-footer-links'>
+      <li><a expr:href='data:blog.homepageUrl + &quot;p/categories.html&quot;'>Categories</a></li>
+      <li><a expr:href='data:blog.homepageUrl + &quot;p/blog.html&quot;'>Blog</a></li>
+      <li><a expr:href='data:blog.homepageUrl + &quot;p/resources.html&quot;'>Resources</a></li>
+      <li><a expr:href='data:blog.homepageUrl + &quot;sitemap.xml&quot;'>Sitemap</a></li>
+      <li><a expr:href='data:blog.homepageUrl + &quot;feeds/posts/default&quot;'>RSS Feed</a></li>
+    </ul>
+  </div>
+  <div>
+    <h3 class='bn-footer-heading'>Legal</h3>
+    <ul class='bn-footer-links'>
+      <li><a expr:href='data:blog.homepageUrl + &quot;p/privacy-policy.html&quot;'>Privacy Policy</a></li>
+      <li><a expr:href='data:blog.homepageUrl + &quot;p/terms.html&quot;'>Terms of Service</a></li>
+      <li><a expr:href='data:blog.homepageUrl + &quot;p/cookies.html&quot;'>Cookies</a></li>
+      <li><a expr:href='data:blog.homepageUrl + &quot;p/accessibility.html&quot;'>Accessibility</a></li>
+    </ul>
+  </div>
+  <div>
+    <h3 class='bn-footer-heading'>Contact</h3>
+    <ul class='bn-footer-links'>
+      <li><a expr:href='data:blog.homepageUrl + &quot;p/contact.html&quot;'>Contact Us</a></li>
+      <!-- Replace # with the real GitHub org URL once created -->
+      <li><a href='#'>GitHub</a></li>
+    </ul>
+  </div>
+</div>
+<b:section id='bn-footer-section' name='Footer' showaddelement='yes'>
+</b:section>
+<div class='bn-container bn-footer-bottom'>
+  <span>© <span id='bn-year'></span> Banynova. All rights reserved. <a expr:href='data:blog.homepageUrl + &quot;p/disclaimer.html&quot;'>Disclaimer</a></span>
+  <span>Your files never leave your browser.</span>
+</div>
+</footer>
+
+<!-- ============================== BASE JAVASCRIPT ============================== -->
+<script>//<![CDATA[
+(function (global) {
+  'use strict';
+
+  var Banynova = global.Banynova || {};
+
+  /* ------------------------------------------------------------------------
+     MODULE REGISTRATION — the one sanctioned way to add a module to the
+     Banynova namespace, now or in any future tool script. Because each
+     module is frozen individually (never the top-level Banynova object —
+     see the reasoning at the bottom of this file), a future script must
+     never write `Banynova.search = {...}` directly for an existing name,
+     and never mutate an already-registered module's properties after the
+     fact. Banynova.register() enforces both: it refuses to silently
+     overwrite an existing module (warns instead), and freezes whatever it
+     registers immediately, so every module — this file's or a future
+     tool's — ends up equally protected without each script having to
+     remember to call Object.freeze itself.
+     Usage from a future tool page: Banynova.register('search', { ... });
+     ------------------------------------------------------------------------ */
+  Object.defineProperty(Banynova, 'register', {
+    value: function (name, module) {
+      if (Object.prototype.hasOwnProperty.call(Banynova, name)) {
+        if (window.console && console.warn) {
+          console.warn('Banynova.register: "' + name + '" already exists and was not overwritten. Choose a different module name.');
+        }
+        return Banynova[name];
+      }
+      Banynova[name] = module;
+      if (Object.freeze) { Object.freeze(module); }
+      return module;
+    },
+    writable: false,
+    configurable: false,
+    enumerable: true
+  });
+
+  /* ------------------------------------------------------------------------
+     STORAGE — thin, safe wrapper (private browsing / disabled storage
+     should never throw and break the page)
+     ------------------------------------------------------------------------ */
+  Banynova.register('storage', {
+    get: function (key) {
+      try { return window.localStorage.getItem(key); } catch (e) { return null; }
+    },
+    set: function (key, value) {
+      try { window.localStorage.setItem(key, value); return true; } catch (e) { return false; }
+    },
+    remove: function (key) {
+      try { window.localStorage.removeItem(key); return true; } catch (e) { return false; }
+    }
+  });
+
+  /* ------------------------------------------------------------------------
+     THEME TOGGLE SYSTEM
+     ------------------------------------------------------------------------ */
+  Banynova.register('theme', {
+    STORAGE_KEY: 'bn-theme',
+    // Static, hardcoded icon markup (no user input involved) — safe to set
+    // via innerHTML per Part 5 Section 23; never used with dynamic data.
+    ICON_SUN: '<circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path>',
+    ICON_MOON: '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>',
+    get: function () {
+      return document.documentElement.getAttribute('data-theme') || 'light';
+    },
+    set: function (mode) {
+      document.documentElement.setAttribute('data-theme', mode);
+      Banynova.storage.set(this.STORAGE_KEY, mode);
+    },
+    toggle: function () {
+      this.set(this.get() === 'dark' ? 'light' : 'dark');
+    },
+    init: function () {
+      var toggle = document.getElementById('bn-theme-toggle');
+      var icon = document.getElementById('bn-theme-icon');
+      if (!toggle) { return; }
+      function updateThemeButton(announce) {
+        var dark = Banynova.theme.get() === 'dark';
+        toggle.setAttribute('aria-pressed', String(dark));
+        toggle.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+        if (icon) { icon.innerHTML = dark ? Banynova.theme.ICON_MOON : Banynova.theme.ICON_SUN; }
+        if (announce) { Banynova.a11y.announce(dark ? 'Dark mode enabled' : 'Light mode enabled'); }
+      }
+      updateThemeButton(false);
+      toggle.addEventListener('click', function () {
+        Banynova.theme.toggle();
+        updateThemeButton(true);
+      });
+    }
+  });
+
+  /* ------------------------------------------------------------------------
+     ACCESSIBILITY HELPERS
+     ------------------------------------------------------------------------ */
+  Banynova.register('a11y', {
+    announce: function (message) {
+      var region = document.getElementById('bn-live-region');
+      if (!region) { return; }
+      region.textContent = '';
+      window.setTimeout(function () { region.textContent = message; }, 50);
+    },
+    prefersReducedMotion: function () {
+      return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    },
+    trapFocus: function (container) {
+      var focusable = container.querySelectorAll('a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      if (focusable.length === 0) { return function () {}; }
+      var first = focusable[0];
+      var last = focusable[focusable.length - 1];
+      function handleKey(e) {
+        if (e.key !== 'Tab') { return; }
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+      container.addEventListener('keydown', handleKey);
+      return function () { container.removeEventListener('keydown', handleKey); };
+    }
+  });
+
+  /* ------------------------------------------------------------------------
+     GLOBAL UTILITIES
+     ------------------------------------------------------------------------ */
+  Banynova.register('utils', {
+    qs: function (sel, ctx) { return (ctx || document).querySelector(sel); },
+    qsa: function (sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); },
+    debounce: function (fn, wait) {
+      var t;
+      return function () {
+        var args = arguments, ctx = this;
+        window.clearTimeout(t);
+        t = window.setTimeout(function () { fn.apply(ctx, args); }, wait || 250);
+      };
+    },
+    throttle: function (fn, limit) {
+      var inThrottle;
+      return function () {
+        var args = arguments, ctx = this;
+        if (!inThrottle) {
+          fn.apply(ctx, args);
+          inThrottle = true;
+          window.setTimeout(function () { inThrottle = false; }, limit || 100);
+        }
+      };
+    }
+  });
+
+  /* ------------------------------------------------------------------------
+     PERFORMANCE HELPERS
+     ------------------------------------------------------------------------ */
+  Banynova.register('perf', {
+    lazyLoadImages: function (selector) {
+      var imgs = Banynova.utils.qsa(selector || 'img[data-src]');
+      if (imgs.length === 0) { return; }
+      if (!('IntersectionObserver' in window)) {
+        imgs.forEach(function (img) { img.src = img.getAttribute('data-src'); });
+        return;
+      }
+      var observer = new IntersectionObserver(function (entries, obs) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            var img = entry.target;
+            img.src = img.getAttribute('data-src');
+            img.removeAttribute('data-src');
+            obs.unobserve(img);
+          }
+        });
+      });
+      imgs.forEach(function (img) { observer.observe(img); });
+    },
+    // Blogger post-body <img> tags come from user-authored content and
+    // can't be templated directly. This applies Part 2 Section 15's
+    // loading="lazy" / decoding="async" rule after the fact, skipping the
+    // first image in the post so a genuine hero/LCP image is never
+    // lazy-loaded (Part 8 Section 14).
+    applyLazyLoadingToPostImages: function () {
+      var imgs = Banynova.utils.qsa('.bn-tool-page img');
+      imgs.forEach(function (img, index) {
+        if (index === 0) { return; }
+        if (!img.hasAttribute('loading')) { img.setAttribute('loading', 'lazy'); }
+        if (!img.hasAttribute('decoding')) { img.setAttribute('decoding', 'async'); }
+      });
+    },
+    loadScript: function (src, callback) {
+      var existing = document.querySelector('script[src="' + src + '"]');
+      if (existing) { if (callback) { callback(); } return; }
+      var s = document.createElement('script');
+      s.src = src;
+      s.async = true;
+      if (callback) { s.onload = callback; }
+      document.head.appendChild(s);
+    }
+  });
+
+  /* ------------------------------------------------------------------------
+     BROWSER COMPATIBILITY / FEATURE SUPPORT
+     ------------------------------------------------------------------------ */
+  Banynova.register('support', {
+    clipboard: !!(navigator.clipboard && navigator.clipboard.writeText),
+    webCrypto: !!(window.crypto && window.crypto.subtle),
+    intersectionObserver: 'IntersectionObserver' in window,
+    backdropFilter: !!(window.CSS && window.CSS.supports && (window.CSS.supports('backdrop-filter', 'blur(1px)') || window.CSS.supports('-webkit-backdrop-filter', 'blur(1px)')))
+  });
+
+  /* ------------------------------------------------------------------------
+     NAVIGATION MODULE — header scroll effect, mobile menu, active link.
+     Matches the Module Architecture in Part 5 Section 4 (one module, one
+     responsibility). Scroll handler is throttled per Part 5 Section 12 /
+     Part 8 Section 21, never left unthrottled.
+     ------------------------------------------------------------------------ */
+  Banynova.register('navigation', {
+    initScrollEffect: function () {
+      var header = document.getElementById('bn-header');
+      if (!header) { return; }
+      var onScroll = Banynova.utils.throttle(function () {
+        header.classList.toggle('is-scrolled', window.scrollY > 8);
+      }, 100);
+      window.addEventListener('scroll', onScroll, { passive: true });
+    },
+    initMobileMenu: function () {
+      var menuBtn = document.getElementById('bn-menu-toggle');
+      var mobileNav = document.getElementById('bn-mobile-nav');
+      var overlay = document.getElementById('bn-nav-overlay');
+      if (!menuBtn || !mobileNav) { return; }
+      var releaseFocusTrap = null;
+      function openMenu() {
+        mobileNav.classList.add('is-open');
+        menuBtn.setAttribute('aria-expanded', 'true');
+        document.body.classList.add('bn-scroll-locked');
+        if (overlay) { overlay.classList.add('is-open'); }
+        releaseFocusTrap = Banynova.a11y.trapFocus(mobileNav);
+      }
+      function closeMenu() {
+        mobileNav.classList.remove('is-open');
+        menuBtn.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('bn-scroll-locked');
+        if (overlay) { overlay.classList.remove('is-open'); }
+        if (releaseFocusTrap) { releaseFocusTrap(); releaseFocusTrap = null; }
+      }
+      menuBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (mobileNav.classList.contains('is-open')) { closeMenu(); } else { openMenu(); }
+      });
+      if (overlay) {
+        overlay.addEventListener('click', function () { closeMenu(); menuBtn.focus(); });
+      }
+      document.addEventListener('click', function (e) {
+        if (mobileNav.classList.contains('is-open') && !mobileNav.contains(e.target) && !menuBtn.contains(e.target)) {
+          closeMenu();
+        }
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && mobileNav.classList.contains('is-open')) {
+          closeMenu();
+          menuBtn.focus();
+        }
+      });
+    },
+    // Marks the nav link matching the current page with aria-current="page"
+    // (Part 3 Section 8 / Part 6 Section 5). Strips hash, query params
+    // (e.g. Blogger's ?m=1 mobile param), and trailing slashes before
+    // comparing, so "banynova.blogspot.com/" and "banynova.blogspot.com"
+    // are treated as the same URL. Safe no-op until the linked pages
+    // actually exist — matches nothing rather than matching wrong.
+    normalizeUrl: function (url) {
+      return url.split('#')[0].split('?')[0].replace(/\/+$/, '');
+    },
+    initActiveLink: function () {
+      var here = Banynova.navigation.normalizeUrl(window.location.href);
+      Banynova.utils.qsa('#bn-nav-primary a, #bn-mobile-nav a').forEach(function (link) {
+        var target = Banynova.navigation.normalizeUrl(link.href);
+        if (target === here) { link.setAttribute('aria-current', 'page'); }
+      });
+    },
+    init: function () {
+      this.initScrollEffect();
+      this.initMobileMenu();
+      this.initActiveLink();
+      var yearEl = document.getElementById('bn-year');
+      if (yearEl) { yearEl.textContent = String(new Date().getFullYear()); }
+    }
+  });
+
+  /* ------------------------------------------------------------------------
+     HOMEPAGE HERO SEARCH — the module name/shape follows the exact usage
+     documented above in Banynova.register()'s own comment. Config lives in
+     one place (this object) and both the suggestion chips and quick-link
+     buttons are rendered from it, so nothing has to be edited twice.
+     init() bails out immediately when the hero form isn't in the DOM,
+     which is true on every page except the homepage (see the b:if in the
+     Main section) — so this module is always safe to call from init().
+     ------------------------------------------------------------------------ */
+  Banynova.register('search', {
+    config: {
+      popularTools: [
+        { label: 'Word Counter',       path: 'search/label/Word-Counter' },
+        { label: 'JSON Formatter',     path: 'search/label/JSON-Formatter' },
+        { label: 'Image Compressor',   path: 'search/label/Image-Compressor' },
+        { label: 'Base64 Encoder',     path: 'search/label/Base64-Encoder' },
+        { label: 'Age Calculator',     path: 'search/label/Age-Calculator' },
+        { label: 'UUID Generator',     path: 'search/label/UUID-Generator' },
+        { label: 'QR Code Generator',  path: 'search/label/QR-Code-Generator' },
+        { label: 'Password Generator', path: 'search/label/Password-Generator' }
+      ],
+      quickLinks: [
+        { label: 'Popular Tools',     path: 'search/label/Popular' },
+        { label: 'Browse Categories', path: 'p/categories.html' },
+        { label: 'Latest Tutorials',  path: 'p/blog.html' },
+        { label: 'Resources',         path: 'p/resources.html' }
+      ],
+      stats: [
+        { value: '100+', label: 'Tools' },
+        { value: '100%', label: 'Free' },
+        { value: '', label: 'Browser-Based' },
+        { value: '', label: 'Privacy First' }
+      ],
+      defaultPlaceholder: 'Search tools, tutorials, or guides...',
+      rotateIntervalMs: 3200
+    },
+    init: function () {
+      var form = document.getElementById('bn-hero-search-form');
+      if (!form) { return; }
+
+      var cfg = this.config;
+      var section = document.getElementById('bn-hero');
+      var home = section.getAttribute('data-home') || '/';
+      var input = document.getElementById('bn-hero-search-input');
+      var clearBtn = document.getElementById('bn-hero-search-clear');
+      var panel = document.getElementById('bn-hero-search-panel');
+      var suggestionsList = document.getElementById('bn-hero-suggestions');
+      var actionsList = document.getElementById('bn-hero-actions');
+      var statsList = document.getElementById('bn-hero-stats');
+      var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var activeIndex = -1;
+
+      function url(path) { return home + path; }
+
+      suggestionsList.innerHTML = cfg.popularTools.map(function (t) {
+        return '<li><a class="bn-hero-chip" href="' + url(t.path) + '">' + t.label + '</a></li>';
+      }).join('');
+
+      actionsList.innerHTML = cfg.quickLinks.map(function (l) {
+        return '<li><a class="bn-hero-action-btn" href="' + url(l.path) + '">' + l.label + '</a></li>';
+      }).join('');
+
+      statsList.innerHTML = cfg.stats.map(function (s) {
+        var value = s.value ? '<span>' + s.value + '</span>' : '';
+        return '<li>' + value + s.label + '</li>';
+      }).join('');
+
+      function toggleClear() { clearBtn.classList.toggle('is-visible', input.value.length > 0); }
+      input.addEventListener('input', toggleClear);
+      clearBtn.addEventListener('click', function () {
+        input.value = '';
+        toggleClear();
+        closePanel();
+        input.focus();
+      });
+
+      document.addEventListener('keydown', function (e) {
+        var tag = document.activeElement.tagName;
+        var isTyping = tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement.isContentEditable;
+        if (e.key === '/' && !isTyping) { e.preventDefault(); input.focus(); }
+        if (e.key === 'Escape') { closePanel(); }
+      });
+
+      if (!reducedMotion) {
+        var rotateIndex = 0;
+        window.setInterval(function () {
+          if (document.activeElement === input || input.value) { return; }
+          rotateIndex = (rotateIndex + 1) % cfg.popularTools.length;
+          input.setAttribute('placeholder', 'Search ' + cfg.popularTools[rotateIndex].label + '...');
+        }, cfg.rotateIntervalMs);
+      }
+      input.addEventListener('blur', function () {
+        if (!input.value) { input.setAttribute('placeholder', cfg.defaultPlaceholder); }
+      });
+
+      function openPanel() { panel.classList.add('is-open'); input.setAttribute('aria-expanded', 'true'); }
+      function closePanel() {
+        panel.classList.remove('is-open');
+        panel.innerHTML = '';
+        input.setAttribute('aria-expanded', 'false');
+        input.removeAttribute('aria-activedescendant');
+        activeIndex = -1;
+      }
+      function highlight(label, query) {
+        var i = label.toLowerCase().indexOf(query.toLowerCase());
+        if (i === -1) { return label; }
+        return label.slice(0, i) + '<mark>' + label.slice(i, i + query.length) + '</mark>' + label.slice(i + query.length);
+      }
+
+      input.addEventListener('input', function () {
+        var q = input.value.trim();
+        if (!q) { closePanel(); return; }
+        var matches = cfg.popularTools.filter(function (t) {
+          return t.label.toLowerCase().indexOf(q.toLowerCase()) !== -1;
+        }).slice(0, 5);
+        if (!matches.length) { closePanel(); return; }
+        panel.innerHTML = matches.map(function (t, i) {
+          return '<li class="bn-hero-search-option" id="bn-hero-option-' + i + '" role="option" data-url="' + url(t.path) + '">' + highlight(t.label, q) + '</li>';
+        }).join('');
+        activeIndex = -1;
+        openPanel();
+      });
+
+      panel.addEventListener('click', function (e) {
+        var opt = e.target.closest('.bn-hero-search-option');
+        if (opt) { window.location.href = opt.getAttribute('data-url'); }
+      });
+
+      input.addEventListener('keydown', function (e) {
+        if (!panel.classList.contains('is-open')) { return; }
+        var options = panel.querySelectorAll('.bn-hero-search-option');
+        if (!options.length) { return; }
+        if (e.key === 'ArrowDown') { e.preventDefault(); activeIndex = (activeIndex + 1) % options.length; }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); activeIndex = (activeIndex - 1 + options.length) % options.length; }
+        else if (e.key === 'Enter' && activeIndex !== -1) { e.preventDefault(); window.location.href = options[activeIndex].getAttribute('data-url'); return; }
+        else { return; }
+        options.forEach(function (o) { o.classList.remove('is-active'); });
+        options[activeIndex].classList.add('is-active');
+        input.setAttribute('aria-activedescendant', options[activeIndex].id);
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!e.target.closest('.bn-hero-search')) { closePanel(); }
+      });
+      form.addEventListener('submit', function () { closePanel(); });
+    }
+  });
+
+  global.Banynova = Banynova;
+
+  // Each module above was already frozen individually by Banynova.register()
+  // as it was added — see that function's comment near the top of this
+  // script for the full reasoning (deliberately not freezing the top-level
+  // Banynova object itself, so future tool pages can still add new
+  // modules via Banynova.register('search', {...}), etc.).
+
+  Banynova.theme.init();
+  Banynova.navigation.init();
+  Banynova.search.init();
+  Banynova.perf.applyLazyLoadingToPostImages();
+
+})(window);
+//]]></script>
+
+</body>
+</html>
