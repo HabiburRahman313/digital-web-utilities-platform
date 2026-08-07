@@ -1,0 +1,144 @@
+# Banynova — Static Page Creation Standard
+
+**Governed by:** `Documentation_Governance_v1.0.md`
+**Applies to:** Every Blogger static Page (Categories, Blog, Resources, About, Contact, Privacy Policy, Terms of Service, Cookies, Accessibility, and any future Page)
+
+---
+
+## 1. Purpose
+
+This document exists because a real production incident showed that Blogger's automatic permalink behavior for static Pages can silently produce a URL that does not match the clean URL used throughout the site's navigation, footer, and internal links — resulting in a page that appears completely blank to visitors, even though it is correctly published with real content.
+
+**বাংলা:** এই ডকুমেন্টটি তৈরি করা হয়েছে একটি বাস্তব সমস্যার অভিজ্ঞতা থেকে। Blogger-এর Static Page-এর জন্য স্বয়ংক্রিয় permalink তৈরির প্রক্রিয়া কখনো কখনো নীরবে এমন একটি URL তৈরি করে যা সাইটের navigation, footer এবং internal link-এ ব্যবহৃত clean URL-এর সাথে মেলে না — ফলে পেজটি প্রকৃতপক্ষে সঠিকভাবে publish এবং real content থাকা সত্ত্বেও visitor-এর কাছে সম্পূর্ণ ফাঁকা দেখায়।
+
+Following this standard exactly, every time, prevents that failure mode entirely.
+
+**বাংলা:** প্রতিবার হুবহু এই standard অনুসরণ করলে এই সমস্যাটি সম্পূর্ণরূপে এড়ানো সম্ভব।
+
+---
+
+## 2. Why This Happens (Design Behavior, Not a Bug)
+
+Blogger assigns a static Page's permalink **once, at the moment of its first Publish**, based on the title at that exact moment. Editing the title afterward does **not** regenerate the URL — the original permalink is permanent. This is expected Blogger platform behavior, not a defect.
+
+**বাংলা:** Blogger একটি Static Page-এর permalink **শুধু একবারই তৈরি করে — প্রথম Publish করার মুহূর্তে**, এবং সেটি নির্ভর করে ঠিক সেই মুহূর্তের Title-এর ওপর। পরবর্তীতে Title পরিবর্তন করলে URL **পরিবর্তিত হয় না** — মূল permalink-টিই স্থায়ী থাকে। এটি Blogger platform-এর স্বাভাবিক আচরণ (design behavior), কোনো bug নয়।
+
+If a longer, multi-word title is used at first publish (e.g. "Terms of Service"), or if the intended slug was already reserved by an earlier deleted/trashed page, Blogger may append a random numeric suffix to the permalink (e.g. `/p/terms-of-service_01748194990.html`) instead of the clean slug you expected.
+
+**বাংলা:** যদি প্রথম Publish-এর সময় একটি লম্বা, একাধিক শব্দের Title ব্যবহার করা হয় (যেমন "Terms of Service"), অথবা যদি কাঙ্ক্ষিত slug আগে থেকেই কোনো deleted/trashed পেজ দ্বারা reserved থাকে, তাহলে Blogger clean slug-এর বদলে একটি random সংখ্যাযুক্ত suffix যোগ করে দিতে পারে (যেমন `/p/terms-of-service_01748194990.html`)।
+
+---
+
+## 3. The Standard Procedure
+
+Follow these five steps **in order**, for every new static Page, without exception.
+
+| Step | Action |
+|---|---|
+| 1 | Create the page using **only the desired short URL word** as the title (e.g. `terms`, `cookies`, `accessibility`, `resources`, `about`, `contact`, `categories`, `blog`) |
+| 2 | Type a single placeholder word in the body (e.g. `test`) and **Publish** — do not add real content yet |
+| 3 | **Verify the generated permalink** matches the intended clean URL exactly (see Section 5, verification methods) |
+| 4 | Once confirmed, **rename the title** to its final, reader-friendly form (e.g. `Terms of Service`) |
+| 5 | Replace the placeholder body with the complete, real page content, then **Update** |
+
+**বাংলা:** প্রতিটি নতুন Static Page-এর জন্য, ব্যতিক্রম ছাড়াই, নিচের পাঁচটি ধাপ **ক্রমানুসারে** অনুসরণ করুন।
+
+| ধাপ | কাজ |
+|---|---|
+| ১ | পেজটি তৈরি করুন **শুধুমাত্র কাঙ্ক্ষিত সংক্ষিপ্ত URL শব্দটি** Title হিসেবে দিয়ে (যেমন: `terms`, `cookies`, `accessibility`, `resources`, `about`, `contact`, `categories`, `blog`) |
+| ২ | Body-তে একটি placeholder শব্দ লিখুন (যেমন: `test`) এবং **Publish** করুন — এখনই আসল content যোগ করবেন না |
+| ৩ | তৈরি হওয়া permalink কাঙ্ক্ষিত clean URL-এর সাথে হুবহু মিলছে কিনা **যাচাই করুন** (দেখুন Section ৫) |
+| ৪ | নিশ্চিত হওয়ার পর, Title পরিবর্তন করে চূড়ান্ত, reader-friendly রূপ দিন (যেমন: `Terms of Service`) |
+| ৫ | Placeholder body-র জায়গায় সম্পূর্ণ real content বসিয়ে **Update** করুন |
+
+---
+
+## 4. Pre-Creation Checklist
+
+Before Step 1 above, complete this checklist:
+
+- [ ] **Check Trash for deleted pages with the same slug.** A trashed page can still reserve its slug and force a suffixed URL on the new page.
+- [ ] **Avoid duplicate page titles before the first publish.** Two pages that would generate the same slug will collide.
+- [ ] **Confirm the intended URL against the site's actual navigation/footer links** (Header/Footer in `Base_Layout.xml`) before publishing, so the slug you're creating is the one already referenced sitewide.
+
+**বাংলা:** উপরের ধাপ ১-এর আগে এই checklist সম্পূর্ণ করুন:
+
+- [ ] **একই slug-এর কোনো deleted পেজ Trash-এ আছে কিনা চেক করুন।** Trash-এ থাকা পেজও তার slug reserve করে রাখতে পারে, ফলে নতুন পেজে suffix যুক্ত URL তৈরি হতে পারে।
+- [ ] **প্রথম Publish-এর আগে duplicate page title এড়িয়ে চলুন।** দুটি পেজ একই slug তৈরি করতে চাইলে সংঘর্ষ (collision) হবে।
+- [ ] **Publish করার আগে কাঙ্ক্ষিত URL-টি সাইটের প্রকৃত navigation/footer link-এর (`Base_Layout.xml`-এর Header/Footer) সাথে মিলিয়ে নিন**, যাতে যে slug তৈরি করছেন সেটিই সাইট জুড়ে ইতিমধ্যে reference করা slug হয়।
+
+---
+
+## 5. Verifying the Generated Permalink
+
+Static Pages do not show an editable Permalink field the way Posts do — the URL must be confirmed indirectly, using one of these methods:
+
+1. **Preview button** in the page editor — opens the live rendering in a new tab; read the exact URL from the address bar.
+2. **Pages list → hover/right-click the View icon** next to the page → Copy link address.
+3. Direct navigation to the intended clean URL (e.g. `banynova.blogspot.com/p/terms.html`) — if it loads the correct title and content, the slug is confirmed correct.
+
+**বাংলা:** Post-এর মতো Static Page-এ সরাসরি editable Permalink field দেখানো হয় না — তাই নিচের যেকোনো একটি উপায়ে পরোক্ষভাবে URL নিশ্চিত করতে হবে:
+
+১. Page editor-এর **Preview বাটন** — নতুন ট্যাবে live rendering খোলে; address bar থেকে সঠিক URL পড়ুন।
+২. **Pages তালিকায় → পেজের পাশে View আইকনে হভার/রাইট-ক্লিক করে** → Copy link address নির্বাচন করুন।
+৩. কাঙ্ক্ষিত clean URL-এ সরাসরি প্রবেশ করুন (যেমন `banynova.blogspot.com/p/terms.html`) — সঠিক title ও content লোড হলে বুঝতে হবে slug সঠিক।
+
+---
+
+## 6. Worked Example
+
+| Action | Result |
+|---|---|
+| Create page titled `terms` | — |
+| Publish with placeholder body (`test`) | Permalink locked in as `/p/terms.html` |
+| Rename title to `Terms of Service` | URL remains `/p/terms.html` (unchanged) |
+| Add real content, Update | Page live at `/p/terms.html` with correct title and content |
+
+**বাংলা:**
+
+| কাজ | ফলাফল |
+|---|---|
+| `terms` Title দিয়ে পেজ তৈরি | — |
+| Placeholder body (`test`) দিয়ে Publish | Permalink স্থায়ীভাবে `/p/terms.html` হিসেবে নির্ধারিত হলো |
+| Title পরিবর্তন করে `Terms of Service` | URL অপরিবর্তিত থাকে `/p/terms.html` |
+| আসল content যোগ করে Update | পেজটি সঠিক Title ও Content সহ `/p/terms.html`-এ live হয় |
+
+---
+
+## 7. Important Warning
+
+**Never delete and recreate a page unless genuinely necessary.** Blogger may continue to reserve the previous slug for some time after deletion, which can cause the exact same suffixed-URL problem to recur on the replacement page. If a page must be recreated, check Trash first (Section 4) and permanently delete any conflicting old version before publishing the new one.
+
+**বাংলা:** **সত্যিকারের প্রয়োজন না হলে কখনো কোনো পেজ delete করে আবার recreate করবেন না।** Delete করার পরেও Blogger কিছু সময়ের জন্য পূর্বের slug reserve করে রাখতে পারে, যার ফলে নতুন পেজেও একই suffix-যুক্ত URL সমস্যা আবার দেখা দিতে পারে। যদি সত্যিই recreate করতে হয়, তাহলে আগে Trash চেক করুন (Section ৪) এবং conflicting পুরনো ভার্সনটি স্থায়ীভাবে (permanently) মুছে ফেলার পরই নতুন পেজ publish করুন।
+
+---
+
+## 8. Page Registry
+
+Tracks the intended clean URL against the confirmed actual permalink for every static Page, so drift between the two is caught immediately rather than discovered as a blank-page incident.
+
+| Page | Intended URL | Confirmed Actual URL | Status |
+|---|---|---|---|
+| Terms of Service | `/p/terms.html` | *(re-verify after recreation per Section 6)* | ⬜ Pending |
+| Privacy Policy | `/p/privacy-policy.html` | `/p/privacy-policy.html` | ✅ Confirmed |
+| Cookies | `/p/cookies.html` | — | ⬜ Not yet created |
+| Accessibility | `/p/accessibility.html` | — | ⬜ Not yet created |
+| Disclaimer | `/p/disclaimer.html` | — | ⬜ Not yet created |
+| Categories | `/p/categories.html` | — | ⬜ Not yet created |
+| Blog | `/p/blog.html` | — | ⬜ Not yet created |
+| Resources | `/p/resources.html` | — | ⬜ Not yet created |
+| About | `/p/about.html` | — | ⬜ Not yet created |
+| Contact | `/p/contact.html` | — | ⬜ Not yet created |
+
+**Rule:** a page's Status only moves to ✅ Confirmed after its actual permalink has been verified (Section 5) and matches the Intended URL exactly. If they don't match, either fix the page's URL (Section 7) or update every reference to it in `Base_Layout.xml` — never leave the two silently out of sync.
+
+**বাংলা নিয়ম:** কোনো পেজের Status তখনই ✅ Confirmed হবে যখন তার প্রকৃত permalink যাচাই করা হয়েছে (Section ৫) এবং সেটি Intended URL-এর সাথে হুবহু মিলছে। না মিললে, হয় পেজের URL ঠিক করুন (Section ৭), অথবা `Base_Layout.xml`-এর প্রতিটি reference আপডেট করুন —
+দুটোকে কখনো নীরবে অসামঞ্জস্যপূর্ণ (out of sync) রেখে দেবেন না।
+
+---
+
+## 9. Changelog
+
+| Version | Date | Change |
+|---|---|---|
+| 1.0 | {{fill in date}} | Initial standard created following the Terms of Service blank-page incident — captures the Blogger permalink-locking behavior, the standard creation procedure, pre-creation checklist, verification methods, and the Page Registry for ongoing tracking. |
