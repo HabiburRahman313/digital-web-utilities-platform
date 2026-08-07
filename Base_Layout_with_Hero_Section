@@ -88,6 +88,63 @@
     scaling up via min-width media queries — previously the base rules
     held desktop values overridden down via max-width, which is the
     opposite of mobile-first.
+  - v2.2 reconciliation pass: fixed a newly-found h1/h2/h3/h4 mobile
+    sizing collision (h1 and h2 were both fs-3xl on mobile before the
+    min-width:640 bump restored the hierarchy — now each heading level
+    has its own distinct mobile-first base size). og:url now mirrors the
+    canonical link's own homepage-vs-page logic instead of always using
+    canonicalUrl. Added og:image:width/height, .u-hidden utility, and
+    noopener/target='_blank' on the external GitHub footer link. Added
+    an early, self-contained lazy-loading script positioned immediately
+    after each post's body (see the "post" includable) — genuinely
+    earlier than the previous end-of-document-only approach, though
+    browser preload scanners mean no script-based fix can be fully
+    complete; the honest limitation is documented inline. Rejected an
+    unverified `<data:post.body snippet='false' loading='lazy'/>`
+    approach from an earlier draft — that is not documented, working
+    Blogger template syntax and would silently do nothing.
+  - v2.3: merged the Hero section (homepage-only) into the homepage
+    branch of the Main includable — real search form posting to
+    Blogger's native /search endpoint, combobox-pattern suggestions,
+    keyboard shortcut ("/"), noscript fallback for crawlers/no-JS, and
+    a Banynova.register('search', {...}) module. See Section "HERO
+    SECTION — INTEGRATION MAP" below for exactly where its HTML, CSS,
+    and JS each live and why. Homepage sections beyond Hero (Popular
+    Tools, Categories, Tutorials, Why Choose, Stats, FAQ, Newsletter)
+    still inject below it as they're built.
+  ============================================================================
+
+  HERO SECTION — INTEGRATION MAP (read this before touching the Hero)
+  The Hero is homepage-only content, so unlike Header/Footer it does NOT
+  get its own top-level <b:section>/<b:widget> — unlike Header/Footer it
+  is not sitewide chrome that Blogger recognizes as a distinct region.
+  It lives entirely inside the Main widget's existing "main" includable,
+  gated by the same homepage b:if that already existed there. This
+  keeps exactly one Header widget, one Main/Blog widget, one Footer
+  section — adding a Hero never means adding a fourth widget.
+
+  - HTML: inside <b:includable id='main'>, in the
+    `<b:if cond='data:blog.url == data:blog.homepageUrl'>` branch —
+    search for "HERO (Homepage only)" below. Nothing homepage-specific
+    ever belongs in the <b:else/> branch (that's the post/page renderer)
+    or outside this includable entirely.
+  - CSS: inside <b:skin>, Section 5 (COMPONENTS), in the Hero
+    (Homepage only) block, positioned right after Main and before
+    Footer — matching the same top-to-bottom order the HTML itself
+    renders in.
+  - JS: inside the closing <script> before </body>, as a
+    Banynova.register('search', {...}) module — positioned after the
+    `navigation` module and before the final freeze/init block. Its
+    own init() bails out immediately if #bn-hero-search-form isn't in
+    the DOM (true on every page except the homepage), so it's always
+    safe to call unconditionally from the init sequence at the bottom,
+    exactly like every other module.
+
+  Any future homepage-only section (Popular Tools, Categories grid,
+  etc.) should follow this exact same three-part pattern: HTML inside
+  the same b:if branch, CSS in Section 5 positioned where it visually
+  renders, JS as its own Banynova.register()'d module called
+  unconditionally at the bottom.
   ============================================================================
 -->
 <html b:css='false' b:defaultwidgetversion='2' b:layoutsVersion='3' b:responsive='true' expr:dir='data:blog.languageDirection' lang='en' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
@@ -132,13 +189,22 @@
 <meta content='website' property='og:type'/>
 <meta expr:content='data:blog.title' property='og:site_name'/>
 <meta expr:content='data:blog.pageName' property='og:title'/>
+<!-- og:url mirrors the canonical link's own homepage-vs-page logic (Section
+     3) exactly, rather than always using canonicalUrl, so shares from the
+     homepage never carry Blogger's mobile ?m=1 or other query artifacts. -->
+<b:if cond='data:blog.url == data:blog.homepageUrl'>
+<meta expr:content='data:blog.homepageUrl' property='og:url'/>
+<b:else/>
 <meta expr:content='data:blog.canonicalUrl' property='og:url'/>
+</b:if>
 <b:if cond='data:blog.metaDescription'>
 <meta expr:content='data:blog.metaDescription' property='og:description'/>
 <b:else/>
 <meta content='Banynova offers free online tools for developers, marketers, creators, and students. Fast, private, browser-based utilities. No sign-up. No uploads.' property='og:description'/>
 </b:if>
 <meta content='https://banynova.blogspot.com/og-image.png' property='og:image'/>
+<meta content='1200' property='og:image:width'/>
+<meta content='630' property='og:image:height'/>
 <meta content='en_US' property='og:locale'/>
 
 <!-- ======================= 7. TWITTER CARDS ======================= -->
@@ -361,9 +427,9 @@ body {
 }
 h1, h2, h3, h4 { line-height: var(--bn-lh-tight); font-weight: var(--bn-fw-bold); color: var(--bn-text-primary); }
 h1 { font-size: var(--bn-fs-3xl); }
-h2 { font-size: var(--bn-fs-3xl); }
-h3 { font-size: var(--bn-fs-2xl); }
-h4 { font-size: var(--bn-fs-xl); }
+h2 { font-size: var(--bn-fs-2xl); }
+h3 { font-size: var(--bn-fs-xl); }
+h4 { font-size: var(--bn-fs-lg); }
 p { color: var(--bn-text-secondary); }
 a { text-decoration: none; }
 code, pre, kbd { font-family: var(--bn-font-mono); }
@@ -503,6 +569,7 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
 .u-text-left { text-align: left; }
 .u-text-right { text-align: right; }
 .u-flex { display: flex; }
+.u-hidden { display: none !important; }
 .u-grid { display: grid; }
 .u-items-center { align-items: center; }
 .u-justify-between { justify-content: space-between; }
@@ -524,6 +591,9 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
    ========================================================================== */
 @media (min-width: 640px) {
   h1 { font-size: var(--bn-fs-4xl); }
+  h2 { font-size: var(--bn-fs-3xl); }
+  h3 { font-size: var(--bn-fs-2xl); }
+  h4 { font-size: var(--bn-fs-xl); }
   .bn-section { padding-block: var(--bn-space-16); }
 }
 
@@ -669,6 +739,9 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
 
   </div>
 </section>
+  <!-- Remaining Homepage sections (Popular Tools, Categories, Tutorials,
+       Why Choose, Stats, FAQ, Newsletter) inject here as they are built,
+       per Roadmap Step 3 continuing. -->
 <b:else/>
   <b:loop values='data:posts' var='post'>
     <b:include data='post' name='post'/>
@@ -679,6 +752,38 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
 <article class='bn-tool-page'>
   <h1><data:post.title/></h1>
   <data:post.body/>
+  <!-- Runs immediately after the post body parses — deliberately self-
+       contained (no dependency on the Banynova namespace defined later at
+       the end of body), so this executes as early as document order
+       allows, not after the footer and full script also parse.
+       Honest limitation: browsers' preload scanners discover <img src>
+       resources by scanning ahead of the parser specifically to start
+       fetches early, independent of script timing — so this cannot
+       fully prevent an eager fetch that the scanner already queued
+       before this script runs, for any image already ahead in the
+       markup. It is still strictly earlier and therefore strictly
+       better than applying the same attributes at the end of body
+       (Banynova.perf.applyLazyLoadingToPostImages, kept below as a
+       fallback for any images inserted dynamically after this point).
+       The only complete fix — the loading="lazy" attribute present in
+       the post's own original HTML — isn't available at the template
+       level, since Blogger post bodies are user-authored content; for
+       posts with many/large images, add loading="lazy" directly in the
+       post's HTML editor when writing it. -->
+  <script>//<![CDATA[
+  (function () {
+    // Scoped to THIS post's own article via document.currentScript --
+    // required because on label/archive pages this includable renders once
+    // per post, and a page-wide '.bn-tool-page img' selector would treat
+    // the whole page's first image as the one to skip, not each post's own.
+    var article = document.currentScript && document.currentScript.closest('.bn-tool-page');
+    var imgs = article ? article.querySelectorAll('img') : [];
+    for (var i = 1; i < imgs.length; i++) {
+      if (!imgs[i].hasAttribute('loading')) { imgs[i].setAttribute('loading', 'lazy'); }
+      if (!imgs[i].hasAttribute('decoding')) { imgs[i].setAttribute('decoding', 'async'); }
+    }
+  })();
+  //]]></script>
 </article>
 </b:includable>
 </b:widget>
@@ -719,7 +824,7 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
     <ul class='bn-footer-links'>
       <li><a expr:href='data:blog.homepageUrl + &quot;p/contact.html&quot;'>Contact Us</a></li>
       <!-- Replace # with the real GitHub org URL once created -->
-      <li><a href='#'>GitHub</a></li>
+      <li><a href='#' rel='noopener' target='_blank'>GitHub</a></li>
     </ul>
   </div>
 </div>
