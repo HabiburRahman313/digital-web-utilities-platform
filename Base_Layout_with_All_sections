@@ -543,6 +543,42 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
   .bn-hero-suggestions { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; -webkit-overflow-scrolling: touch; }
 }
 
+/* --- Section Heading (shared pattern: Popular Tools, Categories, Latest Articles, New Tools) --- */
+.bn-section-head { max-width: 640px; margin-bottom: var(--bn-space-10); }
+.bn-section-eyebrow { display: inline-block; font-size: var(--bn-fs-sm); font-weight: var(--bn-fw-semibold); color: var(--bn-primary); margin-bottom: var(--bn-space-2); }
+.bn-section-title { font-size: var(--bn-fs-3xl); margin-bottom: var(--bn-space-3); }
+.bn-section-sub { color: var(--bn-text-secondary); font-size: var(--bn-fs-lg); }
+
+/* --- Tool Card (Popular Tools, New Tools) --- */
+.bn-tool-card { display: flex; flex-direction: column; gap: var(--bn-space-3); padding: var(--bn-space-5); background: var(--bn-surface); border: 1px solid var(--bn-border); border-radius: var(--bn-radius-lg); transition: border-color var(--bn-transition-fast), transform var(--bn-transition-fast), box-shadow var(--bn-transition-fast); position: relative; }
+.bn-tool-card:hover { border-color: var(--bn-primary); box-shadow: var(--bn-shadow-3); transform: translateY(-3px); }
+.bn-tool-card-icon { width: 44px; height: 44px; border-radius: var(--bn-radius-md); background: var(--bn-primary-subtle); color: var(--bn-primary); display: flex; align-items: center; justify-content: center; }
+.bn-tool-card-name { font-size: var(--bn-fs-lg); font-weight: var(--bn-fw-semibold); }
+.bn-tool-card-cat { font-size: var(--bn-fs-xs); font-weight: var(--bn-fw-semibold); color: var(--bn-text-tertiary); text-transform: uppercase; letter-spacing: .04em; }
+.bn-tool-card-desc { font-size: var(--bn-fs-sm); color: var(--bn-text-secondary); flex-grow: 1; }
+.bn-tool-card-link { font-size: var(--bn-fs-sm); font-weight: var(--bn-fw-semibold); color: var(--bn-primary); display: inline-flex; align-items: center; gap: var(--bn-space-1); }
+.bn-tool-card:hover .bn-tool-card-link svg { transform: translateX(3px); }
+.bn-tool-card-link svg { transition: transform var(--bn-transition-fast); }
+.bn-new-badge { position: absolute; top: var(--bn-space-4); right: var(--bn-space-4); background: var(--bn-accent); color: var(--bn-text-on-primary); font-size: var(--bn-fs-xs); font-weight: var(--bn-fw-semibold); padding: var(--bn-space-1) var(--bn-space-2); border-radius: var(--bn-radius-full); }
+
+/* --- Category Card (Categories) --- */
+.bn-cat-card { display: flex; flex-direction: column; gap: var(--bn-space-2); text-align: center; padding: var(--bn-space-6) var(--bn-space-4); background: var(--bn-surface); border: 1px solid var(--bn-border); border-radius: var(--bn-radius-lg); transition: border-color var(--bn-transition-fast), transform var(--bn-transition-fast), box-shadow var(--bn-transition-fast); }
+.bn-cat-card:hover { border-color: var(--bn-accent); transform: translateY(-3px); box-shadow: var(--bn-shadow-3); }
+.bn-cat-card-icon { width: 48px; height: 48px; border-radius: var(--bn-radius-md); margin-inline: auto; background: var(--bn-accent); color: var(--bn-text-on-primary); display: flex; align-items: center; justify-content: center; }
+.bn-cat-card-name { font-weight: var(--bn-fw-semibold); }
+.bn-cat-card-count { font-size: var(--bn-fs-xs); color: var(--bn-text-tertiary); }
+.bn-cat-card-desc { font-size: var(--bn-fs-sm); color: var(--bn-text-secondary); }
+
+/* --- Article Card (Latest Articles) --- */
+.bn-article-card { display: flex; flex-direction: column; background: var(--bn-surface); border: 1px solid var(--bn-border); border-radius: var(--bn-radius-lg); overflow: hidden; transition: transform var(--bn-transition-fast), box-shadow var(--bn-transition-fast); }
+.bn-article-card:hover { transform: translateY(-3px); box-shadow: var(--bn-shadow-3); }
+.bn-article-img { width: 100%; aspect-ratio: 16/9; background: var(--bn-gradient-subtle); display: flex; align-items: center; justify-content: center; color: var(--bn-primary); }
+.bn-article-body { padding: var(--bn-space-5); display: flex; flex-direction: column; gap: var(--bn-space-2); flex-grow: 1; }
+.bn-article-tag { font-size: var(--bn-fs-xs); font-weight: var(--bn-fw-semibold); color: var(--bn-accent); }
+.bn-article-title { font-size: var(--bn-fs-lg); font-weight: var(--bn-fw-semibold); }
+.bn-article-desc { font-size: var(--bn-fs-sm); color: var(--bn-text-secondary); }
+.bn-article-meta { font-size: var(--bn-fs-xs); color: var(--bn-text-tertiary); margin-top: auto; padding-top: var(--bn-space-3); display: flex; gap: var(--bn-space-3); }
+
 /* --- Footer --- */
 .bn-footer { border-top: 1px solid var(--bn-border); padding-block: var(--bn-space-12) var(--bn-space-8); background: var(--bn-surface); }
 .bn-footer-grid { display: grid; gap: var(--bn-space-8); grid-template-columns: 1fr 1fr; }
@@ -636,10 +672,8 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
       <data:blog.title/>
     </a>
     <nav aria-label='Primary Navigation' class='bn-nav' id='bn-nav-primary'>
-      <a expr:href='data:blog.homepageUrl'>Tools</a>
-      <a expr:href='data:blog.homepageUrl + &quot;p/categories.html&quot;'>Categories</a>
-      <a expr:href='data:blog.homepageUrl + &quot;p/blog.html&quot;'>Blog</a>
       <a expr:href='data:blog.homepageUrl + &quot;p/resources.html&quot;'>Resources</a>
+      <a expr:href='data:blog.homepageUrl + &quot;p/blog.html&quot;'>Blog</a>
       <a expr:href='data:blog.homepageUrl + &quot;p/about.html&quot;'>About</a>
     </nav>
     <div class='bn-header-actions'>
@@ -653,10 +687,8 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
   </div>
   <div class='bn-nav-overlay' id='bn-nav-overlay'></div>
   <nav aria-label='Mobile Navigation' class='bn-mobile-nav' id='bn-mobile-nav'>
-    <a expr:href='data:blog.homepageUrl'>Tools</a>
-    <a expr:href='data:blog.homepageUrl + &quot;p/categories.html&quot;'>Categories</a>
-    <a expr:href='data:blog.homepageUrl + &quot;p/blog.html&quot;'>Blog</a>
     <a expr:href='data:blog.homepageUrl + &quot;p/resources.html&quot;'>Resources</a>
+    <a expr:href='data:blog.homepageUrl + &quot;p/blog.html&quot;'>Blog</a>
     <a expr:href='data:blog.homepageUrl + &quot;p/about.html&quot;'>About</a>
   </nav>
 </header>
@@ -739,9 +771,60 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
 
   </div>
 </section>
-  <!-- Remaining Homepage sections (Popular Tools, Categories, Tutorials,
-       Why Choose, Stats, FAQ, Newsletter) inject here as they are built,
-       per Roadmap Step 3 continuing. -->
+
+<!-- ============================== POPULAR TOOLS (Homepage only) ============================== -->
+<section class='bn-section bn-section--tight' id='popular-tools'>
+  <div class='bn-container'>
+    <div class='bn-section-head'>
+      <span class='bn-section-eyebrow'>Most used</span>
+      <h2 class='bn-section-title'>Popular tools</h2>
+      <p class='bn-section-sub'>The utilities people reach for most.</p>
+    </div>
+    <div class='bn-grid' id='bn-popular-grid'></div>
+  </div>
+</section>
+
+<!-- ============================== CATEGORIES (Homepage only) ============================== -->
+<section class='bn-section bn-section--tight' id='categories'>
+  <div class='bn-container'>
+    <div class='bn-section-head'>
+      <span class='bn-section-eyebrow'>Explore</span>
+      <h2 class='bn-section-title'>Browse categories</h2>
+      <p class='bn-section-sub'>Every tool lives in one of these hubs — scales from a handful of tools to hundreds without changing layout.</p>
+    </div>
+    <div class='bn-grid bn-grid--categories' id='bn-categories-grid'></div>
+  </div>
+</section>
+
+<!-- ============================== LATEST ARTICLES (Homepage only) ============================== -->
+<section class='bn-section bn-section--tight' id='latest-articles'>
+  <div class='bn-container'>
+    <div class='bn-section-head'>
+      <span class='bn-section-eyebrow'>Learn</span>
+      <h2 class='bn-section-title'>Latest articles</h2>
+      <p class='bn-section-sub'>Guides that go deeper than the tool itself.</p>
+    </div>
+    <div class='bn-grid bn-grid--tutorials' id='bn-articles-grid'></div>
+    <p class='u-mt-8'><a expr:href='data:blog.homepageUrl + &quot;p/blog.html&quot;'>View all articles &#8594;</a></p>
+  </div>
+</section>
+
+<!-- ============================== NEW TOOLS (Homepage only) ============================== -->
+<section class='bn-section bn-section--tight' id='new-tools'>
+  <div class='bn-container'>
+    <div class='bn-section-head'>
+      <span class='bn-section-eyebrow'>Just shipped</span>
+      <h2 class='bn-section-title'>New tools</h2>
+      <p class='bn-section-sub'>Recently added to the platform.</p>
+    </div>
+    <div class='bn-grid' id='bn-new-tools-grid'></div>
+  </div>
+</section>
+
+  <!-- Remaining Homepage sections (Why Choose, Platform Stats, FAQ,
+       Newsletter) inject here as they are built, per Roadmap Step 3
+       continuing. These aren't linked from Quick Actions, so their ids
+       aren't constrained the same way as the four sections above. -->
 <b:else/>
   <b:loop values='data:posts' var='post'>
     <b:include data='post' name='post'/>
@@ -1141,10 +1224,10 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
         { label: 'Password Generator', path: 'search/label/Password-Generator' }
       ],
       quickLinks: [
-        { label: 'Popular Tools',     path: 'search/label/Popular' },
-        { label: 'Browse Categories', path: 'p/categories.html' },
-        { label: 'Latest Tutorials',  path: 'p/blog.html' },
-        { label: 'Resources',         path: 'p/resources.html' }
+        { label: 'Popular Tools',     path: '#popular-tools' },
+        { label: 'Browse Categories', path: '#categories' },
+        { label: 'Latest Articles',   path: '#latest-articles' },
+        { label: 'New Tools',         path: '#new-tools' }
       ],
       stats: [
         { value: '100+', label: 'Tools' },
@@ -1267,6 +1350,81 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
     }
   });
 
+  /* ------------------------------------------------------------------------
+     DIRECTORY MODULE — Popular Tools, Categories, Latest Articles, New
+     Tools (Homepage only, Roadmap Step 3). Renders into the four
+     containers whose parent <section> ids the Hero's Quick Actions link
+     to (#popular-tools, #categories, #latest-articles, #new-tools).
+     Mock data below simulates the future tools-index.json (Master Spec
+     Section 15) — swap TOOLS/CATEGORIES/ARTICLES for a real fetch() once
+     real content exists; render()/icon() stay as-is. init() bails out
+     immediately if the grids aren't in the DOM (true on every page
+     except the homepage), so it's always safe to call unconditionally.
+     ------------------------------------------------------------------------ */
+  Banynova.register('directory', {
+    ICONS: {
+      dev: '<path d="m9 8-4 4 4 4M15 8l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>',
+      seo: '<circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"></circle><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>',
+      calc: '<rect x="5" y="3" width="14" height="18" rx="2" stroke="currentColor" stroke-width="2"></rect><path d="M8 8h8M8 12h2m4 0h2M8 16h2m4 0h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>',
+      security: '<path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z" stroke="currentColor" stroke-width="2"></path>',
+      image: '<rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2"></rect><circle cx="9" cy="10" r="2" stroke="currentColor" stroke-width="2"></circle><path d="m4 18 5-5 4 4 3-3 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>',
+      text: '<path d="M5 6h14M9 6v14M5 18h4M15 12h4M15 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>'
+    },
+    TOOLS: [
+      { name: 'Word Counter', slug: 'search/label/Word-Counter', cat: 'Text Tools', icon: 'text', desc: 'Count words, characters, and reading time.', popular: true, isNew: false },
+      { name: 'JSON Formatter', slug: 'search/label/JSON-Formatter', cat: 'Developer Tools', icon: 'dev', desc: 'Beautify, validate, and minify JSON instantly.', popular: true, isNew: false },
+      { name: 'Image Compressor', slug: 'search/label/Image-Compressor', cat: 'Image Tools', icon: 'image', desc: 'Shrink image file size without losing quality.', popular: true, isNew: false },
+      { name: 'QR Code Generator', slug: 'search/label/QR-Code-Generator', cat: 'Security Tools', icon: 'security', desc: 'Create QR codes for links, text, and more.', popular: true, isNew: false },
+      { name: 'Password Generator', slug: 'search/label/Password-Generator', cat: 'Security Tools', icon: 'security', desc: 'Generate strong, random passwords securely.', popular: true, isNew: false },
+      { name: 'Base64 Encoder', slug: 'search/label/Base64-Encoder', cat: 'Developer Tools', icon: 'dev', desc: 'Encode or decode Base64 strings and files.', popular: false, isNew: true },
+      { name: 'Age Calculator', slug: 'search/label/Age-Calculator', cat: 'Calculators', icon: 'calc', desc: 'Find exact age in years, months, and days.', popular: false, isNew: true },
+      { name: 'UUID Generator', slug: 'search/label/UUID-Generator', cat: 'Developer Tools', icon: 'dev', desc: 'Generate RFC-4122 compliant UUIDs.', popular: false, isNew: true }
+    ],
+    CATEGORIES: [
+      { name: 'Developer Tools', slug: 'p/developer-tools.html', icon: 'dev', count: 22, desc: 'JSON, HTML, CSS, JS formatters & more.' },
+      { name: 'SEO Tools', slug: 'p/seo-tools.html', icon: 'seo', count: 12, desc: 'Meta tags, schema, sitemaps & robots.txt.' },
+      { name: 'Calculators', slug: 'p/calculators.html', icon: 'calc', count: 15, desc: 'Finance, health, date & unit conversions.' },
+      { name: 'Security Tools', slug: 'p/security-tools.html', icon: 'security', count: 10, desc: 'Passwords, hashes, tokens & QR codes.' },
+      { name: 'Image Tools', slug: 'p/image-tools.html', icon: 'image', count: 16, desc: 'Resize, compress, convert & watermark.' },
+      { name: 'Text Tools', slug: 'p/text-tools.html', icon: 'text', count: 10, desc: 'Word counts, case conversion & cleanup.' }
+    ],
+    ARTICLES: [
+      { tag: 'Developer Tools', title: 'How to Format JSON (and Fix Common Errors)', desc: 'A practical walkthrough of formatting, validating, and debugging JSON.', readTime: '5 min read' },
+      { tag: 'Security', title: 'What Makes a Password Actually Strong?', desc: 'The real factors behind password strength, and the myths to ignore.', readTime: '6 min read' },
+      { tag: 'SEO', title: 'Meta Tags vs. Schema Markup: What\u2019s the Difference?', desc: 'Understand how each one helps your page perform in search.', readTime: '7 min read' }
+    ],
+    icon: function (name, size) {
+      size = size || 20;
+      return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" aria-hidden="true">' + (this.ICONS[name] || this.ICONS.dev) + '</svg>';
+    },
+    toolCardHTML: function (tool, home) {
+      var badge = tool.isNew ? '<span class="bn-new-badge">New</span>' : '';
+      return '<article class="bn-tool-card">' + badge + '<div class="bn-tool-card-icon">' + this.icon(tool.icon, 22) + '</div><span class="bn-tool-card-cat">' + tool.cat + '</span><h3 class="bn-tool-card-name">' + tool.name + '</h3><p class="bn-tool-card-desc">' + tool.desc + '</p><a class="bn-tool-card-link" href="' + home + tool.slug + '">Open tool <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-5-5 5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></article>';
+    },
+    catCardHTML: function (cat, home) {
+      return '<a class="bn-cat-card" href="' + home + cat.slug + '"><div class="bn-cat-card-icon">' + this.icon(cat.icon, 24) + '</div><span class="bn-cat-card-name">' + cat.name + '</span><span class="bn-cat-card-count">' + cat.count + ' tools</span><p class="bn-cat-card-desc">' + cat.desc + '</p></a>';
+    },
+    articleCardHTML: function (a) {
+      return '<article class="bn-article-card"><div class="bn-article-img">' + this.icon('dev', 32) + '</div><div class="bn-article-body"><span class="bn-article-tag">' + a.tag + '</span><h3 class="bn-article-title">' + a.title + '</h3><p class="bn-article-desc">' + a.desc + '</p><span class="bn-article-meta">' + a.readTime + '</span></div></article>';
+    },
+    init: function () {
+      var popularGrid = document.getElementById('bn-popular-grid');
+      var catGrid = document.getElementById('bn-categories-grid');
+      var articlesGrid = document.getElementById('bn-articles-grid');
+      var newGrid = document.getElementById('bn-new-tools-grid');
+      if (!popularGrid && !catGrid && !articlesGrid && !newGrid) { return; }
+
+      var heroSection = document.getElementById('bn-hero');
+      var home = (heroSection && heroSection.getAttribute('data-home')) || '/';
+
+      var self = this;
+      if (popularGrid) { popularGrid.innerHTML = this.TOOLS.filter(function (t) { return t.popular; }).map(function (t) { return self.toolCardHTML(t, home); }).join(''); }
+      if (catGrid) { catGrid.innerHTML = this.CATEGORIES.map(function (c) { return self.catCardHTML(c, home); }).join(''); }
+      if (articlesGrid) { articlesGrid.innerHTML = this.ARTICLES.map(function (a) { return self.articleCardHTML(a); }).join(''); }
+      if (newGrid) { newGrid.innerHTML = this.TOOLS.filter(function (t) { return t.isNew; }).map(function (t) { return self.toolCardHTML(t, home); }).join(''); }
+    }
+  });
+
   global.Banynova = Banynova;
 
   // Each module above was already frozen individually by Banynova.register()
@@ -1278,6 +1436,7 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
   Banynova.theme.init();
   Banynova.navigation.init();
   Banynova.search.init();
+  Banynova.directory.init();
   Banynova.perf.applyLazyLoadingToPostImages();
 
 })(window);
