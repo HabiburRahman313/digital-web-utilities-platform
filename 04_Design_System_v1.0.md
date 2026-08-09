@@ -471,9 +471,11 @@ Agreed sequence for building out the platform, so each stage has a solid foundat
 | 2 | Global Components — Header, Footer, Navigation | ✅ Built directly into `Base_Layout.xml` (Header/Footer/Nav are sitewide, not per-page copies — the goal of this step was achieved, just not via separate standalone include files as originally envisioned) |
 | 3 | Homepage Directory | 🟡 In progress — Hero (with real search), Popular Tools, Categories, Latest Articles, and New Tools are live in `Base_Layout.xml`. Why Choose, Platform Stats, FAQ, and Newsletter are designed (Section 11b) but not yet built. |
 | 4 | Universal Tool Template | ⬜ Pending |
-| 5 | JSON Formatter (reference tool, validates the Universal Tool Template) | ⬜ Pending |
+| 5 | **Word Counter** (reference tool, validates the Universal Tool Template) | ⬜ Pending — changed from the originally-planned JSON Formatter; see `Tool_Category_Architecture_Master_Plan.md` Section 0 for the reasoning |
 | 6 | Remaining categories & tools | ⬜ Pending |
 | 7 | Articles, SEO & affiliate integration | ⬜ Pending |
+
+**Steps 4–7 now have a detailed execution plan:** `Tool_Category_Architecture_Master_Plan.md` covers Category Hub page structure, the Tool Card standard, the Master Tool Page Template, breadcrumb/internal-linking architecture, and a 10-phase build sequence for this exact range. Treat that document as the authoritative detail for these four steps — this table stays as the high-level status summary only, to avoid the same information drifting out of sync in two places.
 
 Note: Step 2 turned out not to need separate standalone include files — Blogger's `<b:section>`/`<b:widget>` model already makes Header/Footer genuinely sitewide from a single definition in `Base_Layout.xml`, so "extracting" them into something else would have been redundant. All homepage sections built so far use mock data (Section 11's `TOOLS`/`CATEGORIES`/`ARTICLES` arrays) explicitly designed to be swapped for a real `tools-index.json` fetch (Master Spec Section 15) once Steps 4–6 produce real tools — nothing about the render logic needs to change when that swap happens.
 
