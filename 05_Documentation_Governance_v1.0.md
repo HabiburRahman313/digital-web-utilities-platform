@@ -36,6 +36,8 @@ Master Project Specification
 │
 ├── Static Page Creation Standard
 │
+├── Tool & Category Architecture Master Plan
+│
 └── Changelog
 ```
 
@@ -51,6 +53,7 @@ Master Project Specification
 | Roadmap | tracked inside `Design_System_v1.0.md` Section 20 today; may be split into its own file once Step 4+ begins | ⬜ Consider splitting out |
 | Testing Checklist | `Testing_Checklist.md` | ✅ Exists (created alongside this document) |
 | Static Page Creation Standard | `Static_Page_Creation_Standard.md` | ✅ Exists — created after the Terms of Service blank-page incident, includes the Page Registry |
+| Tool & Category Architecture Master Plan | `Tool_Category_Architecture_Master_Plan.md` | ✅ Exists — detailed breakdown of Roadmap (Design System Section 20) Steps 4–7; single source for the Category Hub / Tool Post execution plan |
 | Changelog | one Changelog section per document today; a consolidated top-level `CHANGELOG.md` can be added if per-document logs become hard to track | ⬜ Consider consolidating later |
 
 **Reading the hierarchy:** Master Project Specification is the root authority — architecture, platform constraints, categories, and principles all originate there. Everything below it must be consistent with it. Design System governs all visual/structural decisions and itself governs the Component Library beneath it (no component may contradict a Design System token or rule). Brand Voice Guide, AI Prompt Library, Tool Registry, SEO Content Map, Roadmap, Testing Checklist, and Changelog are siblings — each owns one concern and defers to Master Spec + Design System wherever they overlap.
