@@ -1,7 +1,10 @@
 # Banynova — Tool & Category Architecture Master Plan
+
 **Governed by:** `Documentation_Governance_v1.0.md`, `Master_Project_Specification_v1_0.md`, `Design_System_v1.0.md`
-**Status:** Phase 1 (Homepage) in progress → Phase 2–3 (Category Hub & First Production Tool) next
+**Status:** v1.1 — Phase 1 (Homepage) in progress → Phase 2–3 (Category Hub & First Production Tool) next. Word Counter is live; the two-registry dead-link incident (Section 14) is fixed in `Base_Layout.xml` and the Category Hub Creation Rule is now enforced via the `published` flag.
+
 ---
+
 ## 0. Corrections Made to This Plan
 
 Before the plan itself — four real inconsistencies were found against what's already documented/built elsewhere, corrected below rather than silently carried forward:
@@ -101,7 +104,7 @@ Ten tools is the right target for the first pass — scale 10 → 20 → 50+ lat
 
 **Critical rule, restated from Section 0 correction 4 above and expanded:** in **Phase 1, only Word Counter is real.** The hub page must not list all ten tools with nine dead links pointing at tools that don't exist yet. Two acceptable options:
 - List only Word Counter as a real card, and add the rest **only as each one actually publishes**, or
-- Show the other nine as visually distinct, unlinked "Coming Soon" labels (no `<a>` tag at all, not even `href="#"`) if you want the directory's eventual shape visible now.
+- Show the other nine as visually distinct, unlinked "Coming Soon" labels (no `<a>` tag at all, not even `href="#"`) if you want the directory's eventual shape visible now — this is exactly what Section 14's `published` flag mechanism implements for categories, and the same pattern applies to individual tools within a hub page.
 
 Never a broken or placeholder link in production — this is a hard rule, not a preference.
 
@@ -318,7 +321,36 @@ FAQ  Related Articles  Related Tools
 
 ---
 
-## 14. Immediate Next Actions
+## 14. Publishing a New Tool — Both Registries Must Stay in Sync
+
+**This is a real incident, not a hypothetical.** When Word Counter was created, its URL only got updated in one of the two places that reference tools by URL, leaving the other pointing at a fake `search/label/...` path that was never actually populated — every "Open tool" and every Hero search suggestion for it led to a blank page.
+
+`Base_Layout.xml` has **two separate registries** that must both be updated whenever a tool goes from "planned" to "published" — there is no single source of truth for tool URLs inside the JS today, so this has to be done manually, twice, every time:
+
+| Registry | Location | Powers |
+|---|---|---|
+| `directory.TOOLS` | `Banynova.register('directory', {...})` | Popular Tools cards, New Tools cards |
+| `search.config.popularTools` | `Banynova.register('search', {...})` | Hero search suggestions, rotating placeholder text |
+
+**Checklist for every new tool, no exceptions:**
+- [ ] Add the tool to `directory.TOOLS` with its real permalink (e.g. `2026/08/word-counter.html`) — never a `search/label/...` path unless that label genuinely has published posts under it.
+- [ ] Add the same tool to `search.config.popularTools` with the same real permalink.
+- [ ] Never add a tool to either registry before its Post is actually published and its permalink verified.
+- [ ] Run `Testing_Checklist.md` before flipping anything live.
+
+### Category Hub Creation Rule
+
+Formalizing the rule this incident made necessary — each category in `directory.CATEGORIES` carries a `published: true|false` flag:
+
+- **`published: false`** (the default for every category until its hub page is confirmed live) renders as a non-clickable "Coming Soon" card — no `<a href>` at all, so there is no dead link to click.
+- **`published: true`** renders as a real link, and must only be set **after** the category's hub page (Section 9's workflow) has been created, published, and its URL verified — never before, and never merely because the page creation *process has started*.
+- The homepage/theme may reference a category's intended URL in code before the page exists (as `directory.CATEGORIES` already does for all six categories), but the flag controls whether that reference is ever actually rendered as a clickable link. Code containing an unpublished URL is fine; a live link to one is not.
+
+This is the general pattern — the same `published`-flag-gated rendering should be applied to *any* future homepage element (new tool categories, future Quick Actions, etc.) that references a page or post that might not exist yet at the time the code is written.
+
+---
+
+## 15. Immediate Next Actions
 
 Only two real, concrete next steps — do not start building 50 tools now:
 
@@ -329,8 +361,9 @@ Only after Word Counter is production-quality and the architecture is frozen (Ph
 
 ---
 
-## 15. Changelog
+## 16. Changelog
 
 | Version | Date | Change |
 |---|---|---|
 | 1.0 | {{fill in date}} | Initial plan drafted, corrected against `Design_System_v1.0.md` (Homepage status, reference tool choice), cross-referenced against `Testing_Checklist.md` and `Static_Page_Creation_Standard.md` rather than duplicating them, and reconciled as a detailed breakdown of Design System Section 20 Steps 4–7 rather than a parallel roadmap. |
+| 1.1 | {{fill in date}} | Added Section 14 after a real incident: Word Counter's URL was fixed in `directory.TOOLS` but not in `search.config.popularTools`, leaving every Hero search suggestion for it pointing at a dead `search/label/...` path. Documents both registries that must stay in sync, and formalizes the Category Hub Creation Rule (`published` flag gating whether a category card renders as a live link or a non-clickable "Coming Soon" card) as implemented in `Base_Layout.xml`. |
