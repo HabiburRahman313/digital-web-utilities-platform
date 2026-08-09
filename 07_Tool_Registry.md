@@ -25,7 +25,7 @@ Every tool has **exactly one** status at any time:
 
 | Tool Name | Slug | Category | Status | Blogger URL | Last Updated | Notes |
 |---|---|---|---|---|---|---|
-| JSON Formatter | `json-formatter` | Developer Tools | Planning | — | {{date}} | Reference tool for Roadmap Step 5 — validates the Universal Tool Template before other tools are built |
+| JSON Formatter | `json-formatter` | Developer Tools | Planning | — | {{date}} | |
 | Regex Tester | `regex-tester` | Developer Tools | Planning | — | {{date}} | |
 | Base64 Encoder/Decoder | `base64-encoder-decoder` | Developer Tools | Planning | — | {{date}} | |
 | UUID Generator | `uuid-generator` | Developer Tools | Planning | — | {{date}} | |
@@ -35,7 +35,7 @@ Every tool has **exactly one** status at any time:
 | Password Generator | `password-generator` | Security Tools | Planning | — | {{date}} | Must use Web Crypto API per Master Spec Section 4 — never `Math.random()` |
 | QR Code Generator | `qr-code-generator` | Security Tools | Planning | — | {{date}} | |
 | Image Compressor | `image-compressor` | Image Tools | Planning | — | {{date}} | |
-| Word Counter | `word-counter` | Text Tools | Planning | — | {{date}} | |
+| Word Counter | `word-counter` | Text Tools | Planning | — | {{date}} | Reference tool for Roadmap Step 5 (changed from JSON Formatter) — validates the Universal Tool Template before other tools are built. See `Tool_Category_Architecture_Master_Plan.md`. |
 
 *(This starter list mirrors the homepage's mock data — update statuses as real work begins, and add every additional tool from Master Spec Section 5 as it's scoped, even before development starts, so Planning-stage tools are visible too.)*
 
