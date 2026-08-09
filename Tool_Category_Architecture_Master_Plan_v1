@@ -1,0 +1,336 @@
+# Banynova — Tool & Category Architecture Master Plan
+**Governed by:** `Documentation_Governance_v1.0.md`, `Master_Project_Specification_v1_0.md`, `Design_System_v1.0.md`
+**Status:** Phase 1 (Homepage) in progress → Phase 2–3 (Category Hub & First Production Tool) next
+---
+## 0. Corrections Made to This Plan
+
+Before the plan itself — four real inconsistencies were found against what's already documented/built elsewhere, corrected below rather than silently carried forward:
+
+1. **Phase 1 (Homepage) status corrected from "✅ COMPLETED" to "🟡 In Progress."** Per `Design_System_v1.0.md` Section 20 (the authoritative build-status source), Hero, Popular Tools, Categories, Latest Articles, and New Tools are live — but Why Choose, Platform Stats, FAQ, and Newsletter are still pending. Marking it fully complete here would create a second, conflicting source of truth.
+2. **Reference tool changed from "JSON Formatter" to "Word Counter"** — this plan's choice — is a deliberate change from what `Design_System_v1.0.md` Section 20 currently names. It's kept as Word Counter here (arguably the better first choice: fewer edge cases than JSON parsing/validation, so it validates the *template* without the *tool logic* also being hard), but this supersedes the earlier documented choice, so Section 5's status table below reflects the change, and `Design_System_v1.0.md` should be updated to match before implementation starts.
+3. **The 10-phase Master Development Roadmap in Section 8 is a detailed breakdown of `Design_System_v1.0.md` Section 20's Steps 4–7** — not a competing, parallel roadmap. It's explicitly cross-referenced as such, so we don't end up with two roadmap documents that can silently drift apart.
+4. **The ad-hoc Quality Gate checklist has been replaced with a direct reference to `Testing_Checklist.md`** — that document already exists, is comprehensive, and is the enforced hard gate ("no tool may be published without passing it"). Duplicating an abbreviated version here would create a second checklist that could drift out of sync with the real one.
+
+---
+
+## 1. Core Architecture
+
+```
+Banynova
+│
+├── Homepage (/)
+│   └── Central Tool Directory & Discovery Hub
+│
+├── Category Hub Pages (Blogger Pages)
+│   ├── Text Tools
+│   ├── Developer Tools
+│   ├── SEO Tools
+│   ├── Calculators
+│   ├── Security Tools
+│   └── Image Tools
+│
+└── Individual Tool Posts (Blogger Posts)
+    ├── Word Counter
+    ├── JSON Formatter
+    ├── Image Compressor
+    ├── QR Code Generator
+    ├── Base64 Encoder
+    └── ...
+```
+
+This matches the Master Project Specification exactly: Homepage as central directory, Category Hubs as Blogger **Pages**, individual tools as Blogger **Posts**.
+
+---
+
+## 2. Navigation Flow: Homepage → Category Hub → Tool
+
+```
+Homepage
+   ↓
+Text Tools (category card)
+   ↓
+Text Tools Category Hub  →  /p/text-tools.html
+   ↓
+Word Counter (tool card)
+   ↓
+Individual Tool Page  →  /2026/08/word-counter.html
+```
+
+**The one distinction that governs this entire plan:**
+
+| Element | Blogger Type | Example URL |
+|---|---|---|
+| Homepage | Blog Homepage | `/` |
+| Category Hub | Static Page | `/p/text-tools.html` |
+| Individual Tool | Blogger Post | `/2026/08/word-counter.html` |
+| Tutorial/Article | Blogger Post | `/2026/08/...html` |
+| Legal/Company pages | Static Page | `/p/privacy-policy.html` |
+
+**Lock this table in.** Every decision below follows from it.
+
+---
+
+## 3. Category Hub Page
+
+The first Category Hub is **Text Tools**, at `/p/text-tools.html`. This page is **not a tool itself** — it's a curated directory of the tools within that category.
+
+**Structure:**
+
+```
+Text Tools
+│
+├── Category Introduction
+├── Search / Filter (optional, later)
+├── Tool Directory
+│   ├── Word Counter
+│   ├── Character Counter
+│   ├── Case Converter
+│   ├── Text Cleaner
+│   ├── Sentence Counter
+│   ├── Duplicate Line Remover
+│   ├── Remove Extra Spaces
+│   ├── Line Counter
+│   ├── Text Reverser
+│   └── ...
+├── Related Articles
+├── FAQ
+└── Footer
+```
+
+Ten tools is the right target for the first pass — scale 10 → 20 → 50+ later, matching the Master Spec's 20-to-200+ scaling goal.
+
+**Critical rule, restated from Section 0 correction 4 above and expanded:** in **Phase 1, only Word Counter is real.** The hub page must not list all ten tools with nine dead links pointing at tools that don't exist yet. Two acceptable options:
+- List only Word Counter as a real card, and add the rest **only as each one actually publishes**, or
+- Show the other nine as visually distinct, unlinked "Coming Soon" labels (no `<a>` tag at all, not even `href="#"`) if you want the directory's eventual shape visible now.
+
+Never a broken or placeholder link in production — this is a hard rule, not a preference.
+
+---
+
+## 4. Tool Card Standard
+
+Every tool card, wherever it appears (Category Hub, Homepage, Related Tools), uses the same reusable structure — never a one-off layout per tool:
+
+```
+[Icon]
+Word Counter
+Count words, characters, sentences, and reading time.
+Open Tool →
+```
+
+Required fields: Icon, Tool name, Short description, Category, "Open Tool" button. This matches Master Spec Section 8.2 and `Design_System_v1.0.md` Section 11's Tool Card component exactly — reuse `.bn-tool-card`, do not create a new card class for category hub pages.
+
+---
+
+## 5. Individual Tools = Blogger Posts (the single most important decision)
+
+**Tools are never Static Pages.** Every tool is a Blogger **Post**:
+
+```
+Word Counter      → Blogger Post → /2026/08/word-counter.html
+JSON Formatter    → Blogger Post
+Image Compressor  → Blogger Post
+```
+
+This keeps tool count independent of Blogger's 20-Page limit, and is what makes scaling to 200+ tools possible at all — this is the Master Spec's core platform constraint (Section 0), not a stylistic choice.
+
+### 5.1 First Production Tool
+
+| Item | Decision |
+|---|---|
+| First tool | **Word Counter** |
+| Role | Master Tool Page Reference Implementation — establishes UI, input/output handling, vanilla JS architecture, tool-specific CSS, responsive behavior, accessibility, SEO metadata, breadcrumbs, structured data, FAQ, related tools, and tool-card integration all at once |
+| Status | Supersedes JSON Formatter as the previously-documented reference tool (see Section 0, correction 2) — update `Design_System_v1.0.md` Section 20 to match once this is confirmed |
+
+Once Word Counter is production-quality, every future tool follows the same frozen architecture.
+
+---
+
+## 6. Master Tool Page Template
+
+Every tool Post follows this structure, matching Master Spec Section 8's Standard Tool Page Structure exactly (including the two items — Structured Data and version number — that are easy to forget because they're metadata, not visible content):
+
+```
+Tool Post
+│
+├── Global Header            (from Base_Layout.xml — never duplicated per-post)
+├── Breadcrumb
+├── H1
+├── Tool Introduction
+├── Interactive Tool
+├── Features
+├── How to Use
+├── Example
+├── Common Use Cases
+├── Tips / Best Practices
+├── FAQ
+├── Related Tools
+├── Related Articles
+├── Conclusion
+├── Last Updated + Version Number
+├── Structured Data (JSON-LD — SoftwareApplication, FAQPage, BreadcrumbList)
+└── Global Footer            (from Base_Layout.xml — never duplicated per-post)
+```
+
+Target: 500–800 words of unique content per tool page (Master Spec Section 8) — this is what separates a real SEO landing page from a bare, thin utility widget.
+
+---
+
+## 7. Header & Footer Architecture
+
+**Never rebuild Header/Footer inside a Tool Post.** `Base_Layout.xml`'s theme is the single global owner:
+
+```
+Blogger Theme (Base_Layout.xml)
+│
+├── Global Header
+├── Post Content
+│   └── Tool Page          ← only this part is post-specific
+└── Global Footer
+```
+
+The Word Counter post's own HTML should contain **only** what's inside `<b:includable id='post'>` today plus the tool's own interactive UI — never a copy of the header/footer markup. This is already how `Base_Layout.xml` is built (the `post` includable is deliberately minimal), so this section is a confirmation of existing architecture, not a new decision.
+
+Benefits: less duplication, easier maintenance, easier future redesign, consistent branding across every tool — the component-first principle established throughout this project.
+
+---
+
+## 8. Breadcrumb & Internal Linking
+
+**Breadcrumb pattern** (category link always points to the real Category Hub Page):
+
+```
+Word Counter:      Home → Text Tools → Word Counter
+JSON Formatter:     Home → Developer Tools → JSON Formatter
+Image Compressor:   Home → Image Tools → Image Compressor
+```
+
+**Note:** `Design_System_v1.0.md` Section 21 lists the Breadcrumb component as **not yet built** — required before this phase starts. Build it as part of Section 6's template work, add it to the Design System's Navigation section once built, don't improvise it inline in the first tool post.
+
+**Internal linking structure** (forward and reverse):
+
+```
+Homepage → Category Hub → Tool Post → Related Tools → Related Articles
+Tool Post → Category Hub → Homepage
+```
+
+This bidirectional linking is what builds real topical authority (Master Spec Section 17), not just navigation convenience.
+
+---
+
+## 9. Static Page Creation (Text Tools Hub)
+
+Follow `Static_Page_Creation_Standard.md` exactly — this plan's proposed workflow already matches it correctly:
+
+1. Create the page titled `text-tools` (short slug word only).
+2. Publish with a placeholder body.
+3. Verify the generated permalink is exactly `/p/text-tools.html`.
+4. Rename the title to `Text Tools`.
+5. Add the real category introduction + tool directory content, then Update.
+
+Check Trash first for any old conflicting slug, per that document's Section 4 — this exact class of bug already happened once (Terms of Service) and is fully documented there.
+
+---
+
+## 10. Word Counter Post Creation
+
+Posts, unlike Pages, **do** expose an editable Permalink field directly in the editor — so this is more direct than the Page workflow above:
+
+1. Blogger Dashboard → Posts → New Post.
+2. Title: `Free Online Word Counter`.
+3. Set the custom permalink directly to `word-counter`.
+4. Resulting URL: `/2026/08/word-counter.html` (date segment is unavoidable for Posts — expected, per Master Spec Section 14).
+
+---
+
+## 11. Quality Gate Before Publishing
+
+**Run `Testing_Checklist.md` in full before Word Counter (or any tool) goes live.** That document is the enforced hard gate — "no tool may be published without passing the complete testing checklist" — and already covers Functionality, Accessibility, Cross-Browser, Performance, Security, Design System Compliance, SEO, Content Quality, and Registry housekeeping in detail. Re-deriving a shorter version here would create a second checklist that can silently drift from the real one; don't.
+
+Update `Tool_Registry.md`'s Word Counter row to **Testing** status while this runs, then **Published** once it passes.
+
+---
+
+## 12. Detailed Development Roadmap (Phases 1–10)
+
+This is the detailed execution plan for `Design_System_v1.0.md` Section 20's **Steps 4–7** (Universal Tool Template → Remaining tools → Articles/SEO/affiliate) — not a separate roadmap. Once this plan is approved, Section 20 of the Design System should be updated to point here for the detailed breakdown rather than duplicating it.
+
+```
+PHASE 1 — Homepage                                    🟡 In Progress
+        (see Design_System_v1.0.md Section 20 for exact status)
+        ↓
+PHASE 2 — Category Hub Architecture
+        Text Tools → 10-tool directory (only Word Counter linked initially)
+        ↓
+PHASE 3 — Master Tool Page Architecture
+        Word Counter (reference implementation)
+        ↓
+PHASE 4 — Word Counter Testing
+        Run Testing_Checklist.md in full
+        ↓
+PHASE 5 — Finalize Master Tool Template
+        Freeze the architecture once Word Counter passes
+        ↓
+PHASE 6 — Build remaining Text Tools
+        Character Counter, Case Converter, Sentence Counter, Text Cleaner, ...
+        ↓
+PHASE 7 — Build other categories
+        Developer Tools, SEO Tools, Calculators, Security Tools, Image Tools
+        ↓
+PHASE 8 — Content & SEO Expansion
+        Tutorials, Guides, FAQs, Internal Linking, Topical Authority
+        ↓
+PHASE 9 — Technical SEO
+        Search Console, Sitemap, Indexing, Schema Validation, Core Web Vitals
+        ↓
+PHASE 10 — Monetization
+        AdSense, Affiliate
+```
+
+---
+
+## 13. Final Architecture Diagram
+
+```
+                    BANYNOVA
+                       │
+                 ┌─────┴─────┐
+                 │ Homepage  │
+                 └─────┬─────┘
+                       │
+              ┌────────┼────────┐
+              ↓        ↓        ↓
+        Text Tools  Developer  SEO Tools
+        Hub Page    Tools Hub  Hub Page
+              │
+       ┌──────┼───────┐
+       ↓      ↓       ↓
+     Word   Character Case
+    Counter Counter  Converter
+       │
+       ↓
+  Individual Tool Post
+       │
+ ┌─────┼──────┬─────────┐
+ ↓     ↓      ↓         ↓
+FAQ  Related Articles  Related Tools
+```
+
+---
+
+## 14. Immediate Next Actions
+
+Only two real, concrete next steps — do not start building 50 tools now:
+
+1. **Create the Text Tools Category Hub Page** (Section 9) — a directory containing only the tools that actually exist.
+2. **Create the Word Counter Blogger Post** (Sections 5.1, 6, 10) — this becomes the Master Tool Page Template once it passes `Testing_Checklist.md` and is frozen.
+
+Only after Word Counter is production-quality and the architecture is frozen (Phase 5) does building the remaining tools become fast, consistent, and maintainable — building many tools before freezing the template guarantees having to redo all of them.
+
+---
+
+## 15. Changelog
+
+| Version | Date | Change |
+|---|---|---|
+| 1.0 | {{fill in date}} | Initial plan drafted, corrected against `Design_System_v1.0.md` (Homepage status, reference tool choice), cross-referenced against `Testing_Checklist.md` and `Static_Page_Creation_Standard.md` rather than duplicating them, and reconciled as a detailed breakdown of Design System Section 20 Steps 4–7 rather than a parallel roadmap. |
