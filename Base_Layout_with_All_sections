@@ -568,6 +568,9 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
 .bn-cat-card-name { font-weight: var(--bn-fw-semibold); }
 .bn-cat-card-count { font-size: var(--bn-fs-xs); color: var(--bn-text-tertiary); }
 .bn-cat-card-desc { font-size: var(--bn-fs-sm); color: var(--bn-text-secondary); }
+.bn-cat-card--soon { opacity: 0.55; cursor: default; }
+.bn-cat-card--soon:hover { border-color: var(--bn-border); transform: none; box-shadow: none; }
+.bn-cat-card--soon .bn-cat-card-count { color: var(--bn-text-tertiary); font-style: italic; }
 
 /* --- Article Card (Latest Articles) --- */
 .bn-article-card { display: flex; flex-direction: column; background: var(--bn-surface); border: 1px solid var(--bn-border); border-radius: var(--bn-radius-lg); overflow: hidden; transition: transform var(--bn-transition-fast), box-shadow var(--bn-transition-fast); }
@@ -1213,15 +1216,10 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
      ------------------------------------------------------------------------ */
   Banynova.register('search', {
     config: {
+      // Same rule as directory.TOOLS above — real, published tools only.
+      // Keep these two lists in sync whenever a new tool actually publishes.
       popularTools: [
-        { label: 'Word Counter',       path: 'search/label/Word-Counter' },
-        { label: 'JSON Formatter',     path: 'search/label/JSON-Formatter' },
-        { label: 'Image Compressor',   path: 'search/label/Image-Compressor' },
-        { label: 'Base64 Encoder',     path: 'search/label/Base64-Encoder' },
-        { label: 'Age Calculator',     path: 'search/label/Age-Calculator' },
-        { label: 'UUID Generator',     path: 'search/label/UUID-Generator' },
-        { label: 'QR Code Generator',  path: 'search/label/QR-Code-Generator' },
-        { label: 'Password Generator', path: 'search/label/Password-Generator' }
+        { label: 'Word Counter', path: '2026/08/word-counter.html' }
       ],
       quickLinks: [
         { label: 'Popular Tools',     path: '#popular-tools' },
@@ -1370,23 +1368,27 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
       image: '<rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2"></rect><circle cx="9" cy="10" r="2" stroke="currentColor" stroke-width="2"></circle><path d="m4 18 5-5 4 4 3-3 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>',
       text: '<path d="M5 6h14M9 6v14M5 18h4M15 12h4M15 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>'
     },
+    // Only real, published tools belong here — a card here means a live
+    // link. As each new tool actually publishes, add it here (and to
+    // Banynova.search's popularTools below) with its real permalink.
+    // Never add a tool before its post exists (Static_Page_Creation_Standard.md
+    // / Tool_Category_Architecture_Master_Plan.md Section 3).
     TOOLS: [
-      { name: 'Word Counter', slug: 'search/label/Word-Counter', cat: 'Text Tools', icon: 'text', desc: 'Count words, characters, and reading time.', popular: true, isNew: false },
-      { name: 'JSON Formatter', slug: 'search/label/JSON-Formatter', cat: 'Developer Tools', icon: 'dev', desc: 'Beautify, validate, and minify JSON instantly.', popular: true, isNew: false },
-      { name: 'Image Compressor', slug: 'search/label/Image-Compressor', cat: 'Image Tools', icon: 'image', desc: 'Shrink image file size without losing quality.', popular: true, isNew: false },
-      { name: 'QR Code Generator', slug: 'search/label/QR-Code-Generator', cat: 'Security Tools', icon: 'security', desc: 'Create QR codes for links, text, and more.', popular: true, isNew: false },
-      { name: 'Password Generator', slug: 'search/label/Password-Generator', cat: 'Security Tools', icon: 'security', desc: 'Generate strong, random passwords securely.', popular: true, isNew: false },
-      { name: 'Base64 Encoder', slug: 'search/label/Base64-Encoder', cat: 'Developer Tools', icon: 'dev', desc: 'Encode or decode Base64 strings and files.', popular: false, isNew: true },
-      { name: 'Age Calculator', slug: 'search/label/Age-Calculator', cat: 'Calculators', icon: 'calc', desc: 'Find exact age in years, months, and days.', popular: false, isNew: true },
-      { name: 'UUID Generator', slug: 'search/label/UUID-Generator', cat: 'Developer Tools', icon: 'dev', desc: 'Generate RFC-4122 compliant UUIDs.', popular: false, isNew: true }
+      { name: 'Word Counter', slug: '2026/08/word-counter.html', cat: 'Text Tools', icon: 'text', desc: 'Count words, characters, and reading time.', popular: true, isNew: false }
     ],
+    // published:true = the hub page actually exists and is live — renders
+    // as a real link. published:false = card shows as non-clickable
+    // "Coming Soon" (Tool_Category_Architecture_Master_Plan.md's Category
+    // Hub Creation Rule: a card must never link to a page that isn't
+    // published yet). Flip a category to true only after its hub page is
+    // created, published, and its URL verified (Static_Page_Creation_Standard.md).
     CATEGORIES: [
-      { name: 'Developer Tools', slug: 'p/developer-tools.html', icon: 'dev', count: 22, desc: 'JSON, HTML, CSS, JS formatters & more.' },
-      { name: 'SEO Tools', slug: 'p/seo-tools.html', icon: 'seo', count: 12, desc: 'Meta tags, schema, sitemaps & robots.txt.' },
-      { name: 'Calculators', slug: 'p/calculators.html', icon: 'calc', count: 15, desc: 'Finance, health, date & unit conversions.' },
-      { name: 'Security Tools', slug: 'p/security-tools.html', icon: 'security', count: 10, desc: 'Passwords, hashes, tokens & QR codes.' },
-      { name: 'Image Tools', slug: 'p/image-tools.html', icon: 'image', count: 16, desc: 'Resize, compress, convert & watermark.' },
-      { name: 'Text Tools', slug: 'p/text-tools.html', icon: 'text', count: 10, desc: 'Word counts, case conversion & cleanup.' }
+      { name: 'Text Tools', slug: 'p/text-tools.html', icon: 'text', count: 10, desc: 'Word counts, case conversion & cleanup.', published: false },
+      { name: 'Developer Tools', slug: 'p/developer-tools.html', icon: 'dev', count: 22, desc: 'JSON, HTML, CSS, JS formatters & more.', published: false },
+      { name: 'SEO Tools', slug: 'p/seo-tools.html', icon: 'seo', count: 12, desc: 'Meta tags, schema, sitemaps & robots.txt.', published: false },
+      { name: 'Calculators', slug: 'p/calculators.html', icon: 'calc', count: 15, desc: 'Finance, health, date & unit conversions.', published: false },
+      { name: 'Security Tools', slug: 'p/security-tools.html', icon: 'security', count: 10, desc: 'Passwords, hashes, tokens & QR codes.', published: false },
+      { name: 'Image Tools', slug: 'p/image-tools.html', icon: 'image', count: 16, desc: 'Resize, compress, convert & watermark.', published: false }
     ],
     ARTICLES: [
       { tag: 'Developer Tools', title: 'How to Format JSON (and Fix Common Errors)', desc: 'A practical walkthrough of formatting, validating, and debugging JSON.', readTime: '5 min read' },
@@ -1402,6 +1404,9 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
       return '<article class="bn-tool-card">' + badge + '<div class="bn-tool-card-icon">' + this.icon(tool.icon, 22) + '</div><span class="bn-tool-card-cat">' + tool.cat + '</span><h3 class="bn-tool-card-name">' + tool.name + '</h3><p class="bn-tool-card-desc">' + tool.desc + '</p><a class="bn-tool-card-link" href="' + home + tool.slug + '">Open tool <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-5-5 5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></article>';
     },
     catCardHTML: function (cat, home) {
+      if (!cat.published) {
+        return '<div class="bn-cat-card bn-cat-card--soon"><div class="bn-cat-card-icon">' + this.icon(cat.icon, 24) + '</div><span class="bn-cat-card-name">' + cat.name + '</span><span class="bn-cat-card-count">Coming soon</span><p class="bn-cat-card-desc">' + cat.desc + '</p></div>';
+      }
       return '<a class="bn-cat-card" href="' + home + cat.slug + '"><div class="bn-cat-card-icon">' + this.icon(cat.icon, 24) + '</div><span class="bn-cat-card-name">' + cat.name + '</span><span class="bn-cat-card-count">' + cat.count + ' tools</span><p class="bn-cat-card-desc">' + cat.desc + '</p></a>';
     },
     articleCardHTML: function (a) {
@@ -1421,7 +1426,17 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
       if (popularGrid) { popularGrid.innerHTML = this.TOOLS.filter(function (t) { return t.popular; }).map(function (t) { return self.toolCardHTML(t, home); }).join(''); }
       if (catGrid) { catGrid.innerHTML = this.CATEGORIES.map(function (c) { return self.catCardHTML(c, home); }).join(''); }
       if (articlesGrid) { articlesGrid.innerHTML = this.ARTICLES.map(function (a) { return self.articleCardHTML(a); }).join(''); }
-      if (newGrid) { newGrid.innerHTML = this.TOOLS.filter(function (t) { return t.isNew; }).map(function (t) { return self.toolCardHTML(t, home); }).join(''); }
+      if (newGrid) {
+        var newTools = this.TOOLS.filter(function (t) { return t.isNew; });
+        if (newTools.length === 0) {
+          // Nothing real to show — hide the whole section rather than
+          // render an empty grid, which would look broken on its own.
+          var newSection = newGrid.closest('section');
+          if (newSection) { newSection.style.display = 'none'; }
+        } else {
+          newGrid.innerHTML = newTools.map(function (t) { return self.toolCardHTML(t, home); }).join('');
+        }
+      }
     }
   });
 
