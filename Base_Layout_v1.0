@@ -103,6 +103,48 @@
     unverified `<data:post.body snippet='false' loading='lazy'/>`
     approach from an earlier draft — that is not documented, working
     Blogger template syntax and would silently do nothing.
+  - v2.3: merged the Hero section (homepage-only) into the homepage
+    branch of the Main includable — real search form posting to
+    Blogger's native /search endpoint, combobox-pattern suggestions,
+    keyboard shortcut ("/"), noscript fallback for crawlers/no-JS, and
+    a Banynova.register('search', {...}) module. See Section "HERO
+    SECTION — INTEGRATION MAP" below for exactly where its HTML, CSS,
+    and JS each live and why. Homepage sections beyond Hero (Popular
+    Tools, Categories, Tutorials, Why Choose, Stats, FAQ, Newsletter)
+    still inject below it as they're built.
+  ============================================================================
+
+  HERO SECTION — INTEGRATION MAP (read this before touching the Hero)
+  The Hero is homepage-only content, so unlike Header/Footer it does NOT
+  get its own top-level <b:section>/<b:widget> — unlike Header/Footer it
+  is not sitewide chrome that Blogger recognizes as a distinct region.
+  It lives entirely inside the Main widget's existing "main" includable,
+  gated by the same homepage b:if that already existed there. This
+  keeps exactly one Header widget, one Main/Blog widget, one Footer
+  section — adding a Hero never means adding a fourth widget.
+
+  - HTML: inside <b:includable id='main'>, in the
+    `<b:if cond='data:blog.url == data:blog.homepageUrl'>` branch —
+    search for "HERO (Homepage only)" below. Nothing homepage-specific
+    ever belongs in the <b:else/> branch (that's the post/page renderer)
+    or outside this includable entirely.
+  - CSS: inside <b:skin>, Section 5 (COMPONENTS), in the Hero
+    (Homepage only) block, positioned right after Main and before
+    Footer — matching the same top-to-bottom order the HTML itself
+    renders in.
+  - JS: inside the closing <script> before </body>, as a
+    Banynova.register('search', {...}) module — positioned after the
+    `navigation` module and before the final freeze/init block. Its
+    own init() bails out immediately if #bn-hero-search-form isn't in
+    the DOM (true on every page except the homepage), so it's always
+    safe to call unconditionally from the init sequence at the bottom,
+    exactly like every other module.
+
+  Any future homepage-only section (Popular Tools, Categories grid,
+  etc.) should follow this exact same three-part pattern: HTML inside
+  the same b:if branch, CSS in Section 5 positioned where it visually
+  renders, JS as its own Banynova.register()'d module called
+  unconditionally at the bottom.
   ============================================================================
 -->
 <html b:css='false' b:defaultwidgetversion='2' b:layoutsVersion='3' b:responsive='true' expr:dir='data:blog.languageDirection' lang='en' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
@@ -449,6 +491,97 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
 /* --- Main --- */
 .bn-main { min-height: 60vh; }
 
+/* --- Hero (Homepage only) --- */
+.bn-hero { padding-block: var(--bn-space-16) var(--bn-space-12); }
+.bn-hero-inner { max-width: var(--bn-content-max); margin-inline: auto; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.bn-hero-h1 { font-size: var(--bn-fs-4xl); max-width: 15ch; margin-bottom: var(--bn-space-4); }
+.bn-hero-desc { color: var(--bn-text-secondary); font-size: var(--bn-fs-lg); max-width: 52ch; margin-bottom: var(--bn-space-8); }
+
+.bn-hero-search { width: 100%; max-width: 620px; position: relative; }
+.bn-hero-search-field { display: flex; align-items: center; gap: var(--bn-space-2); width: 100%; background: var(--bn-surface); border: 1px solid var(--bn-border); border-radius: var(--bn-radius-xl); padding: var(--bn-space-3) var(--bn-space-3) var(--bn-space-3) var(--bn-space-4); box-shadow: var(--bn-shadow-2); transition: border-color var(--bn-transition-fast), box-shadow var(--bn-transition-fast); }
+.bn-hero-search-field:focus-within { border-color: var(--bn-primary); box-shadow: var(--bn-focus-ring), var(--bn-shadow-2); }
+.bn-hero-search-icon { flex: none; width: 20px; height: 20px; color: var(--bn-text-tertiary); }
+.bn-hero-search-field:focus-within .bn-hero-search-icon { color: var(--bn-primary); }
+.bn-hero-search-input { flex: 1; border: none; outline: none; background: transparent; font: inherit; font-size: var(--bn-fs-base); color: var(--bn-text-primary); min-width: 0; padding-block: var(--bn-space-1); }
+.bn-hero-search-input::placeholder { color: var(--bn-text-tertiary); }
+.bn-hero-search-clear { flex: none; display: none; align-items: center; justify-content: center; width: 26px; height: 26px; border: none; border-radius: var(--bn-radius-full); background: var(--bn-secondary-subtle); color: var(--bn-text-secondary); cursor: pointer; font-size: var(--bn-fs-sm); line-height: 1; transition: background-color var(--bn-transition-fast); }
+.bn-hero-search-clear:hover { background: var(--bn-border); }
+.bn-hero-search-clear.is-visible { display: inline-flex; }
+.bn-hero-search-kbd { flex: none; display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding-inline: var(--bn-space-2); border-radius: var(--bn-radius-sm); border: 1px solid var(--bn-border); background: var(--bn-bg); font-family: var(--bn-font-mono); font-size: var(--bn-fs-xs); color: var(--bn-text-secondary); }
+.bn-hero-search-submit { flex: none; display: inline-flex; align-items: center; gap: var(--bn-space-2); height: 36px; padding-inline: var(--bn-space-4); border: none; border-radius: var(--bn-radius-md); background: var(--bn-primary); color: var(--bn-text-on-primary); font-weight: var(--bn-fw-semibold); font-size: var(--bn-fs-sm); cursor: pointer; transition: background-color var(--bn-transition-fast); }
+.bn-hero-search-submit:hover { background: var(--bn-primary-hover); }
+.bn-hero-search-submit svg { width: 15px; height: 15px; }
+.bn-hero-search-hint { margin-top: var(--bn-space-2); font-family: var(--bn-font-mono); font-size: var(--bn-fs-xs); color: var(--bn-text-tertiary); text-align: left; padding-left: var(--bn-space-1); }
+
+.bn-hero-search-panel { position: absolute; top: calc(100% + var(--bn-space-2)); left: 0; right: 0; background: var(--bn-surface-raised); border: 1px solid var(--bn-border); border-radius: var(--bn-radius-md); box-shadow: var(--bn-shadow-3); overflow: hidden; text-align: left; z-index: var(--bn-z-dropdown); display: none; }
+.bn-hero-search-panel.is-open { display: block; }
+.bn-hero-search-option { display: block; padding: var(--bn-space-3) var(--bn-space-4); font-size: var(--bn-fs-sm); color: var(--bn-text-primary); cursor: pointer; transition: background-color var(--bn-transition-fast); }
+.bn-hero-search-option:hover, .bn-hero-search-option.is-active { background: var(--bn-primary-subtle); }
+.bn-hero-search-option mark { background: none; color: var(--bn-primary); font-weight: var(--bn-fw-semibold); }
+
+.bn-hero-stats { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--bn-space-2) var(--bn-space-6); margin-top: var(--bn-space-6); }
+.bn-hero-stats li { font-family: var(--bn-font-mono); font-size: var(--bn-fs-xs); font-weight: var(--bn-fw-semibold); color: var(--bn-text-primary); }
+.bn-hero-stats li span { font-weight: var(--bn-fw-normal); color: var(--bn-text-tertiary); margin-right: var(--bn-space-2); }
+
+.bn-hero-suggestions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--bn-space-2); margin-top: var(--bn-space-5); max-width: 620px; }
+.bn-hero-chip { font-family: var(--bn-font-mono); font-size: var(--bn-fs-sm); color: var(--bn-text-secondary); background: var(--bn-surface); border: 1px solid var(--bn-border); border-radius: var(--bn-radius-full); padding: var(--bn-space-2) var(--bn-space-4); white-space: nowrap; transition: border-color var(--bn-transition-fast), color var(--bn-transition-fast), background-color var(--bn-transition-fast); }
+.bn-hero-chip:hover, .bn-hero-chip:focus-visible { color: var(--bn-primary); border-color: var(--bn-primary); background: var(--bn-primary-subtle); }
+
+.bn-hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--bn-space-2); margin-top: var(--bn-space-6); }
+.bn-hero-action-btn { font-size: var(--bn-fs-sm); font-weight: var(--bn-fw-medium); color: var(--bn-text-primary); background: transparent; border: 1px solid var(--bn-border); border-radius: var(--bn-radius-md); padding: var(--bn-space-2) var(--bn-space-4); transition: background-color var(--bn-transition-fast), border-color var(--bn-transition-fast); }
+.bn-hero-action-btn:hover, .bn-hero-action-btn:focus-visible { background: var(--bn-surface); border-color: var(--bn-border-strong); }
+
+.bn-hero-trust { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--bn-space-5); margin-top: var(--bn-space-8); padding-top: var(--bn-space-5); border-top: 1px solid var(--bn-border); max-width: 580px; margin-inline: auto; }
+.bn-hero-trust-item { display: inline-flex; align-items: center; gap: var(--bn-space-2); font-size: var(--bn-fs-sm); color: var(--bn-text-secondary); }
+.bn-hero-trust-item svg { width: 15px; height: 15px; color: var(--bn-primary); flex: none; }
+
+@media (max-width: 640px) {
+  .bn-hero { padding-block: var(--bn-space-10) var(--bn-space-8); }
+  .bn-hero-search-kbd, .bn-hero-search-hint { display: none; }
+  .bn-hero-search-submit span { display: none; }
+  .bn-hero-search-submit { width: 36px; padding: 0; justify-content: center; }
+  .bn-hero-suggestions { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; -webkit-overflow-scrolling: touch; }
+}
+
+/* --- Section Heading (shared pattern: Popular Tools, Categories, Latest Articles, New Tools) --- */
+.bn-section-head { max-width: 640px; margin-bottom: var(--bn-space-10); }
+.bn-section-eyebrow { display: inline-block; font-size: var(--bn-fs-sm); font-weight: var(--bn-fw-semibold); color: var(--bn-primary); margin-bottom: var(--bn-space-2); }
+.bn-section-title { font-size: var(--bn-fs-3xl); margin-bottom: var(--bn-space-3); }
+.bn-section-sub { color: var(--bn-text-secondary); font-size: var(--bn-fs-lg); }
+
+/* --- Tool Card (Popular Tools, New Tools) --- */
+.bn-tool-card { display: flex; flex-direction: column; gap: var(--bn-space-3); padding: var(--bn-space-5); background: var(--bn-surface); border: 1px solid var(--bn-border); border-radius: var(--bn-radius-lg); transition: border-color var(--bn-transition-fast), transform var(--bn-transition-fast), box-shadow var(--bn-transition-fast); position: relative; }
+.bn-tool-card:hover { border-color: var(--bn-primary); box-shadow: var(--bn-shadow-3); transform: translateY(-3px); }
+.bn-tool-card-icon { width: 44px; height: 44px; border-radius: var(--bn-radius-md); background: var(--bn-primary-subtle); color: var(--bn-primary); display: flex; align-items: center; justify-content: center; }
+.bn-tool-card-name { font-size: var(--bn-fs-lg); font-weight: var(--bn-fw-semibold); }
+.bn-tool-card-cat { font-size: var(--bn-fs-xs); font-weight: var(--bn-fw-semibold); color: var(--bn-text-tertiary); text-transform: uppercase; letter-spacing: .04em; }
+.bn-tool-card-desc { font-size: var(--bn-fs-sm); color: var(--bn-text-secondary); flex-grow: 1; }
+.bn-tool-card-link { font-size: var(--bn-fs-sm); font-weight: var(--bn-fw-semibold); color: var(--bn-primary); display: inline-flex; align-items: center; gap: var(--bn-space-1); }
+.bn-tool-card:hover .bn-tool-card-link svg { transform: translateX(3px); }
+.bn-tool-card-link svg { transition: transform var(--bn-transition-fast); }
+.bn-new-badge { position: absolute; top: var(--bn-space-4); right: var(--bn-space-4); background: var(--bn-accent); color: var(--bn-text-on-primary); font-size: var(--bn-fs-xs); font-weight: var(--bn-fw-semibold); padding: var(--bn-space-1) var(--bn-space-2); border-radius: var(--bn-radius-full); }
+
+/* --- Category Card (Categories) --- */
+.bn-cat-card { display: flex; flex-direction: column; gap: var(--bn-space-2); text-align: center; padding: var(--bn-space-6) var(--bn-space-4); background: var(--bn-surface); border: 1px solid var(--bn-border); border-radius: var(--bn-radius-lg); transition: border-color var(--bn-transition-fast), transform var(--bn-transition-fast), box-shadow var(--bn-transition-fast); }
+.bn-cat-card:hover { border-color: var(--bn-accent); transform: translateY(-3px); box-shadow: var(--bn-shadow-3); }
+.bn-cat-card-icon { width: 48px; height: 48px; border-radius: var(--bn-radius-md); margin-inline: auto; background: var(--bn-accent); color: var(--bn-text-on-primary); display: flex; align-items: center; justify-content: center; }
+.bn-cat-card-name { font-weight: var(--bn-fw-semibold); }
+.bn-cat-card-count { font-size: var(--bn-fs-xs); color: var(--bn-text-tertiary); }
+.bn-cat-card-desc { font-size: var(--bn-fs-sm); color: var(--bn-text-secondary); }
+.bn-cat-card--soon { opacity: 0.55; cursor: default; }
+.bn-cat-card--soon:hover { border-color: var(--bn-border); transform: none; box-shadow: none; }
+.bn-cat-card--soon .bn-cat-card-count { color: var(--bn-text-tertiary); font-style: italic; }
+
+/* --- Article Card (Latest Articles) --- */
+.bn-article-card { display: flex; flex-direction: column; background: var(--bn-surface); border: 1px solid var(--bn-border); border-radius: var(--bn-radius-lg); overflow: hidden; transition: transform var(--bn-transition-fast), box-shadow var(--bn-transition-fast); }
+.bn-article-card:hover { transform: translateY(-3px); box-shadow: var(--bn-shadow-3); }
+.bn-article-img { width: 100%; aspect-ratio: 16/9; background: var(--bn-gradient-subtle); display: flex; align-items: center; justify-content: center; color: var(--bn-primary); }
+.bn-article-body { padding: var(--bn-space-5); display: flex; flex-direction: column; gap: var(--bn-space-2); flex-grow: 1; }
+.bn-article-tag { font-size: var(--bn-fs-xs); font-weight: var(--bn-fw-semibold); color: var(--bn-accent); }
+.bn-article-title { font-size: var(--bn-fs-lg); font-weight: var(--bn-fw-semibold); }
+.bn-article-desc { font-size: var(--bn-fs-sm); color: var(--bn-text-secondary); }
+.bn-article-meta { font-size: var(--bn-fs-xs); color: var(--bn-text-tertiary); margin-top: auto; padding-top: var(--bn-space-3); display: flex; gap: var(--bn-space-3); }
+
 /* --- Footer --- */
 .bn-footer { border-top: 1px solid var(--bn-border); padding-block: var(--bn-space-12) var(--bn-space-8); background: var(--bn-surface); }
 .bn-footer-grid { display: grid; gap: var(--bn-space-8); grid-template-columns: 1fr 1fr; }
@@ -542,10 +675,8 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
       <data:blog.title/>
     </a>
     <nav aria-label='Primary Navigation' class='bn-nav' id='bn-nav-primary'>
-      <a expr:href='data:blog.homepageUrl'>Tools</a>
-      <a expr:href='data:blog.homepageUrl + &quot;p/categories.html&quot;'>Categories</a>
-      <a expr:href='data:blog.homepageUrl + &quot;p/blog.html&quot;'>Blog</a>
       <a expr:href='data:blog.homepageUrl + &quot;p/resources.html&quot;'>Resources</a>
+      <a expr:href='data:blog.homepageUrl + &quot;p/blog.html&quot;'>Blog</a>
       <a expr:href='data:blog.homepageUrl + &quot;p/about.html&quot;'>About</a>
     </nav>
     <div class='bn-header-actions'>
@@ -559,10 +690,8 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
   </div>
   <div class='bn-nav-overlay' id='bn-nav-overlay'></div>
   <nav aria-label='Mobile Navigation' class='bn-mobile-nav' id='bn-mobile-nav'>
-    <a expr:href='data:blog.homepageUrl'>Tools</a>
-    <a expr:href='data:blog.homepageUrl + &quot;p/categories.html&quot;'>Categories</a>
-    <a expr:href='data:blog.homepageUrl + &quot;p/blog.html&quot;'>Blog</a>
     <a expr:href='data:blog.homepageUrl + &quot;p/resources.html&quot;'>Resources</a>
+    <a expr:href='data:blog.homepageUrl + &quot;p/blog.html&quot;'>Blog</a>
     <a expr:href='data:blog.homepageUrl + &quot;p/about.html&quot;'>About</a>
   </nav>
 </header>
@@ -576,7 +705,129 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
 <b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog' version='2'>
 <b:includable id='main'>
 <b:if cond='data:blog.url == data:blog.homepageUrl'>
-  <!-- Homepage v1.x injects here -->
+<section aria-labelledby='bn-hero-heading' class='bn-hero' expr:data-home='data:blog.homepageUrl' id='bn-hero'>
+  <div class='bn-container bn-hero-inner'>
+
+    <h1 class='bn-hero-h1' id='bn-hero-heading'>Find the Right Online Tool for Any Task — Instantly</h1>
+    <p class='bn-hero-desc'>Banynova is a free directory of browser-based tools for developers, writers, and everyday tasks. Every tool runs instantly with no installation and no signup — most process your data privately, right in your browser.</p>
+
+    <div class='bn-hero-search'>
+      <form class='bn-hero-search-field' expr:action='data:blog.homepageUrl + &quot;search&quot;' id='bn-hero-search-form' method='get' role='search'>
+        <svg aria-hidden='true' class='bn-hero-search-icon' viewBox='0 0 24 24'>
+          <circle cx='11' cy='11' r='7' stroke='currentColor' stroke-width='2'></circle>
+          <path d='M21 21L16.65 16.65' stroke='currentColor' stroke-linecap='round' stroke-width='2'></path>
+        </svg>
+        <label class='bn-visually-hidden' for='bn-hero-search-input'>Search Banynova tools and guides</label>
+        <input aria-autocomplete='list' aria-controls='bn-hero-search-panel' aria-describedby='bn-hero-search-hint' aria-expanded='false' autocomplete='off' class='bn-hero-search-input' id='bn-hero-search-input' name='q' placeholder='Search tools, tutorials, or guides...' role='combobox' type='search'/>
+        <button aria-label='Clear search' class='bn-hero-search-clear' id='bn-hero-search-clear' type='button'>&#215;</button>
+        <span aria-hidden='true' class='bn-hero-search-kbd'>/</span>
+        <button aria-label='Search' class='bn-hero-search-submit' type='submit'>
+          <svg aria-hidden='true' viewBox='0 0 24 24'>
+            <circle cx='11' cy='11' r='7' stroke='currentColor' stroke-width='2.2'></circle>
+            <path d='M21 21L16.65 16.65' stroke='currentColor' stroke-linecap='round' stroke-width='2.2'></path>
+          </svg>
+          <span>Search</span>
+        </button>
+      </form>
+      <ul aria-label='Suggested tools' class='bn-hero-search-panel' id='bn-hero-search-panel' role='listbox'></ul>
+      <p class='bn-hero-search-hint' id='bn-hero-search-hint'>Press <strong>/</strong> to jump to search from anywhere</p>
+    </div>
+
+    <ul aria-label='Banynova at a glance' class='bn-hero-stats' id='bn-hero-stats'></ul>
+
+    <nav aria-label='Popular searches'>
+      <ul class='bn-hero-suggestions' id='bn-hero-suggestions'></ul>
+    </nav>
+
+    <nav aria-label='Quick links'>
+      <ul class='bn-hero-actions' id='bn-hero-actions'></ul>
+    </nav>
+
+    <!-- No-JS / crawler fallback -->
+    <noscript>
+      <ul class='bn-hero-suggestions'>
+        <li><a class='bn-hero-chip' expr:href='data:blog.homepageUrl + &quot;search/label/Word-Counter&quot;'>Word Counter</a></li>
+        <li><a class='bn-hero-chip' expr:href='data:blog.homepageUrl + &quot;search/label/JSON-Formatter&quot;'>JSON Formatter</a></li>
+        <li><a class='bn-hero-chip' expr:href='data:blog.homepageUrl + &quot;search/label/Image-Compressor&quot;'>Image Compressor</a></li>
+        <li><a class='bn-hero-chip' expr:href='data:blog.homepageUrl + &quot;search/label/Base64-Encoder&quot;'>Base64 Encoder</a></li>
+        <li><a class='bn-hero-chip' expr:href='data:blog.homepageUrl + &quot;search/label/Age-Calculator&quot;'>Age Calculator</a></li>
+        <li><a class='bn-hero-chip' expr:href='data:blog.homepageUrl + &quot;search/label/UUID-Generator&quot;'>UUID Generator</a></li>
+        <li><a class='bn-hero-chip' expr:href='data:blog.homepageUrl + &quot;search/label/QR-Code-Generator&quot;'>QR Code Generator</a></li>
+        <li><a class='bn-hero-chip' expr:href='data:blog.homepageUrl + &quot;search/label/Password-Generator&quot;'>Password Generator</a></li>
+      </ul>
+      <ul class='bn-hero-actions'>
+        <li><a class='bn-hero-action-btn' expr:href='data:blog.homepageUrl + &quot;search/label/Popular&quot;'>Popular Tools</a></li>
+        <li><a class='bn-hero-action-btn' expr:href='data:blog.homepageUrl + &quot;p/categories.html&quot;'>Browse Categories</a></li>
+        <li><a class='bn-hero-action-btn' expr:href='data:blog.homepageUrl + &quot;p/blog.html&quot;'>Latest Tutorials</a></li>
+        <li><a class='bn-hero-action-btn' expr:href='data:blog.homepageUrl + &quot;p/resources.html&quot;'>Resources</a></li>
+      </ul>
+    </noscript>
+
+    <ul aria-label='Why Banynova' class='bn-hero-trust'>
+      <li class='bn-hero-trust-item'><svg aria-hidden='true' viewBox='0 0 24 24'><path d='M13 2L4 14h6l-1 8 9-12h-6l1-8z' stroke='currentColor' stroke-linejoin='round' stroke-width='2'></path></svg>Free Forever</li>
+      <li class='bn-hero-trust-item'><svg aria-hidden='true' viewBox='0 0 24 24'><rect height='16' rx='2' stroke='currentColor' stroke-width='2' width='18' x='3' y='4'></rect><path d='M3 8h18' stroke='currentColor' stroke-width='2'></path></svg>Browser-Based</li>
+      <li class='bn-hero-trust-item'><svg aria-hidden='true' viewBox='0 0 24 24'><path d='M12 3l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6l7-3z' stroke='currentColor' stroke-linejoin='round' stroke-width='2'></path></svg>Privacy First</li>
+      <li class='bn-hero-trust-item'><svg aria-hidden='true' viewBox='0 0 24 24'><path d='M12 3v10m0 0l-4-4m4 4l4-4' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'></path><path d='M4 21h16' stroke='currentColor' stroke-linecap='round' stroke-width='2'></path></svg>No Installation</li>
+      <li class='bn-hero-trust-item'><svg aria-hidden='true' viewBox='0 0 24 24'><rect height='20' rx='2' stroke='currentColor' stroke-width='2' width='10' x='7' y='2'></rect><path d='M11 18h2' stroke='currentColor' stroke-linecap='round' stroke-width='2'></path></svg>Mobile Friendly</li>
+      <li class='bn-hero-trust-item'><svg aria-hidden='true' viewBox='0 0 24 24'><path d='M13 2L4 14h6l-1 8 9-12h-6l1-8z' stroke='currentColor' stroke-linejoin='round' stroke-width='2'></path></svg>Fast Loading</li>
+    </ul>
+
+  </div>
+</section>
+
+<!-- ============================== POPULAR TOOLS (Homepage only) ============================== -->
+<section class='bn-section bn-section--tight' id='popular-tools'>
+  <div class='bn-container'>
+    <div class='bn-section-head'>
+      <span class='bn-section-eyebrow'>Most used</span>
+      <h2 class='bn-section-title'>Popular tools</h2>
+      <p class='bn-section-sub'>The utilities people reach for most.</p>
+    </div>
+    <div class='bn-grid' id='bn-popular-grid'></div>
+  </div>
+</section>
+
+<!-- ============================== CATEGORIES (Homepage only) ============================== -->
+<section class='bn-section bn-section--tight' id='categories'>
+  <div class='bn-container'>
+    <div class='bn-section-head'>
+      <span class='bn-section-eyebrow'>Explore</span>
+      <h2 class='bn-section-title'>Browse categories</h2>
+      <p class='bn-section-sub'>Every tool lives in one of these hubs — scales from a handful of tools to hundreds without changing layout.</p>
+    </div>
+    <div class='bn-grid bn-grid--categories' id='bn-categories-grid'></div>
+  </div>
+</section>
+
+<!-- ============================== LATEST ARTICLES (Homepage only) ============================== -->
+<section class='bn-section bn-section--tight' id='latest-articles'>
+  <div class='bn-container'>
+    <div class='bn-section-head'>
+      <span class='bn-section-eyebrow'>Learn</span>
+      <h2 class='bn-section-title'>Latest articles</h2>
+      <p class='bn-section-sub'>Guides that go deeper than the tool itself.</p>
+    </div>
+    <div class='bn-grid bn-grid--tutorials' id='bn-articles-grid'></div>
+    <p class='u-mt-8'><a expr:href='data:blog.homepageUrl + &quot;p/blog.html&quot;'>View all articles &#8594;</a></p>
+  </div>
+</section>
+
+<!-- ============================== NEW TOOLS (Homepage only) ============================== -->
+<section class='bn-section bn-section--tight' id='new-tools'>
+  <div class='bn-container'>
+    <div class='bn-section-head'>
+      <span class='bn-section-eyebrow'>Just shipped</span>
+      <h2 class='bn-section-title'>New tools</h2>
+      <p class='bn-section-sub'>Recently added to the platform.</p>
+    </div>
+    <div class='bn-grid' id='bn-new-tools-grid'></div>
+  </div>
+</section>
+
+  <!-- Remaining Homepage sections (Why Choose, Platform Stats, FAQ,
+       Newsletter) inject here as they are built, per Roadmap Step 3
+       continuing. These aren't linked from Quick Actions, so their ids
+       aren't constrained the same way as the four sections above. -->
 <b:else/>
   <b:loop values='data:posts' var='post'>
     <b:include data='post' name='post'/>
@@ -954,6 +1205,241 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
     }
   });
 
+  /* ------------------------------------------------------------------------
+     HOMEPAGE HERO SEARCH — the module name/shape follows the exact usage
+     documented above in Banynova.register()'s own comment. Config lives in
+     one place (this object) and both the suggestion chips and quick-link
+     buttons are rendered from it, so nothing has to be edited twice.
+     init() bails out immediately when the hero form isn't in the DOM,
+     which is true on every page except the homepage (see the b:if in the
+     Main section) — so this module is always safe to call from init().
+     ------------------------------------------------------------------------ */
+  Banynova.register('search', {
+    config: {
+      // Same rule as directory.TOOLS above — real, published tools only.
+      // Keep these two lists in sync whenever a new tool actually publishes.
+      popularTools: [
+        { label: 'Word Counter', path: '2026/08/word-counter.html' }
+      ],
+      quickLinks: [
+        { label: 'Popular Tools',     path: '#popular-tools' },
+        { label: 'Browse Categories', path: '#categories' },
+        { label: 'Latest Articles',   path: '#latest-articles' },
+        { label: 'New Tools',         path: '#new-tools' }
+      ],
+      stats: [
+        { value: '100+', label: 'Tools' },
+        { value: '100%', label: 'Free' },
+        { value: '', label: 'Browser-Based' },
+        { value: '', label: 'Privacy First' }
+      ],
+      defaultPlaceholder: 'Search tools, tutorials, or guides...',
+      rotateIntervalMs: 3200
+    },
+    init: function () {
+      var form = document.getElementById('bn-hero-search-form');
+      if (!form) { return; }
+
+      var cfg = this.config;
+      var section = document.getElementById('bn-hero');
+      var home = section.getAttribute('data-home') || '/';
+      var input = document.getElementById('bn-hero-search-input');
+      var clearBtn = document.getElementById('bn-hero-search-clear');
+      var panel = document.getElementById('bn-hero-search-panel');
+      var suggestionsList = document.getElementById('bn-hero-suggestions');
+      var actionsList = document.getElementById('bn-hero-actions');
+      var statsList = document.getElementById('bn-hero-stats');
+      var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var activeIndex = -1;
+
+      function url(path) { return home + path; }
+
+      suggestionsList.innerHTML = cfg.popularTools.map(function (t) {
+        return '<li><a class="bn-hero-chip" href="' + url(t.path) + '">' + t.label + '</a></li>';
+      }).join('');
+
+      actionsList.innerHTML = cfg.quickLinks.map(function (l) {
+        return '<li><a class="bn-hero-action-btn" href="' + url(l.path) + '">' + l.label + '</a></li>';
+      }).join('');
+
+      statsList.innerHTML = cfg.stats.map(function (s) {
+        var value = s.value ? '<span>' + s.value + '</span>' : '';
+        return '<li>' + value + s.label + '</li>';
+      }).join('');
+
+      function toggleClear() { clearBtn.classList.toggle('is-visible', input.value.length > 0); }
+      input.addEventListener('input', toggleClear);
+      clearBtn.addEventListener('click', function () {
+        input.value = '';
+        toggleClear();
+        closePanel();
+        input.focus();
+      });
+
+      document.addEventListener('keydown', function (e) {
+        var tag = document.activeElement.tagName;
+        var isTyping = tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement.isContentEditable;
+        if (e.key === '/' && !isTyping) { e.preventDefault(); input.focus(); }
+        if (e.key === 'Escape') { closePanel(); }
+      });
+
+      if (!reducedMotion) {
+        var rotateIndex = 0;
+        window.setInterval(function () {
+          if (document.activeElement === input || input.value) { return; }
+          rotateIndex = (rotateIndex + 1) % cfg.popularTools.length;
+          input.setAttribute('placeholder', 'Search ' + cfg.popularTools[rotateIndex].label + '...');
+        }, cfg.rotateIntervalMs);
+      }
+      input.addEventListener('blur', function () {
+        if (!input.value) { input.setAttribute('placeholder', cfg.defaultPlaceholder); }
+      });
+
+      function openPanel() { panel.classList.add('is-open'); input.setAttribute('aria-expanded', 'true'); }
+      function closePanel() {
+        panel.classList.remove('is-open');
+        panel.innerHTML = '';
+        input.setAttribute('aria-expanded', 'false');
+        input.removeAttribute('aria-activedescendant');
+        activeIndex = -1;
+      }
+      function highlight(label, query) {
+        var i = label.toLowerCase().indexOf(query.toLowerCase());
+        if (i === -1) { return label; }
+        return label.slice(0, i) + '<mark>' + label.slice(i, i + query.length) + '</mark>' + label.slice(i + query.length);
+      }
+
+      input.addEventListener('input', function () {
+        var q = input.value.trim();
+        if (!q) { closePanel(); return; }
+        var matches = cfg.popularTools.filter(function (t) {
+          return t.label.toLowerCase().indexOf(q.toLowerCase()) !== -1;
+        }).slice(0, 5);
+        if (!matches.length) { closePanel(); return; }
+        panel.innerHTML = matches.map(function (t, i) {
+          return '<li class="bn-hero-search-option" id="bn-hero-option-' + i + '" role="option" data-url="' + url(t.path) + '">' + highlight(t.label, q) + '</li>';
+        }).join('');
+        activeIndex = -1;
+        openPanel();
+      });
+
+      panel.addEventListener('click', function (e) {
+        var opt = e.target.closest('.bn-hero-search-option');
+        if (opt) { window.location.href = opt.getAttribute('data-url'); }
+      });
+
+      input.addEventListener('keydown', function (e) {
+        if (!panel.classList.contains('is-open')) { return; }
+        var options = panel.querySelectorAll('.bn-hero-search-option');
+        if (!options.length) { return; }
+        if (e.key === 'ArrowDown') { e.preventDefault(); activeIndex = (activeIndex + 1) % options.length; }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); activeIndex = (activeIndex - 1 + options.length) % options.length; }
+        else if (e.key === 'Enter' && activeIndex !== -1) { e.preventDefault(); window.location.href = options[activeIndex].getAttribute('data-url'); return; }
+        else { return; }
+        options.forEach(function (o) { o.classList.remove('is-active'); });
+        options[activeIndex].classList.add('is-active');
+        input.setAttribute('aria-activedescendant', options[activeIndex].id);
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!e.target.closest('.bn-hero-search')) { closePanel(); }
+      });
+      form.addEventListener('submit', function () { closePanel(); });
+    }
+  });
+
+  /* ------------------------------------------------------------------------
+     DIRECTORY MODULE — Popular Tools, Categories, Latest Articles, New
+     Tools (Homepage only, Roadmap Step 3). Renders into the four
+     containers whose parent <section> ids the Hero's Quick Actions link
+     to (#popular-tools, #categories, #latest-articles, #new-tools).
+     Mock data below simulates the future tools-index.json (Master Spec
+     Section 15) — swap TOOLS/CATEGORIES/ARTICLES for a real fetch() once
+     real content exists; render()/icon() stay as-is. init() bails out
+     immediately if the grids aren't in the DOM (true on every page
+     except the homepage), so it's always safe to call unconditionally.
+     ------------------------------------------------------------------------ */
+  Banynova.register('directory', {
+    ICONS: {
+      dev: '<path d="m9 8-4 4 4 4M15 8l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>',
+      seo: '<circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"></circle><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>',
+      calc: '<rect x="5" y="3" width="14" height="18" rx="2" stroke="currentColor" stroke-width="2"></rect><path d="M8 8h8M8 12h2m4 0h2M8 16h2m4 0h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>',
+      security: '<path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z" stroke="currentColor" stroke-width="2"></path>',
+      image: '<rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2"></rect><circle cx="9" cy="10" r="2" stroke="currentColor" stroke-width="2"></circle><path d="m4 18 5-5 4 4 3-3 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>',
+      text: '<path d="M5 6h14M9 6v14M5 18h4M15 12h4M15 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>'
+    },
+    // Only real, published tools belong here — a card here means a live
+    // link. As each new tool actually publishes, add it here (and to
+    // Banynova.search's popularTools below) with its real permalink.
+    // Never add a tool before its post exists (Static_Page_Creation_Standard.md
+    // / Tool_Category_Architecture_Master_Plan.md Section 3).
+    TOOLS: [
+      { name: 'Word Counter', slug: '2026/08/word-counter.html', cat: 'Text Tools', icon: 'text', desc: 'Count words, characters, and reading time.', popular: true, isNew: false }
+    ],
+    // published:true = the hub page actually exists and is live — renders
+    // as a real link. published:false = card shows as non-clickable
+    // "Coming Soon" (Tool_Category_Architecture_Master_Plan.md's Category
+    // Hub Creation Rule: a card must never link to a page that isn't
+    // published yet). Flip a category to true only after its hub page is
+    // created, published, and its URL verified (Static_Page_Creation_Standard.md).
+    CATEGORIES: [
+      { name: 'Text Tools', slug: 'p/text-tools.html', icon: 'text', count: 10, desc: 'Word counts, case conversion & cleanup.', published: false },
+      { name: 'Developer Tools', slug: 'p/developer-tools.html', icon: 'dev', count: 22, desc: 'JSON, HTML, CSS, JS formatters & more.', published: false },
+      { name: 'SEO Tools', slug: 'p/seo-tools.html', icon: 'seo', count: 12, desc: 'Meta tags, schema, sitemaps & robots.txt.', published: false },
+      { name: 'Calculators', slug: 'p/calculators.html', icon: 'calc', count: 15, desc: 'Finance, health, date & unit conversions.', published: false },
+      { name: 'Security Tools', slug: 'p/security-tools.html', icon: 'security', count: 10, desc: 'Passwords, hashes, tokens & QR codes.', published: false },
+      { name: 'Image Tools', slug: 'p/image-tools.html', icon: 'image', count: 16, desc: 'Resize, compress, convert & watermark.', published: false }
+    ],
+    ARTICLES: [
+      { tag: 'Developer Tools', title: 'How to Format JSON (and Fix Common Errors)', desc: 'A practical walkthrough of formatting, validating, and debugging JSON.', readTime: '5 min read' },
+      { tag: 'Security', title: 'What Makes a Password Actually Strong?', desc: 'The real factors behind password strength, and the myths to ignore.', readTime: '6 min read' },
+      { tag: 'SEO', title: 'Meta Tags vs. Schema Markup: What\u2019s the Difference?', desc: 'Understand how each one helps your page perform in search.', readTime: '7 min read' }
+    ],
+    icon: function (name, size) {
+      size = size || 20;
+      return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" aria-hidden="true">' + (this.ICONS[name] || this.ICONS.dev) + '</svg>';
+    },
+    toolCardHTML: function (tool, home) {
+      var badge = tool.isNew ? '<span class="bn-new-badge">New</span>' : '';
+      return '<article class="bn-tool-card">' + badge + '<div class="bn-tool-card-icon">' + this.icon(tool.icon, 22) + '</div><span class="bn-tool-card-cat">' + tool.cat + '</span><h3 class="bn-tool-card-name">' + tool.name + '</h3><p class="bn-tool-card-desc">' + tool.desc + '</p><a class="bn-tool-card-link" href="' + home + tool.slug + '">Open tool <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-5-5 5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></article>';
+    },
+    catCardHTML: function (cat, home) {
+      if (!cat.published) {
+        return '<div class="bn-cat-card bn-cat-card--soon"><div class="bn-cat-card-icon">' + this.icon(cat.icon, 24) + '</div><span class="bn-cat-card-name">' + cat.name + '</span><span class="bn-cat-card-count">Coming soon</span><p class="bn-cat-card-desc">' + cat.desc + '</p></div>';
+      }
+      return '<a class="bn-cat-card" href="' + home + cat.slug + '"><div class="bn-cat-card-icon">' + this.icon(cat.icon, 24) + '</div><span class="bn-cat-card-name">' + cat.name + '</span><span class="bn-cat-card-count">' + cat.count + ' tools</span><p class="bn-cat-card-desc">' + cat.desc + '</p></a>';
+    },
+    articleCardHTML: function (a) {
+      return '<article class="bn-article-card"><div class="bn-article-img">' + this.icon('dev', 32) + '</div><div class="bn-article-body"><span class="bn-article-tag">' + a.tag + '</span><h3 class="bn-article-title">' + a.title + '</h3><p class="bn-article-desc">' + a.desc + '</p><span class="bn-article-meta">' + a.readTime + '</span></div></article>';
+    },
+    init: function () {
+      var popularGrid = document.getElementById('bn-popular-grid');
+      var catGrid = document.getElementById('bn-categories-grid');
+      var articlesGrid = document.getElementById('bn-articles-grid');
+      var newGrid = document.getElementById('bn-new-tools-grid');
+      if (!popularGrid && !catGrid && !articlesGrid && !newGrid) { return; }
+
+      var heroSection = document.getElementById('bn-hero');
+      var home = (heroSection && heroSection.getAttribute('data-home')) || '/';
+
+      var self = this;
+      if (popularGrid) { popularGrid.innerHTML = this.TOOLS.filter(function (t) { return t.popular; }).map(function (t) { return self.toolCardHTML(t, home); }).join(''); }
+      if (catGrid) { catGrid.innerHTML = this.CATEGORIES.map(function (c) { return self.catCardHTML(c, home); }).join(''); }
+      if (articlesGrid) { articlesGrid.innerHTML = this.ARTICLES.map(function (a) { return self.articleCardHTML(a); }).join(''); }
+      if (newGrid) {
+        var newTools = this.TOOLS.filter(function (t) { return t.isNew; });
+        if (newTools.length === 0) {
+          // Nothing real to show — hide the whole section rather than
+          // render an empty grid, which would look broken on its own.
+          var newSection = newGrid.closest('section');
+          if (newSection) { newSection.style.display = 'none'; }
+        } else {
+          newGrid.innerHTML = newTools.map(function (t) { return self.toolCardHTML(t, home); }).join('');
+        }
+      }
+    }
+  });
+
   global.Banynova = Banynova;
 
   // Each module above was already frozen individually by Banynova.register()
@@ -964,6 +1450,8 @@ code, pre, kbd { font-family: var(--bn-font-mono); }
 
   Banynova.theme.init();
   Banynova.navigation.init();
+  Banynova.search.init();
+  Banynova.directory.init();
   Banynova.perf.applyLazyLoadingToPostImages();
 
 })(window);
