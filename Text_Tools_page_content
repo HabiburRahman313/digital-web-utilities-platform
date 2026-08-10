@@ -29,5 +29,33 @@
       Open tool →
     </a>
   </article>
+<!-- Tool 2: Case Converter -->
+<article class="bn-tool-card">
+  <div class="bn-tool-card-icon" aria-hidden="true">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M4 7h16M4 12h16M4 17h10"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+      />
+    </svg>
+  </div>
 
+  <span class="bn-tool-card-cat">Text Tools</span>
+
+  <h3 class="bn-tool-card-name">Case Converter</h3>
+
+  <p class="bn-tool-card-desc">
+    Convert text between uppercase, lowercase, title case, and other formats.
+  </p>
+
+  <a
+    class="bn-tool-card-link"
+    href="https://banynova.blogspot.com/2026/08/case-converter.html"
+    aria-label="Open Case Converter tool"
+  >
+    Open tool →
+  </a>
+</article>
 </div>
