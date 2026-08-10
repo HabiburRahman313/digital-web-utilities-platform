@@ -1,0 +1,693 @@
+Act as a Senior Front-End Engineer, UX/UI Designer, Accessibility Specialist, and Technical SEO Engineer.
+
+Build a production-quality "Word & Character Counter" tool page for my website:
+
+Banynova — a modern, free, browser-based online tools platform.
+
+IMPORTANT:
+This is NOT a standalone website and NOT a standalone HTML page.
+It will be published as a Blogger Post and must integrate seamlessly into my existing Banynova Base Theme.
+
+The existing global Header and Footer are already provided by the Blogger theme.
+
+DO NOT recreate, duplicate, replace, or modify the global Header or Footer.
+
+The tool page itself must contain only the tool-specific content and components.
+
+==================================================
+1. EXISTING BANYNOVA ARCHITECTURE
+==================================================
+
+Website:
+Banynova
+
+Platform:
+Blogger.com
+
+Technology:
+HTML5
+CSS3
+Vanilla JavaScript
+
+No React.
+No Vue.
+No Angular.
+No Bootstrap.
+No Tailwind.
+No jQuery.
+No external JavaScript framework.
+
+The site is designed to be:
+- lightweight
+- mobile-first
+- fast
+- accessible
+- SEO-friendly
+- privacy-first
+- browser-based
+- scalable to hundreds of tools
+
+The existing global theme already controls:
+- Header
+- Navigation
+- Footer
+- Typography
+- Colors
+- Layout tokens
+- Global buttons
+- Global cards
+- Responsive behavior
+
+Reuse the existing Banynova design language instead of inventing a new visual system.
+
+==================================================
+2. TOOL PAGE ROLE
+==================================================
+
+Word Counter is the FIRST production tool.
+
+It is the reference implementation for all future Banynova tools.
+
+Therefore the implementation must establish a reusable architecture for:
+
+- Tool UI
+- Input/output handling
+- Vanilla JavaScript architecture
+- Tool-specific CSS
+- Responsive behavior
+- Accessibility
+- SEO metadata
+- Breadcrumbs
+- Structured data
+- FAQ
+- Related tools
+- Internal linking
+
+Do not over-engineer the first version.
+
+Prioritize clean, maintainable, reusable code.
+
+==================================================
+3. PAGE ARCHITECTURE
+==================================================
+
+Use this exact conceptual structure:
+
+Tool Post
+│
+├── Breadcrumb
+├── H1
+├── Tool Introduction
+├── Interactive Tool
+├── Features
+├── How to Use
+├── Example
+├── Common Use Cases
+├── Tips / Best Practices
+├── FAQ
+├── Related Tools
+├── Related Articles
+├── Conclusion
+├── Last Updated + Version
+└── Structured Data
+
+The global Header and Footer come from the Banynova Blogger theme.
+
+Do NOT include them in the post HTML.
+
+==================================================
+4. TOOL NAME
+==================================================
+
+Primary name:
+
+Word & Character Counter
+
+Suggested H1:
+
+Free Word & Character Counter
+
+The tool should clearly communicate that users can count:
+
+- Words
+- Characters
+- Characters excluding spaces
+- Sentences
+- Paragraphs
+- Estimated reading time
+
+Do not make the interface unnecessarily complicated.
+
+==================================================
+5. TOOL INTERFACE
+==================================================
+
+Create a modern, clean, professional tool interface that visually matches Banynova.
+
+Main structure:
+
+-----------------------------------------
+Free Word & Character Counter
+Count words, characters, sentences, and more instantly.
+
+[ Large text input area                         ]
+
+[ Paste / Clear ]
+
+
+Words              Characters
+0                  0
+
+Characters
+without spaces     Sentences
+0                  0
+
+Paragraphs         Reading Time
+0                  0 min
+
+
+[ Copy Text ]       [ Clear ]
+-----------------------------------------
+
+The exact visual arrangement may be improved for UX.
+
+IMPORTANT:
+The text area is the primary focus.
+
+The interface should feel like a professional SaaS utility, not a generic form.
+
+==================================================
+6. REAL-TIME FUNCTIONALITY
+==================================================
+
+The counter must update instantly while the user types or pastes text.
+
+Calculate:
+
+1. Word count
+2. Character count including spaces
+3. Character count excluding spaces
+4. Sentence count
+5. Paragraph count
+6. Estimated reading time
+
+Use sensible browser-side counting logic.
+
+Word counting must handle:
+
+- multiple spaces
+- tabs
+- line breaks
+- leading/trailing whitespace
+- punctuation
+- empty input
+
+Do not count empty whitespace as words.
+
+Sentence counting should be practical and robust rather than pretending to be a perfect linguistic parser.
+
+Reading-time calculation should use a clearly documented approximate reading speed.
+
+==================================================
+7. BUTTONS
+==================================================
+
+Include:
+
+- Copy Text
+- Clear
+
+Optional:
+
+- Paste
+
+Buttons must have:
+
+- keyboard accessibility
+- visible focus states
+- appropriate aria-labels where necessary
+- clear hover states
+- disabled states where appropriate
+
+After copying, show a small accessible confirmation such as:
+
+"Copied!"
+
+Do not use intrusive modal dialogs.
+
+==================================================
+8. PRIVACY-FIRST DESIGN
+==================================================
+
+The tool must process text entirely in the user's browser.
+
+Do NOT:
+
+- send text to a server
+- use an API
+- store text remotely
+- use analytics inside the tool
+- upload text anywhere
+- use cookies for the tool
+
+Add a subtle privacy notice:
+
+"Your text stays in your browser. Nothing is uploaded."
+
+This should be reassuring but not visually dominant.
+
+==================================================
+9. ACCESSIBILITY
+==================================================
+
+Follow WCAG 2.2 AA principles as closely as practical.
+
+Requirements:
+
+- semantic HTML5
+- proper labels
+- keyboard navigation
+- visible focus indicators
+- sufficient color contrast
+- no color-only information
+- accessible buttons
+- appropriate ARIA only where needed
+- textarea must have an accessible label
+- status messages should be announced appropriately
+- logical heading hierarchy
+- touch-friendly controls
+- no tiny text
+
+Do not overuse ARIA when native HTML semantics are sufficient.
+
+==================================================
+10. RESPONSIVE DESIGN
+==================================================
+
+Mobile-first.
+
+The interface must work comfortably at:
+
+320px
+360px
+375px
+390px
+414px
+768px
+1024px
+1440px+
+
+On mobile:
+
+- textarea should use almost the full available width
+- statistics should remain readable
+- buttons should be easy to tap
+- cards should stack naturally
+- no horizontal scrolling
+- no fixed-width desktop layout
+
+On desktop:
+
+- keep the tool interface reasonably narrow for readability
+- avoid excessive empty space
+- use the existing Banynova content width
+
+Do not create a completely separate mobile design.
+
+==================================================
+11. VISUAL DESIGN
+==================================================
+
+Match the Banynova visual language:
+
+- clean white/light surface
+- deep navy/black typography
+- electric blue primary accent
+- subtle borders
+- modest border radius
+- very subtle shadows
+- generous spacing
+- modern SaaS/tool-directory aesthetic
+- crisp icons
+- minimal decoration
+
+Avoid:
+
+- gradients
+- glassmorphism
+- excessive shadows
+- neon effects
+- huge decorative graphics
+- unnecessary animations
+- oversized rounded containers
+- dark dashboard aesthetics
+
+The tool should look like it belongs naturally inside Banynova.
+
+==================================================
+12. TOOL CARD / COMPONENT STYLE
+==================================================
+
+Reuse the existing Banynova component language where possible.
+
+Existing site style includes:
+
+- .bn-tool-card
+- .bn-tool-card-icon
+- .bn-tool-card-cat
+- .bn-tool-card-name
+- .bn-tool-card-desc
+- .bn-tool-card-link
+
+Do not create visually conflicting components.
+
+If a new tool-specific class is necessary, prefix it with:
+
+bn-wc-
+
+Examples:
+
+bn-wc-tool
+bn-wc-input
+bn-wc-stats
+bn-wc-stat
+bn-wc-actions
+
+Avoid generic class names such as:
+
+.container
+.card
+.button
+.input
+
+because they may conflict with the global Blogger theme.
+
+==================================================
+13. CSS ARCHITECTURE
+==================================================
+
+Do NOT use inline CSS.
+
+Tool-specific CSS must be isolated under the Word Counter namespace.
+
+Example:
+
+.bn-wc-tool { ... }
+.bn-wc-input { ... }
+.bn-wc-stats { ... }
+
+Use existing Banynova design tokens where possible.
+
+Do not redefine the entire global design system.
+
+Keep CSS lightweight.
+
+==================================================
+14. JAVASCRIPT ARCHITECTURE
+==================================================
+
+Use modern Vanilla JavaScript.
+
+No jQuery.
+
+No framework.
+
+Keep Word Counter JavaScript isolated.
+
+Use a small initialization pattern such as:
+
+initWordCounter()
+
+Only initialize when the Word Counter elements exist.
+
+Avoid polluting the global namespace.
+
+Use:
+
+const
+let
+functions
+event listeners
+
+Avoid unnecessary classes or complex architecture.
+
+The tool should not interfere with the global Banynova search, navigation, theme, or other scripts.
+
+==================================================
+15. PERFORMANCE
+==================================================
+
+Performance is important.
+
+Requirements:
+
+- no external libraries
+- no external API
+- no unnecessary network requests
+- no large assets
+- no animations that affect performance
+- efficient input event handling
+- minimal DOM updates
+- avoid rebuilding the entire interface on every keystroke
+
+The tool should feel instantaneous even with reasonably large text input.
+
+==================================================
+16. SEO PAGE CONTENT
+==================================================
+
+The tool page must be more than a widget.
+
+Create approximately 500–800 words of useful, original supporting content.
+
+Use this structure:
+
+H1:
+Free Word & Character Counter
+
+Introduction:
+Explain what the tool does and who it is useful for.
+
+H2:
+How to Use the Word & Character Counter
+
+H2:
+Features
+
+H2:
+Why Count Words and Characters?
+
+H2:
+Common Use Cases
+
+H2:
+Tips for Accurate Text Counting
+
+H2:
+Frequently Asked Questions
+
+H2:
+Related Tools
+
+H2:
+Conclusion
+
+Do not keyword-stuff.
+
+Write naturally for humans.
+
+==================================================
+17. BREADCRUMB
+==================================================
+
+Use:
+
+Home → Text Tools → Word & Character Counter
+
+"Text Tools" must link to:
+
+/p/text-tools.html
+
+The final Word Counter post URL will be the current Blogger post URL.
+
+Use semantic breadcrumb markup.
+
+==================================================
+18. INTERNAL LINKING
+==================================================
+
+Follow:
+
+Homepage
+↓
+Text Tools Category Hub
+↓
+Word Counter
+↓
+Related Tools
+↓
+Related Articles
+
+The Word Counter page should link back to:
+
+Text Tools:
+/p/text-tools.html
+
+Related tools can initially use only REAL published tools.
+
+IMPORTANT:
+
+Do NOT create links to nonexistent future tools.
+
+If related tools do not yet exist, create a small placeholder section that can be populated later.
+
+==================================================
+19. RELATED TOOLS
+==================================================
+
+For the first version, do not invent URLs.
+
+Use only tools that actually exist.
+
+Potential future related tools:
+
+- Character Counter
+- Case Converter
+- Sentence Counter
+- Text Cleaner
+- Remove Duplicate Lines
+
+But do not link them until their Blogger Posts actually exist.
+
+==================================================
+20. FAQ
+==================================================
+
+Create useful FAQs such as:
+
+- How does the word counter count words?
+- Does the character counter include spaces?
+- Is my text uploaded to a server?
+- Can I use this tool on mobile?
+- How is reading time calculated?
+- Does the tool work with long text?
+
+Use concise, accurate answers.
+
+Do not make unsupported claims.
+
+==================================================
+21. STRUCTURED DATA
+==================================================
+
+Include JSON-LD appropriate for the page.
+
+Implement:
+
+1. SoftwareApplication
+2. FAQPage
+3. BreadcrumbList
+
+The SoftwareApplication data should describe the Word & Character Counter as a free browser-based utility.
+
+Do not include fake ratings, fake reviews, fake prices, or unsupported claims.
+
+Ensure JSON-LD is valid.
+
+==================================================
+22. META INFORMATION
+==================================================
+
+Provide recommended:
+
+SEO Title
+Meta Description
+Custom Permalink
+Suggested Search Description
+
+Suggested permalink:
+
+word-counter
+
+Important:
+The Blogger permalink must be established carefully before final publishing.
+
+==================================================
+23. VERSION INFORMATION
+==================================================
+
+Add a subtle footer area within the tool content:
+
+Last updated: [date]
+Version: 1.0
+
+Do not fabricate a future date.
+
+Use a placeholder if necessary.
+
+==================================================
+24. CODE OUTPUT REQUIREMENTS
+==================================================
+
+Return the implementation in clearly separated sections:
+
+A. Blogger Post HTML
+B. Tool-specific CSS
+C. Tool-specific JavaScript
+D. SEO metadata recommendations
+E. JSON-LD structured data
+F. Content copy
+G. Testing checklist
+
+IMPORTANT:
+
+The Blogger Post HTML must be safe to paste into Blogger HTML View.
+
+Do NOT include:
+
+<html>
+<head>
+<body>
+
+Do NOT include a second global header.
+
+Do NOT include a second global footer.
+
+Do NOT include Blogger <b:skin>.
+
+Do NOT include Blogger theme-level XML.
+
+The output should be compatible with an existing Blogger Base Theme.
+
+==================================================
+25. FINAL QUALITY STANDARD
+==================================================
+
+Before presenting the code, audit it against:
+
+- Works without external libraries
+- Real-time counting works
+- Copy works
+- Clear works
+- Empty state works
+- Mobile responsive
+- Keyboard accessible
+- No horizontal overflow
+- No global CSS conflicts
+- No global JavaScript conflicts
+- No broken links
+- No fake tool links
+- Breadcrumb works
+- Text Tools link works
+- FAQ is useful
+- JSON-LD is valid
+- SEO content is substantial
+- Privacy-first behavior is accurate
+- Visual style matches Banynova
+- Code is maintainable for future tools
+
+This Word Counter must become the reusable reference architecture for all future Banynova tools.
+
+Do not create a flashy demo.
+
+Create a professional, production-ready, lightweight utility that looks like a native part of the Banynova platform.
