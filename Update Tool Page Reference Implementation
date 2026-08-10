@@ -953,3 +953,5 @@ NEVER use:
 /search/label/Word-Counter
 
 as the primary URL of an individual tool.
+**If it's published at that exact URL → ship it exactly as you wrote it. Done.
+If it's not published yet → don't put this card on the live page. Swap it for a non-clickable "Coming Soon" version instead, matching the pattern already used for the other 5 categories:
