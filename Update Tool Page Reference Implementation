@@ -953,5 +953,88 @@ NEVER use:
 /search/label/Word-Counter
 
 as the primary URL of an individual tool.
+## Fix the Word & Character Counter page's dark-mode compatibility.
+
+Problem:
+In Banynova dark mode, the following areas are difficult or impossible to see/read:
+1. The Word & Character Counter textarea/input box
+2. Features section
+3. Common Use Cases section
+
+Do NOT change the global Banynova header, footer, navigation, or global theme.
+
+Use the existing Banynova dark-mode design tokens wherever possible.
+
+Requirements:
+
+1. Word Counter input
+- Give the textarea a clearly visible dark surface in dark mode.
+- Use a visible border.
+- Text must have strong contrast.
+- Placeholder text must remain readable.
+- Cursor/caret must remain visible.
+- Focus state must have a clearly visible accent outline.
+- Do not use pure black unless it is already part of the Banynova design system.
+
+2. Tool statistics/cards
+- Statistics cards must remain visually distinguishable from the page background.
+- Labels and numerical values must have sufficient contrast.
+- Borders must remain visible in dark mode.
+
+3. Features section
+- Feature cards must have a dark-mode surface/background.
+- Heading, description, and icons must remain readable.
+- Borders must remain visible.
+- Do not rely only on shadows to separate cards.
+
+4. Common Use Cases section
+- Cards/content blocks must have an appropriate dark surface.
+- Text must have sufficient contrast.
+- Links must remain clearly identifiable.
+- Avoid dark text on dark backgrounds.
+
+5. CSS isolation
+All Word Counter-specific styles must remain scoped under:
+.bn-wc-*
+
+Do not modify generic selectors such as:
+body
+section
+.card
+input
+textarea
+button
+h2
+h3
+p
+
+unless they are scoped to .bn-wc-*.
+
+6. Theme integration
+Prefer the existing Banynova CSS custom properties/design tokens.
+
+If the existing theme provides separate light/dark variables, use them instead of hard-coded colors.
+
+7. Dark-mode testing
+Test at minimum:
+- light mode
+- dark mode
+- mobile width
+- desktop width
+
+Check:
+- textarea visibility
+- text contrast
+- placeholder contrast
+- statistic cards
+- Features
+- Common Use Cases
+- FAQ
+- buttons
+- focus states
+
+Do not change the overall visual identity of Banynova.
+
+The result should look like the same Word Counter tool naturally belongs to the Banynova theme in both light and dark modes.
 **If it's published at that exact URL → ship it exactly as you wrote it. Done.
 If it's not published yet → don't put this card on the live page. Swap it for a non-clickable "Coming Soon" version instead, matching the pattern already used for the other 5 categories:
