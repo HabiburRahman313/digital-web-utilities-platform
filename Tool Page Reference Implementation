@@ -691,3 +691,265 @@ This Word Counter must become the reusable reference architecture for all future
 Do not create a flashy demo.
 
 Create a professional, production-ready, lightweight utility that looks like a native part of the Banynova platform.
+###***
+TOOL STATES
+
+The tool must support these states:
+
+1. Empty
+   - Input is empty.
+   - All counters display 0.
+   - Clear button is disabled.
+   - Copy button is disabled.
+
+2. Active / Typing
+   - User is entering or editing text.
+   - Statistics update in real time.
+
+3. Has Content
+   - Valid text exists.
+   - Copy and Clear actions are available.
+
+4. Copied
+   - After successful copying, provide a short accessible confirmation:
+     "Text copied."
+   - Do not use an intrusive modal.
+
+5. Error / Unsupported
+   - If an operation fails, display a concise human-readable error.
+   - The rest of the tool must remain functional.
+##*
+UNICODE AND MULTILINGUAL COUNTING
+
+The tool must use Unicode-aware JavaScript text processing.
+
+It must work with:
+- English
+- Bengali
+- Arabic
+- Hindi
+- Chinese
+- Japanese
+- Korean
+- accented Latin characters
+- emoji
+- mixed-language text
+
+Word counting must not depend on ASCII-only regular expressions.
+
+Character counting must distinguish:
+- Characters including spaces
+- Characters excluding spaces
+
+The implementation should use Unicode-aware APIs where appropriate,
+such as Intl.Segmenter when supported, with a sensible fallback.
+
+Do not incorrectly split surrogate pairs or common Unicode characters.
+##*
+CLIPBOARD REQUIREMENT
+
+Primary method:
+navigator.clipboard.writeText()
+
+Fallback:
+Provide a compatibility fallback for browsers where the Clipboard API
+is unavailable or fails.
+
+The tool must not become unusable simply because clipboard permission
+is unavailable.
+
+After success:
+Announce "Text copied."
+
+After failure:
+Show a concise accessible message explaining that automatic copying
+was unavailable.
+##*
+ACCESSIBLE LIVE-REGION BEHAVIOR
+
+Do not make the entire statistics area continuously assertive.
+
+Real-time counters should update visually without causing excessive
+screen-reader announcements on every keystroke.
+
+Use aria-live="polite" only for meaningful status messages where
+appropriate.
+
+Examples:
+- "Text copied."
+- "Text cleared."
+
+Do not continuously announce:
+"1 word, 2 words, 3 words, 4 words..."
+while the user types.
+##*
+BLOGGER / THEME ISOLATION
+
+The Word Counter is a Blogger Post, not a standalone webpage.
+
+Do NOT include:
+<html>
+<head>
+<body>
+<b:skin>
+global header
+global footer
+global navigation
+
+The existing Banynova Base Theme owns:
+- Header
+- Footer
+- Global navigation
+- Global typography
+- Global design tokens
+- Global layout
+
+The tool owns only:
+- Tool markup
+- Tool-specific CSS
+- Tool-specific JavaScript
+- Tool-specific structured content
+
+All CSS classes must use the Word Counter namespace:
+
+.bn-wc-*
+
+All JavaScript must be scoped and must not create unnecessary
+global variables.
+
+The tool must not override global:
+body
+a
+button
+input
+textarea
+h1
+h2
+h3
+header
+footer
+nav
+
+styles unless specifically scoped under .bn-wc-*.
+##*BREADCRUMB URL RULE
+
+Breadcrumb structure:
+
+Home → Text Tools → Word & Character Counter
+
+Before final publication, verify the actual Blogger URLs.
+
+Text Tools:
+https://banynova.blogspot.com/p/text-tools.html
+
+Word Counter:
+Use the actual published Blogger Post URL.
+
+Do not construct or guess the final post URL if Blogger has assigned
+a different permalink.
+
+The breadcrumb must never point to:
+- /search/label/...
+- an unpublished post
+- a guessed permalink
+- a duplicate tool URL
+##*
+CANONICAL URL OWNERSHIP
+
+Each individual tool has exactly one canonical public URL.
+
+Example:
+
+Text Tools Category Hub:
+https://banynova.blogspot.com/p/text-tools.html
+
+Word Counter Tool:
+https://banynova.blogspot.com/2026/08/word-counter.html
+
+The Category Hub is a directory/discovery page.
+
+The individual Blogger Post is the canonical owner of the
+Word Counter content.
+
+Do not treat:
+/search/label/Word-Counter
+as the canonical tool URL.
+
+Do not create duplicate tool pages solely to obtain alternative URLs.
+##* PROGRESSIVE ENHANCEMENT
+
+The page must remain usable as a normal informational page if
+JavaScript is unavailable.
+
+Without JavaScript:
+- H1 remains visible.
+- Description remains visible.
+- Instructions remain visible.
+- FAQ remains visible.
+- Tool area displays a clear message:
+
+"This interactive tool requires JavaScript to be enabled."
+
+Do not leave an empty textarea/counter interface that appears broken.
+##* READING-TIME METHODOLOGY
+
+Reading time is an estimate, not an exact measurement.
+
+Use a documented default reading speed of approximately
+200 words per minute unless a different site-wide standard is
+established later.
+
+Calculate:
+
+estimatedMinutes = wordCount / 200
+
+Round appropriately for display.
+
+Examples:
+- 0–199 words → "Less than 1 min"
+- 200–399 words → "1 min"
+- 400–599 words → "2 min"
+
+Label the metric as:
+"Estimated reading time"
+##* TOOL VERSIONING
+
+Initial release:
+Version 1.0.0
+
+Version format:
+MAJOR.MINOR.PATCH
+
+MAJOR:
+Major behavior or architecture change.
+
+MINOR:
+New user-facing functionality.
+
+PATCH:
+Bug fixes, accessibility fixes, performance improvements,
+or minor implementation corrections.
+
+Display version subtly within the tool information area when useful.
+
+Example:
+Version 1.0.0
+## BANYNOVA URL OWNERSHIP MODEL
+
+Category Hub
+    ↓
+Static Page
+    ↓
+/p/text-tools.html
+
+Individual Tool
+    ↓
+Blogger Post
+    ↓
+/2026/08/word-counter.html
+
+NEVER use:
+
+/search/label/Word-Counter
+
+as the primary URL of an individual tool.
