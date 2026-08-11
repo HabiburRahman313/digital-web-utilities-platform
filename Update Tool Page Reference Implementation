@@ -1038,3 +1038,17 @@ Do not change the overall visual identity of Banynova.
 The result should look like the same Word Counter tool naturally belongs to the Banynova theme in both light and dark modes.
 **If it's published at that exact URL → ship it exactly as you wrote it. Done.
 If it's not published yet → don't put this card on the live page. Swap it for a non-clickable "Coming Soon" version instead, matching the pattern already used for the other 5 categories:
+## For Blue color heading- add Inline Style directly to HTML.
+
+In your HTML view, change your <header> code to this:
+<header class="bn-wc-header">
+  <h1 class="bn-wc-title" style="color: #0d6efd !important;">Free Word &amp; Character Counter</h1>
+You may add-
+<style>
+/* Automatically switches inline blue to soft blue in dark mode */
+@media (prefers-color-scheme: dark) {
+  .bn-wc-title {
+    color: #6ea8fe !important;
+  }
+}
+</style>
